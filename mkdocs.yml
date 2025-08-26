@@ -1,11 +1,10 @@
 site_name: 2025-Yatcpu-Fall-Docs
 site_author: Tokisakix
 copyright: Copyright © 2023 Tokisakix
+use_directory_urls: false
 
 nav:
 - 前言: docs/index.md
-
-
 - 最终验收: docs/test.md
 - docs/better-tut/intro.md
 - 实验环境配置:
@@ -52,7 +51,7 @@ theme:
     - content.tabs.link
     - navigation.expand
 
-use_directory_urls: false
+
 markdown_extensions:
   - toc:
       permalink: "🚁"
