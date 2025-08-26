@@ -1,12 +1,12 @@
-site_name: 2023-Yatcpu-Fall-Docs
+site_name: 2025-Yatcpu-Fall-Docs
 site_author: Tokisakix
 copyright: Copyright © 2023 Tokisakix
 
 nav:
-- 前言: index.md
+- 前言: docs/index.md
 
 
-- 最终验收: test.md
+- 最终验收: docs/test.md
 - docs/better-tut/intro.md
 - 实验环境配置:
   - docs/better-tut/getting-started/index.md
@@ -14,7 +14,7 @@ nav:
   - docs/better-tut/getting-started/linux-wsl.md
   - docs/better-tut/getting-started/macos.md
   # - docs/better-tut/getting-started/docker.md
-  - 一键配置 docker 环境: env.md
+  - 一键配置 docker 环境: docs/env.md
 
 - 基础工程知识与技能:
   - docs/better-tut/practice/envvar-and-cmd.md
