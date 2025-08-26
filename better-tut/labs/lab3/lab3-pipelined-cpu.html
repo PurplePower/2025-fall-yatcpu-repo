@@ -1,0 +1,1927 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Tokisakix">
+      
+      
+        <link rel="canonical" href="https://purplepower.github.io/2025-fall-yatcpu-repo/better-tut/labs/lab3/lab3-pipelined-cpu.html">
+      
+      
+        <link rel="prev" href="../lab2/lab2-interrupt.html">
+      
+      
+        <link rel="next" href="../lab4/lab4-bus.html">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>实验三 流水线 CPU - 2025-Yatcpu-Fall-Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cpu" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-header__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2025-Yatcpu-Fall-Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              实验三 流水线 CPU
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-nav__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    2025-Yatcpu-Fall-Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    前言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    最终验收
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    欢迎来到 YatCPU 教程仓库！
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验环境配置
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            实验环境配置
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    简介
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/windows.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/linux-wsl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/WSL 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/macos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    macOS 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../env.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    一键配置 docker 环境
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    基础工程知识与技能
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            基础工程知识与技能
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/envvar-and-cmd.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    环境变量、Shell 与 常用指令
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/scala-and-chisel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scala 和 Chisel 编程语言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/chisel-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    快速测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/simulation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    波形仿真
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/compliance-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 RISC-V 合规性测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/coremark-benchmark.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 CoreMark 性能基准测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/program-device.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    烧板验证
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/hardware-debug.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    硬件调试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/compile-and-link.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    编译与链接
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cmake.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cmake
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../board.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    如何一键烧板
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    理论知识基础
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            理论知识基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/cpu-arch.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    处理器架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/interrupt-and-exception.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    中断和异常
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            实验
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lab1/lab1-single-cycle-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验一 单周期CPU
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lab2/lab2-interrupt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验二 中断
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    实验三 流水线 CPU
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="lab3-pipelined-cpu.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验三 流水线 CPU
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      流水线寄存器
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      三级流水线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三级流水线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      解决控制冒险：清空
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      五级流水线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五级流水线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      解决数据冒险：阻塞
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      拓展：使用旁路减少阻塞
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      拓展：缩短分支延迟
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      提示：如何有效 debug
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="提示：如何有效 debug">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      打印
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      查看波形图
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      充分利用提示
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      烧板验证
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      实验报告
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lab4/lab4-bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验四 总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../challenge1/challenge1-running-os.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    挑战实验一 运行操作系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    快速参考资料
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            快速参考资料
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheets/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集格式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheets/ide-tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IDEA 和 VSCode 使用技巧
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    参考资料
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acknowledgement.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    致谢
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      流水线寄存器
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      三级流水线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三级流水线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      解决控制冒险：清空
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      五级流水线
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五级流水线">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      解决数据冒险：阻塞
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      拓展：使用旁路减少阻塞
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      拓展：缩短分支延迟
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      提示：如何有效 debug
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="提示：如何有效 debug">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      打印
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      查看波形图
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      充分利用提示
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      烧板验证
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      实验报告
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="cpu">实验三 流水线 CPU<a class="headerlink" href="#cpu" title="Permanent link">🚁</a></h1>
+<p>在完成单周期 CPU 实验后，你已经对 CPU 的原理和结构已经有了基本的了解。但单周期的 CPU 设计中，关键路径太长，频率难以提升，并且每个时钟周期只能执行一条指令，指令吞吐率低。下面，我们将尝试使多条指令重叠执行（即流水线技术）来解决这个问题。</p>
+<p>竞争冒险的处理是流水线 CPU 设计的难点和关键所在。在下面的实验中，我们首先设计一个简单的三级流水线 CPU（IF、ID 和 EX 三级），它只涉及分支和跳转指令带来的控制冒险，处理起来较为简单；然后，我们再将三级流水线 CPU 的 EX 级继续切分为 EX、MEM 和 WB，形成经典的五级流水线，这样做带来的数据冒险需要使用阻塞和转发技术进行处理；最后，我们将分支和跳转提前到 ID 阶段，进一步缩短分支延迟。</p>
+<p>本实验中五级流水线 CPU 的架构与 <em>Computer Organization and Design, RISC-V Edition</em> 中的流水线 CPU 架构基本相同，读者可同时参考此书第 4.5~4.8 节。</p>
+<p>在本实验中，你将学习到：</p>
+<ul>
+<li>使用流水线设计缩短关键路径</li>
+<li>正确处理流水线阻塞与清空</li>
+<li>使用转发逻辑减少流水线阻塞</li>
+</ul>
+<p>不管使用 IDE 还是执行命令，根目录是 <code>lab3</code> 文件夹。</p>
+<h2 id="_1">流水线寄存器<a class="headerlink" href="#_1" title="Permanent link">🚁</a></h2>
+<p>流水线寄存器是在流水线中起缓存作用的寄存器，目的是切分组合逻辑，缩短关键路径。它的基本功能非常简单，在每一个时钟周期，根据复位（流水线清空）或阻塞（流水线暂停）的状态，将寄存器内容清空、保持或设置为新的值。寄存器的输出则是寄存器中保存的值。为了方便复用，我们可以定义一个带参数的 <code>PipelineRegister</code> 模块，用来实现不同数据位宽的流水线寄存器。</p>
+<p>实验代码已经在 <code>src/main/scala/riscv/core/PipelineRegister.scala</code> 中定义好了模块接口：<code>stall</code> 和 <code>flush</code> 分别为流水线寄存器的阻塞和清空信号，<code>in</code> 和 <code>out</code> 分别为要写入寄存器的值和寄存器的当前值。</p>
+<div class="admonition note">
+<p class="admonition-title">实验任务： 实现流水线寄存器</p>
+<p>请你修改 <code>// Lab3(PipelineRegister)</code> 注释处的代码，使其能通过 <code>PipelineRegisterTest</code> 测试。</p>
+<div class="admonition tips">
+<p class="admonition-title">提示</p>
+<p>在完成此题时你可以暂时抛开 CPU，只需要用实验零中的基础知识完成上述功能即可，最低所需代码不超过 7 行，请将它当作一道简单的开胃菜享用吧！</p>
+</div>
+</div>
+<h2 id="_2">三级流水线<a class="headerlink" href="#_2" title="Permanent link">🚁</a></h2>
+<p>下面是三级流水线 CPU 的结构图，数据通路用蓝线表示，控制信号用红线表示。</p>
+<p><a class="glightbox" href="images/three_stage_pipelined_CPU_structure.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="three_stage_pipelined_CPU_structure" src="images/three_stage_pipelined_CPU_structure.png" /></a></p>
+<p>我们用 <code>IF2ID</code> 和 <code>ID2EX</code> 这两组流水线寄存器将单周期 CPU 的组合逻辑部分切分为三个阶段：</p>
+<ul>
+<li>取指（Instruction Fetch，IF）：根据 PC 中的指令地址从内存中取出指令码；</li>
+<li>译码（Instruction Decode，ID）：将指令码解码为控制信号并从寄存器组中读取操作数；</li>
+<li>执行（Execute，EX）：包括 ALU 运算、访问内存和结果写回。</li>
+</ul>
+<p>这三个阶段的代码与单周期 CPU 大同小异，所以我已经帮你写好啦，接下来让我们把主要精力放在处理竞争冒险上。</p>
+<h3 id="_3">解决控制冒险：清空<a class="headerlink" href="#_3" title="Permanent link">🚁</a></h3>
+<p>在三级流水线中，由于所有数据处理操作都在 EX 阶段进行，因此不存在数据冒险，我们只需要处理程序跳转带来的控制冒险。有三种情况可能发生程序跳转：</p>
+<ul>
+<li>EX 段执行到跳转指令</li>
+<li>EX 段执行到分支指令且分支条件成立</li>
+<li>发生中断，EX 段收到 CLINT 发来的 <code>InterruptAssert</code> 信号，这相当于在 EX 段的指令之上叠加了一条跳转指令，EX 段的指令继续执行，IF 段和 ID 段的指令将被丢弃</li>
+</ul>
+<p>无论哪种情况，都是由 EX 段向 IF 段发送跳转信号 <code>jump_flag</code> 和跳转的目标地址 <code>jump_address</code>，但在 <code>jump_address</code> 写入 PC 并从该处取出指令前，流水线的 IF 和 ID 段已经各有两条不需要执行的指令，好在这两条指令的结果还没有写回，我们只需要清空对应的流水线寄存器，把它们变成两条空指令即可。</p>
+<div class="admonition note">
+<p class="admonition-title">实验任务：支持三级流水线的控制冒险</p>
+<p>我们用一个控制单元来检测控制冒险并清空流水线，模块定义在 <code>src/main/scala/riscv/core/threestage/Control.scala</code>，为了避免此题过于简单，我们没有提供模块接口，请根据以上分析确定模块的输入输出，在 <code>// Lab3(Flush)</code> 处将代码补充完整，并在 <code>src/main/scala/riscv/core/threestage/CPU.scala</code> 的 <code>// Lab3(Flush)</code> 处补充相关连线，使其能够通过 <code>ThreeStageCPUTest</code> 测试。</p>
+</div>
+<h2 id="_4">五级流水线<a class="headerlink" href="#_4" title="Permanent link">🚁</a></h2>
+<p>在三级流水线中，执行阶段逻辑复杂，仍然可能导致较大的延迟。为了进一步缩短关键路径，我们可以扩展流水线级数，将执行阶段进一步分为 ALU 阶段、访存阶段以及写回阶段，如下图所示。</p>
+<p><a class="glightbox" href="images/five_stage_pipelined_CPU_structure.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="five_stage_pipelined_CPU_structure" src="images/five_stage_pipelined_CPU_structure.png" /></a></p>
+<p>把三级流水线进一步分割为五级流水线将带来更加复杂的<strong>数据冒险</strong>，下面我们将尝试使用阻塞的方式解决数据冒险，得到一个功能完整的五级流水线 CPU。接着我们可以使用旁路和将分支跳转提前到 ID 阶段进一步提升 CPU 效率，这两部分将作为拓展实验供同学们选做。注意，上面的 CPU 结构图是我们完成所有实验之后的结果，在完成“缩短分支延迟”实验之前，我们 CPU 的结构将与上图稍有不同。例如，我们紧接着讨论的五级流水线 CPU 在 EX 阶段判断程序是否发生跳转，而不是 ID 阶段。</p>
+<h3 id="_5">解决数据冒险：阻塞<a class="headerlink" href="#_5" title="Permanent link">🚁</a></h3>
+<p>当处于 ID 阶段的指令要读取的寄存器依赖于 EX 或 MEM 阶段的指令时，发生数据冒险。此时，我们可以保持 IF 和 ID 两个阶段状态不变，直到被依赖的指令执行完成，即 ID 段能够从寄存器组获得它所需要的数据，再继续执行。让我们考虑如下指令序列，并思考几个问题：</p>
+<div class="highlight"><pre><span></span><code>0000: add x1, x0, x0
+0004: sub x2, x0, x1
+0008: and x3, x1, x2
+000C: jalr x4, x1, 0
+0010: or x5, x3, x4
+0014: xor x6, x4, x5
+</code></pre></div>
+<p>假设没有阻塞，它们在流水线中的状态如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">时钟周期</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>IF</strong></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"><code>xor</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>ID</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"><code>xor</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>EX</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>or</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>MEM</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>WB</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>在第 2 个时钟周期，指令 <code>sub x2, x0, x1</code> 处于 ID 阶段，需要从寄存器组读出它的源操作数，但它的源操作数依赖于前一条指令，且前一条指令的结果还没有写回，需要阻塞；同理，在第 3 个时钟周期，指令 <code>and x3, x1, x2</code> 需要读取的源操作数依赖于前两条指令，也需要阻塞；但是这两条指令分别需要阻塞多少个时钟周期？</li>
+<li>在第 4 个时钟周期，指令 <code>jalr x4, x1, 0</code> 处于 ID 阶段，它的源操作数依赖于处于 WB 阶段的指令的结果，此时需不需要阻塞？</li>
+<li>最后两条指令的源操作数同样依赖于前面的指令，这两条指令需不需要阻塞？</li>
+</ol>
+<p>请你先思考片刻，下面我将给出阻塞后的流水线状态并作分析：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">时钟周期</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>IF</strong></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"><code>xor</code></td>
+<td style="text-align: center;"><code>add</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>ID</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>EX</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>MEM</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>jalr</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>WB</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>add</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>nop</code></td>
+<td style="text-align: center;"><code>and</code></td>
+</tr>
+</tbody>
+</table>
+<p>位于 ID 阶段的指令和位于 WB 阶段的指令之间不会发生数据冒险，这是因为我们的寄存器组模拟实现了 Double Pumping 功能，即 WB 阶段在前半个时钟周期向寄存器组写入数据，ID 阶段在后半个时钟周期从寄存器组读出数据，请你打开 <code>src/main/scala/riscv/core/RegisterFile</code> 查看相关代码。因此，在上面的例子中，对 <code>sub</code> 和 <code>and</code> 指令的阻塞只需持续到它们依赖的指令进入 WB 阶段即可，而 <code>jalr</code> 指令无需阻塞。值得注意的是，我们在阻塞 PC 和 IF2ID 寄存器以保持 IF 和 ID 阶段不变的同时，需要清空 ID2EX 寄存器以在 EX 阶段插入空指令（“气泡”），否则 ID 阶段的指令还是会进入 EX 阶段，这样就不是“阻塞”，而变成“重复”了。另外，<code>jalr</code> 是跳转指令，虽然它后面两条指令依赖于它写入的寄存器，但是它们本就不应该紧接着被执行，而是应该被清空，所以在第 10 个时钟周期应该清空 IF2ID 和 ID2EX 寄存器，而不是阻塞。（上表中加粗的 <code>nop</code> 表示因清空信号而插入的空指令，未加粗的 <code>nop</code> 表示从上一个流水段进入下一个流水段的空指令。）</p>
+<p>特别提示：除了以上讨论的情况之外，寄存器 <code>x0</code> 在 risc-v 中具有特殊作用，以它为目标寄存器的指令的结果将被丢弃、以它为输入寄存器的指令也不会在相应输入寄存器结果上产生依赖。
+也就是说，目标或输入寄存器为 <code>x0</code> 时，该寄存器的结果无需阻塞。借用这一特点，我们对判断依赖和产生阻塞时约定：一条指令至多涉及两个输入寄存器 <code>rs1</code> 和 <code>rs2</code> ，以及一个目标寄存器 <code>rd</code> 。若某一格式的指令不包含这些寄存器的某一个时，如 I-type 指令不含 <code>rs2</code>，由 Decoder 输出相应寄存器地址为 <code>0</code>，即 <code>x0</code> 。该约定不会影响指令的正确执行，其由 <code>ALUOpSource</code> 选择正确的输入，同时也不会使流水线控制错误产生阻塞。</p>
+<div class="admonition note">
+<p class="admonition-title">实验任务：用阻塞解决数据冒险</p>
+<p>我们在 <code>src/main/scala/riscv/core/fivestage_stall/InstructionDecode.scala</code> 中留下了相应接口，请根据上述约定使 ID 输出合适的寄存器地址，以供后续冒险分析。完成后应能通过 <code>DecoderStallTest</code> 测试。</p>
+<p>我们用一个控制单元来检测并解决控制冒险和数据冒险，模块接口已经定义在 <code>src/main/scala/riscv/core/fivestage_stall/Control.scala</code>，请根据以上分析，修改 <code>// Lab3(ThreeStage)</code> 处的代码，使其能够通过 <code>FiveStageCPUStallTest</code> 测试。</p>
+</div>
+<h3 id="_6">拓展：使用旁路减少阻塞<a class="headerlink" href="#_6" title="Permanent link">🚁</a></h3>
+<p>至此，我们已经解决完所有竞争冒险，做出一个功能基本完整的五级流水线 CPU 了！但是，对同一个寄存器的连续操作在程序中是非常常见的，如果只使用阻塞来解决数据冒险，将产生大量“气泡”，降低执行效率。实际上，我们可以直接从流水线寄存器中直接获得指令的执行结果，并不需要阻塞直到前面的指令把结果写入寄存器组后再从寄存器组读取，即在 EX 段和 EX2MEM、MEM2WB 这两组流水线寄存器之间建立“旁路”，让 EX 段可以直接获取前面指令的执行结果。我们考虑如下指令序列：</p>
+<div class="highlight"><pre><span></span><code>0000: addi x1, x0, 1
+0004: sub x2, x0, x1
+0008: and x2, x1, x2
+000C: lw x2, 4(x2)
+0010: or x3, x1, x2
+</code></pre></div>
+<p>下表是建立了旁路后的流水线状态，我们增加了 EX2MEM 和 MEM2WB 两行用来表示暂存在流水线寄存器中的执行结果。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">时钟周期</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>IF</strong></td>
+<td style="text-align: center;"><code>addi</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>lw</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>ID</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>lw</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>EX</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>lw</code></td>
+<td style="text-align: center;"><code>or</code></td>
+<td style="text-align: center;"><code>or</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">EX2MEM</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi: x1</code></td>
+<td style="text-align: center;"><code>sub: x2</code></td>
+<td style="text-align: center;"><code>and: x2</code></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>MEM</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>lw</code></td>
+<td style="text-align: center;"><strong><code>nop</code></strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">MEM2WB</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi: x1</code></td>
+<td style="text-align: center;"><code>sub: x2</code></td>
+<td style="text-align: center;"><code>and: x2</code></td>
+<td style="text-align: center;"><code>lw: x2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>WB</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><code>addi</code></td>
+<td style="text-align: center;"><code>sub</code></td>
+<td style="text-align: center;"><code>and</code></td>
+<td style="text-align: center;"><code>lw</code></td>
+</tr>
+</tbody>
+</table>
+<p>虽然第二条指令 <code>sub x2, x0, x1</code> 依赖于前一条指令的执行结果，但是在第 3 个时钟周期，位于 EX 段的 <code>sub</code> 指令可以直接从 EX2MEM 寄存器中获取第一条指令执行后 <code>x1</code> 寄存器的值作为它的源操作数而无需阻塞；同样地，第三条指令依赖于前两条指令，在第 4 个时钟周期，位于 EX 段的 <code>and</code> 指令可以从 EX2MEM 和 MEM2WB 中获取它的源操作数。值得注意的是，在第 5 个时钟周期，EX2MEM 和 MEM2WB 中都存有 <code>x2</code> 的值，此时我们应该取“最新”的那个，也就是位于 EX2MEM 中的值。在第 6 个时钟周期，情况有些不同，因为第四条指令是 load 指令，它需要等到 MEM 阶段结束才能得到结果，因此处于 EX 段的 <code>or</code> 指令无法从 EX2MEM 中获取它的源操作数，必须阻塞一个时钟周期后从 MEM2WB 中获取。</p>
+<div class="admonition note">
+<p class="admonition-title">实验任务：用旁路减少阻塞</p>
+<p><code>InstructionDecode</code>中的实现与五级阻塞流水线CPU基本一致，你可以复制前面填好的内容。</p>
+<p>我们用一个控制单元来处理流水线的阻塞和清空，模块接口已经定义在 <code>src/main/scala/riscv/core/fivestage_forward/Control.scala</code>；再用一个旁路单元来检测数据冒险并发出旁路控制信号，模块接口已经定义在 <code>src/main/scala/riscv/core/fivestage_forward/Forwarding.scala</code>；另外，还需要在执行单元（<code>src/main/scala/riscv/core/fivestage_forward/Execute.scala</code>）中根据旁路单元的控制信号使用对应的旁路数据。请你根据以上分析修改上述三个模块中 <code>// Lab3(Forward)</code> 处的代码，使其能够通过 <code>FiveStageCPUForward</code> 测试。</p>
+<p>提示：你可以复用上道题中 <code>Control</code> 模块的部分代码；如果对模块接口中某个信号的功能有疑惑，可参考上面的 CPU 结构图，或做出你认为合理的修改并简要记录在报告中。</p>
+</div>
+<h3 id="_7">拓展：缩短分支延迟<a class="headerlink" href="#_7" title="Permanent link">🚁</a></h3>
+<p>我们已经利用旁路将数据冒险带来的损失降低到至多一个时钟周期了，但你也许对与目前流水线的效率还是不太满意，因为每次跳转都需要浪费两个时钟周期。接下来，我们往 CPU 中加入少量硬件，将分支/跳转指令的执行从 EX 段提前到 ID 段，进而把程序跳转的损失减少到一个时钟周期。</p>
+<p>首先，我们需要把跳转的判断从 EX 段移到 ID 段；其次，跳转目标地址的计算是使用 EX 段的 ALU 进行的，因此我们需要给 ID 段增加一个加法器来计算目标地址；最后，我们需要添加额外的旁路逻辑，将前面指令的执行结果旁路到 ID 段给分支或跳转指令使用，如果所依赖的结果还没有产生，还需要进行阻塞。作为本实验的最后一题，我不再为你提供数据冒险的指令序列样例，请你自行考虑其他所有类型的指令与分支或跳转指令的搭配，找出其中的竞争冒险并进行解决。</p>
+<div class="admonition note">
+<p class="admonition-title">实验任务：缩短分支延迟</p>
+<p>我们已经为你定义好相关模块的接口并移除了 <code>Execute</code> 模块中分支和跳转的相关代码，请你修改 <code>src/main/scala/riscv/core/fivestage_final</code> 下的 <code>InstructionDecode.scala</code>、<code>Control.scala</code> 和  <code>Forwarding.scala</code> 中 <code>// Lab3(Final)</code> 处的代码，使其能够通过 <code>FiveStageCPUFinal</code> 测试。你可以复制上道题中相应代码并作修改。</p>
+</div>
+<h3 id="debug">提示：如何有效 debug<a class="headerlink" href="#debug" title="Permanent link">🚁</a></h3>
+<p>五级流水线 CPU 已经较为复杂，实现过程中的小错误都有可能导致结果出错。本小节为您提供如何有效 debug 的提示。</p>
+<p>debug 时应当从小和简单的内容开始，逐步排除再考虑更复杂的内容。基础的检查包括：检查是否有文件还没有填写实现代码（如ID的代码未从前一步复制过来）、检查是否有拼写错误，或错用名字相近的信号线 等。</p>
+<p>排除这些后，再考虑更复杂的可能性，其中重要的一步是 <strong>用最少的内容复现错误</strong>，这样可以排除更多的无关变量。在五级流水线三个小实验的 CPUTest 中，最简单的测试是 “store and load single byte” 测试，其代码在 <code>csrc/sb.S</code>，仅十几条汇编指令。如果您的 CPU 在不能通过该测试，您可以通过这些方法排查错误：</p>
+<h4 id="_8">打印<a class="headerlink" href="#_8" title="Permanent link">🚁</a></h4>
+<p>在一些关键部件处进行打印，如</p>
+<p><div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RegisterFile</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nc">Module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ......</span>
+<span class="w">    </span><span class="c1">// DEBUG</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="n">debug_clk_cnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">RegInit</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="nc">U</span><span class="p">(</span><span class="mi">32</span><span class="p">.</span><span class="nc">W</span><span class="p">))</span>
+<span class="w">    </span><span class="n">debug_clk_cnt</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">debug_clk_cnt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="nc">U</span>
+<span class="w">    </span><span class="n">when</span><span class="w"> </span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">write_enable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="n">cf</span><span class="s">&quot;[Reg] at clock ${debug_clk_cnt} write to register ${io.write_address}: 0x${io.write_data}%x\n\n&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+其在寄存器写使能有效时，打印所写入的值。
+其中 <code>printf</code> 为 Chisel3 提供的打印函数， <code>cf</code> 为字符串插值器，可以在字符串里直观地打印，详见 <a href="https://www.chisel-lang.org/docs/explanations/printing">Printing in Chisel</a>。</p>
+<p>该方法需要找到某个容易看出错误根源的部件，如寄存器、MEM 等。</p>
+<p>TODO：查看输出截图</p>
+<h4 id="_9">查看波形图<a class="headerlink" href="#_9" title="Permanent link">🚁</a></h4>
+<p>可以用 GTKWave 查看波形图，并进行分析。TODO：GTKWave 教程。</p>
+<h4 id="_10">充分利用提示<a class="headerlink" href="#_10" title="Permanent link">🚁</a></h4>
+<p>一般而言，本实验设计上不要求非常深入、复杂的 debug，因而会在部件的输入信号上予以提示，即不会引入多余的输入信号。您可以了解这些输入信号的含义，并查看其是否被您的代码利用上。</p>
+<p>实验没有提供 <code>Control</code> 或 <code>Forwarding</code> 的单元测试，这是因为它们逻辑并不复杂，提供单元测试相当于给出了答案。为找出错误，可以按照如下框架进行思考：首先，五级流水线中，当前指令处于 EX 时，至多依赖于前两条指令，前面第三条指令已经完成并退出流水线； 同时依赖于前两条指令时，两条指令的目标寄存器是否相同 。其次，被依赖的指令可能在 EX 阶段得到其结果，也可能在 MEM 阶段得到。综合这两个维度，您应考虑其组合下的所有情况：</p>
+<p><a class="glightbox" href="images/control_cases_table.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img _align="center" alt="考虑情况表" src="images/control_cases_table.png" width="80%" /></a></p>
+<p>上表适用于 Stall 和 Forwarding 两个小实验，对于缩短分支延迟，由于又在 ID 阶段引入了依赖，上表还需翻倍，分别对当前时钟周期下 ID 和 EX 阶段的指令进行讨论。</p>
+<h2 id="_11">烧板验证<a class="headerlink" href="#_11" title="Permanent link">🚁</a></h2>
+<p>如果你已经完成了所有基础实验，那么你的 CPU 应该能够运行简单的程序，你可以通过 <code>Top</code> 模块中传入 <code>CPU</code> 模块构造函数的参数来选择你要使用的 CPU 版本：如果你只完成了基础实验，请选择 <code>ImplementationType.FiveStageStall</code>；如果你完成了第一个拓展实验，请选择 <code>ImplementationType.FiveStageForward</code>；如果你完成了第二个拓展实验，请选择 <code>ImplementationType.FiveStageFinal</code>。</p>
+<hr />
+<h2 id="_12">实验报告<a class="headerlink" href="#_12" title="Permanent link">🚁</a></h2>
+<ol>
+<li>简述您已实现的最复杂 CPU 的关键思路，包括 <code>Contrl</code> 和 <code>Forwarding</code>（如果有）的控制逻辑。</li>
+<li>实验中没有特别讨论 CSR 指令的控制和数据冒险，请您简要分析 CSR 指令是否会产生上述冒险，并是否需要特别的处理措施。</li>
+<li>说明您在完成实验的过程中，遇到的实验指导不足或改进建议。</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2023 Tokisakix
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,1500 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Tokisakix">
+      
+      
+        <link rel="canonical" href="https://purplepower.github.io/2025-fall-yatcpu-repo/better-tut/getting-started/windows.html">
+      
+      
+        <link rel="prev" href="index.html">
+      
+      
+        <link rel="next" href="linux-wsl.html">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Windows 配置指南 - 2025-Yatcpu-Fall-Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#windows" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-header__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2025-Yatcpu-Fall-Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Windows 配置指南
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-nav__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    2025-Yatcpu-Fall-Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    前言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    最终验收
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    欢迎来到 YatCPU 教程仓库！
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验环境配置
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            实验环境配置
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    简介
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Windows 配置指南
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="windows.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows 配置指南
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 IDE
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="安装 IDE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intellij-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 Intellij IDEA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-visual-studio-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      选项2：安装 Visual Studio Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msys2-verilator" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 MSYS2 和 Verilator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vivado" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 Vivado
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="linux-wsl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/WSL 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="macos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    macOS 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../env.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    一键配置 docker 环境
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    基础工程知识与技能
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            基础工程知识与技能
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/envvar-and-cmd.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    环境变量、Shell 与 常用指令
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/scala-and-chisel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scala 和 Chisel 编程语言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/chisel-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    快速测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/simulation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    波形仿真
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/compliance-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 RISC-V 合规性测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/coremark-benchmark.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 CoreMark 性能基准测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/program-device.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    烧板验证
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/hardware-debug.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    硬件调试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/compile-and-link.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    编译与链接
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practice/cmake.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cmake
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../board.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    如何一键烧板
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    理论知识基础
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            理论知识基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/cpu-arch.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    处理器架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/interrupt-and-exception.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    中断和异常
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            实验
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab1/lab1-single-cycle-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验一 单周期CPU
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab2/lab2-interrupt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验二 中断
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab3/lab3-pipelined-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验三 流水线 CPU
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab4/lab4-bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验四 总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/challenge1/challenge1-running-os.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    挑战实验一 运行操作系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    快速参考资料
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            快速参考资料
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集格式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/ide-tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IDEA 和 VSCode 使用技巧
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    参考资料
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../acknowledgement.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    致谢
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 IDE
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="安装 IDE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intellij-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 Intellij IDEA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-visual-studio-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      选项2：安装 Visual Studio Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msys2-verilator" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 MSYS2 和 Verilator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vivado" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装 Vivado
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="windows">Windows 配置指南<a class="headerlink" href="#windows" title="Permanent link">🚁</a></h1>
+<p>By: <a href="https://github.com/wu-kan"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> wu-kan</a>、<a href="https://github.com/howardlau1999"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> howardlau1999</a></p>
+<div class="admonition tips">
+<p class="admonition-title">善于搜索问题及提问</p>
+<p>TODO</p>
+</div>
+<h2 id="ide">安装 IDE<a class="headerlink" href="#ide" title="Permanent link">🚁</a></h2>
+<p>本实验可以使用 Jetbrains 的 IDEA 或 Microsoft 的 vscode 作为开发环境，您可从中<strong>二选一</strong>。
+您将在这些IDE上完成代码并进行测试。</p>
+<ul>
+<li>IDEA 更容易上手，可以自动下载所需库，界面功能更清晰，但消耗内存较多 。</li>
+<li>vscode 有一定的上手难度，但熟悉后可以适用于各种编程语言和工程场景。</li>
+</ul>
+<h3 id="intellij-idea">安装 Intellij IDEA<a class="headerlink" href="#intellij-idea" title="Permanent link">🚁</a></h3>
+<p>您可通过先安装 <a href="https://www.jetbrains.com/toolbox-app/">Jetbrains Toolbox</a> 再从中下载 IDEA，也可在 <a href="https://www.jetbrains.com/idea/download/?section=windows">Intellij IDEA</a> 处直接下载免费的 Community 版本(其他版本需收费且功能用不上)。</p>
+<p>安装完成后打开，您应能看到欢迎界面，此时点击右上角的 Clone Repository 以克隆实验代码仓库，地址为 https://github.com/Tokisakix/2023-fall-yatcpu-repo，并选择项目下载的文件夹，点击 clone 开始下载。
+若由于网络问题克隆失败，可以重新尝试该步骤，或者直接去 GitHub 网页下载压缩包并解压。
+下文均假设项目克隆至文件夹 <code>2023-fall-yatcpu-repo</code> 。</p>
+<p><a class="glightbox" href="images/idea-1-clone-prj.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-1-clone-prj.png" /></a></p>
+<p>稍等片刻后，项目将被打开，此时会提示是否信任该仓库，选择 Trust Project。您可以在左侧文件浏览器一览整个仓库的结构，包括各个实验的项目文件夹 <code>labx</code> 。目前我们是将 <code>2023-fall-yatcpu-repo</code> 文件夹作为根目录（root），当进行后续实验时，需要以对应实验的 <code>labx</code> 作为根目录。如下图，在左上角 File - Close Project 关闭当前项目，并重新打开 <code>2023-fall-yatcpu-repo</code> 下面的 <code>lab1</code> 。</p>
+<p><a class="glightbox" href="images/idea-2-close-and-reopen-lab-as-root.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-2-close-and-reopen-lab-as-root.png" /></a></p>
+<p>随后，您需要安装 Scala 插件。 <code>双击</code><span class="keys"><kbd class="key-shift">Shift</kbd></span> 调出快速命令窗口，输入 plugins 并打开插件管理窗口；或通过 <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-shift">Shift</kbd><span>+</span><kbd class="key-s">S</kbd></span> ，或 File - Settings 打开，随后在 marketplace 搜索 scala 插件并安装，如需中文还可搜索 Chinese Language Pack 以使界面汉化。如下图所示。</p>
+<p><a class="glightbox" href="images/idea-3-plugin-install.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-3-plugin-install.png" /></a></p>
+<p>启用 Scala 插件后，右下角可能弹出窗口提示 load/import sbt build，选择 import 加载项目。
+随后需安装 JDK 及 Scala 库。使用 <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-shift">Shift</kbd><span>+</span><kbd class="key-alt">Alt</kbd><span>+</span><kbd class="key-s">S</kbd></span> 或 <code>双击</code> <span class="keys"><kbd class="key-shift">Shift</kbd></span> 并打开 Project Structure 窗口，首先在 Project 侧栏中配置 SDK 中的 JDK ，若您电脑已安装有 JDK 17 或 19，直接选择即可。若无，则下载 Java 17 或 19 的 Eclipse Temurin 版本。</p>
+<p><a class="glightbox" href="images/idea-4-download-jdk.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-4-download-jdk.png" /></a></p>
+<p>随后侧栏中选择 Global Libraries，点击➕添加 Scala SDK ，注意选择 2.13.10 版本，等待下载完成。若遇到网络问题，可以重新操作下载。下载完成后，添加其为使用 Scala SDK。如下面两图所示。</p>
+<p><a class="glightbox" href="images/idea-5-download-scala.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-5-download-scala.png" /></a></p>
+<p><a class="glightbox" href="images/idea-6-scala-add.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-6-scala-add.png" /></a></p>
+<p>完成安装后， <code>lab1</code> 项目应该能被正确加载，此时 <code>双击</code> <span class="keys"><kbd class="key-shift">Shift</kbd></span> 打开 <code>RegisterFileTest.scala</code> ，应该能看见测试左侧的绿色箭头，点击运行如果能提示测试通过，则说明环境配置正确。</p>
+<p><a class="glightbox" href="images/idea-test-passed.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/idea-test-passed.png" width="80%" /></a></p>
+<h3 id="2-visual-studio-code">选项2：安装 Visual Studio Code<a class="headerlink" href="#2-visual-studio-code" title="Permanent link">🚁</a></h3>
+<p>使用 vscode 需要手动安装 JDK、Scala，并设置相应系统环境变量，仅建议有相应经验或想要探索的同学使用。若希望快速上手项目开始写码，安装 IDEA 后即可进行后面的配置。</p>
+<details class="note">
+<summary>安装 vscode</summary>
+<div class="admonition warning">
+<p class="admonition-title">😦别搞混 vscode 和 vs</p>
+<p>虽然都是微软公司的软件，但 Visial Studio（VS）专为 Windows 上的 C++、C# 开发设计，而 Visual Studio Code（vscode）则更具普适性，适合各种系统的各种编程语言的开发。</p>
+</div>
+<p>在 <a href="https://code.visualstudio.com/download"></a> 处下载适合的版本，一般为 Windows x64 版本。vscode 运行 scala 依赖于 Metals 这款插件，配置教程可看：<a href="https://geek-docs.com/scala/scala-questions/475_scala_how_to_run_an_existing_scala_project_using_vs_code_and_metals.html">极客教程</a> 和 <a href="https://scalameta.org/metals/docs/editors/vscode">Metals官方文档</a> 。</p>
+<p>参照 <a href="https://docs.scala-lang.org/getting-started/index.html#using-the-scala-installer-recommended-way">Using the Scala Installer (recommended way)</a> ，在页面处下载 Coursier 工具，并跟随指引安装。Coursier 会自动安装 JDK 和 sbt 。</p>
+<p>完成这两项后，打开 vscode，打开 <code>lab1</code> 作为根目录。注意 vscode 右下角提示 "Import project" 时，点击导入项目，即可加载。</p>
+</details>
+<hr />
+<h2 id="msys2-verilator">安装 MSYS2 和 Verilator<a class="headerlink" href="#msys2-verilator" title="Permanent link">🚁</a></h2>
+<p><a href="https://github.com/verilator/verilator">Verilator</a> 是一款 Verilog 模拟器，在本实验中用于测试所编写的CPU及硬件，其模拟效率优于 Chisel3 自带模拟器。
+chiseltest 测试会主动在 <code>PATH</code> 环境变量中寻找 Verilator 并使用。</p>
+<p>首先 <a href="https://www.msys2.org/">下载 MSYS2</a>，执行安装并将安装目录下的两个文件夹添加至系统 <code>PATH</code> 变量，例如您将其安装至 <code>D:\msys64</code>，则应添加：</p>
+<ul>
+<li><code>D:\msys64\usr\bin</code></li>
+<li><code>D:\msys64\mingw64\bin</code></li>
+</ul>
+<p>在开始菜单搜索“环境变量”，打开“编辑系统环境变量”，在弹出的对话框点击“环境变量”，双击用户变量中的“Path”，点击“新建”，在最后添加上述路径。
+添加系统变量 <code>PATH</code> 的教程见 <a href="../practice/envvar-and-cmd.html#path-环境变量及其修改">path-环境变量及其修改</a> 。</p>
+<p>随后，使用 <span class="keys"><kbd class="key-windows">Win</kbd><span>+</span><kbd class="key-r">R</kbd></span> 运行 <code>cmd</code> 打开命令行窗口，输入 </p>
+<div class="highlight"><pre><span></span><code>D:\msys64\usr\bin\bash
+</code></pre></div>
+<p>，进入到 MSYS2 提供的 bash 窗口（注意，若您电脑安装有 WSL，直接输入 <code>bash</code> 可能进入的不是 MSYS2 的 bash）。随后，依次输入下列指令，并观察输出是否有 error, failed 等报错：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 安装所需包，若网络不好安装失败，则重新执行</span>
+pacman<span class="w"> </span>-Sy<span class="w"> </span>--noconfirm<span class="w"> </span>--needed<span class="w"> </span>base-devel<span class="w"> </span>mingw-w64-x86_64-toolchain<span class="w"> </span>git<span class="w"> </span>flex<span class="w"> </span>mingw-w64-x86_64-cmake<span class="w"> </span>mingw-w64-x86_64-autotools<span class="w"> </span>mingw-w64-x86_64-python3<span class="w"> </span>
+
+<span class="c1"># 临时设置 PATH 包含 core perl</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/mingw64/bin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:<span class="nv">$PATH</span><span class="w">   </span>
+
+<span class="c1"># 切换到 ~ 用户目录，并查看当前路径</span>
+<span class="nb">cd</span><span class="w"> </span>/home/<span class="nv">$USER</span><span class="p">;</span><span class="w"> </span><span class="nb">pwd</span>
+
+<span class="c1"># 克隆到 ~/verilator，如果您已克隆或复制了包，请略过</span>
+git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-b<span class="w"> </span>v4.226<span class="w"> </span>https://github.com/verilator/verilator<span class="p">;</span><span class="w">   </span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Windows 和 Unix 路径分隔符的区别</p>
+<p>MSYS 是在 Windows 上提供了一个兼容 Linux 的环境，在 Linux 里输入的路径应使用 <code>/</code> 作为目录分隔符， <code>\</code> 会被识别为反义字符（如<code>\n</code>换行）。而 Windows 上两种斜杠都可以作为分隔符。</p>
+</div>
+<details class="tips">
+<summary>克隆 Verilator 失败时</summary>
+<p>若 <code>git clone</code> 时网络不佳导致失败，可以重试或在 <a href="https://github.com/verilator/verilator/archive/refs/tags/v4.226.zip">Verilator 4.226 Release</a> 下载压缩包，并解压到相应目录：</p>
+<ul>
+<li>若 <code>pwd</code> 显示 <code>/c/Users/&lt;用户名&gt;</code> ，则对应 Windows C盘里 <code>Users/&lt;用户名&gt;/verilator</code> 文件夹</li>
+<li>若 <code>pwd</code> 显示 <code>/home/&lt;用户名&gt;</code>，则对应 MSYS 安装目录里的文件夹，如 <code>D:\msys64\home\&lt;用户名&gt;\verilator</code></li>
+</ul>
+</details>
+<p>之后，按下面的步骤构建并安装 Verilator：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 进入verilator文件夹</span>
+<span class="nb">cd</span><span class="w"> </span>~/verilator<span class="w">  </span>
+
+<span class="c1"># 设置 shell 编码，避免安装错误</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LC_ALL</span><span class="o">=</span>en_US.UTF-8<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8<span class="w">  </span>
+
+<span class="c1"># 如果成功不会有任何输出</span>
+autoconf<span class="w">  </span>
+
+<span class="c1"># verilator 自动设置，需要等待一段时间</span>
+./configure<span class="w"> </span>--prefix<span class="o">=</span>/mingw64<span class="w">  </span>
+
+
+<span class="c1"># 进行编译安装</span>
+cp<span class="w"> </span>/usr/include/FlexLexer.h<span class="w"> </span>/mingw64/include<span class="p">;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span><span class="p">;</span><span class="w"> </span>make<span class="w"> </span>install<span class="w">    </span>
+</code></pre></div>
+<p>完成上述步骤后，在 <code>bash</code> 输入下述指令，若成功输出版本号 4.226 则为成功。</p>
+<div class="highlight"><pre><span></span><code>verilator_bin<span class="w"> </span>--version
+<span class="c1"># 若成功会输出 Verilator 4.226 2022-08-31 rev v4.226</span>
+</code></pre></div>
+<hr />
+<h2 id="vivado">安装 Vivado<a class="headerlink" href="#vivado" title="Permanent link">🚁</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">预留足够的硬盘空间</p>
+<p>Vivado 仅在最终烧板时使用，编写代码及测试不要求安装。您可完成实验后，准备烧板前再进行安装。若您电脑存储空间不足，也可询问助教使用无需 Vivado 和烧板的备用考核方式。</p>
+<p>Vivado 2020.1 安装包体积较大，约为 36 GB，且后续安装也要使用大量硬盘空间。请预留好<strong>至少 100 GB 的硬盘空间</strong>。</p>
+</div>
+<p>中山大学组成原理实验课使用的 Zynq 实验板型号为 Zybo-10， 需要 Xilinx 的工具进行综合实现以及烧板。这里安装 <code>Vitis</code> 即可，不需要许可或激活许可密钥。
+经过测试且可用的 Vivado 版本为 2020.1 和 2022.1。更新或更旧的版本理论上可以使用，但没有经过测试。</p>
+<p>安装包体积较大，<strong>推荐使用带断点续传功能的下载工具如迅雷、Free Download Manager 下载</strong>。</p>
+<p>如果你在<strong>中山大学校园网内</strong>下载 Vivado 2020.1 安装包，可以使用我们提供的镜像：<a href="https://mirrors.matrix.moe/software/Xilinx/Xilinx_Unified_2020.1_0602_1208.tar.gz">点此下载</a>。</p>
+<p>也可以在 Xilinx 的官网下载（可能需要注册AMD账户）：<a href="https://china.xilinx.com/support/download/index.html/content/xilinx/zh/downloadNav/vivado-design-tools/archive.html">点击跳转</a>。</p>
+<p><a class="glightbox" href="images/vivado-install-1.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/vivado-install-1.png" /></a>
+<a class="glightbox" href="images/vivado-install-2.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/vivado-install-2.png" /></a>
+<a class="glightbox" href="images/vivado-install-3.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/vivado-install-3.png" /></a>
+<a class="glightbox" href="images/vivado-install-4.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/vivado-install-4.png" /></a>
+<a class="glightbox" href="images/vivado-install-5.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="" src="images/vivado-install-5.png" /></a></p>
+<p>之后耐心等待安装完成即可，这可能耗时数分钟。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2023 Tokisakix
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "navigation.expand"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

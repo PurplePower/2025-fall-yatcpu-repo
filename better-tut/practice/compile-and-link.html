@@ -1,0 +1,1594 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Tokisakix">
+      
+      
+        <link rel="canonical" href="https://purplepower.github.io/2025-fall-yatcpu-repo/better-tut/practice/compile-and-link.html">
+      
+      
+        <link rel="prev" href="hardware-debug.html">
+      
+      
+        <link rel="next" href="cmake.html">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>编译与链接 - 2025-Yatcpu-Fall-Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-header__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2025-Yatcpu-Fall-Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              编译与链接
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-nav__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    2025-Yatcpu-Fall-Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    前言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    最终验收
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    欢迎来到 YatCPU 教程仓库！
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验环境配置
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            实验环境配置
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    简介
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/windows.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/linux-wsl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/WSL 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/macos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    macOS 配置指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../env.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    一键配置 docker 环境
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    基础工程知识与技能
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            基础工程知识与技能
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="envvar-and-cmd.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    环境变量、Shell 与 常用指令
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="scala-and-chisel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scala 和 Chisel 编程语言
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="chisel-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    快速测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="simulation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    波形仿真
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compliance-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 RISC-V 合规性测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coremark-benchmark.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置 CoreMark 性能基准测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="program-device.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    烧板验证
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hardware-debug.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    硬件调试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    编译与链接
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="compile-and-link.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    编译与链接
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      一个简单的例子
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      预处理
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      编译
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      汇编
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      链接
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义链接脚本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#elf" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELF 格式简介
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU 可执行文件的生成
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      课后练习
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cmake.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cmake
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../board.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    如何一键烧板
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    理论知识基础
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            理论知识基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/cpu-arch.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    处理器架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/interrupt-and-exception.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    中断和异常
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    实验
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            实验
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab1/lab1-single-cycle-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验一 单周期CPU
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab2/lab2-interrupt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验二 中断
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab3/lab3-pipelined-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验三 流水线 CPU
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab4/lab4-bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实验四 总线
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/challenge1/challenge1-running-os.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    挑战实验一 运行操作系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    快速参考资料
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            快速参考资料
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RISC-V 指令集格式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/ide-tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IDEA 和 VSCode 使用技巧
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    参考资料
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../acknowledgement.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    致谢
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      一个简单的例子
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      预处理
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      编译
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      汇编
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      链接
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义链接脚本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#elf" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELF 格式简介
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU 可执行文件的生成
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      课后练习
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="_1">编译与链接<a class="headerlink" href="#_1" title="Permanent link">🚁</a></h1>
+<p>By: <a href="https://github.com/howardlau1999"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> howardlau1999</a>、<a href="https://github.com/NelsonCheung-cn"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> NelsonCheung</a></p>
+<p>在之前的 C/C++ 课程中你已经学会了程序的入口是  <code>main()</code>  函数。但是 CPU 只认识地址，又如何知道一个程序从何处开始执行？我们又要如何编译一个我们自己写的 CPU 可以运行的程序并让它真正地跑起来？下面就将带你揭开  <code>main()</code>  函数幕后的秘密，并带你学习如何编译和链接，让我们写的 C 程序可以在我们自己写的 CPU 上运行起来。</p>
+<h2 id="_2">一个简单的例子<a class="headerlink" href="#_2" title="Permanent link">🚁</a></h2>
+<p>为了便于阐述 C 程序的编译和链接的过程，我们首先准备一个简单的例子。</p>
+<p>我们先编写一个  <code>print.h</code>  的头文件，声明一个名为  <code>print_something()</code>  的函数。</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#ifndef PRINT_H</span>
+<span class="cp">#define PRINT_H</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">print_something</span><span class="p">();</span>
+
+<span class="cp">#endif</span>
+</code></pre></div>
+<p>然后，我们在 <code>print.c</code> 中实现这个函数。</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;print.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">print_something</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello YatCPU!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>最后，我们在 <code>main.c</code> 中使用这个函数打印并输出。</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;print.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">print_something</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>接下来，我们要开始编译运行，编译命令如下。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.out<span class="w"> </span>main.c
+</code></pre></div>
+<p>这条命令是编译 <code>main.c</code> ，然后生成可执行文件 <code>main.out</code> 。其中， <code>-o</code> 指定了生成的可执行文件的名称。但是，直接运行上述命令会出现以下错误。</p>
+<div class="highlight"><pre><span></span><code>main.c:(.text+0xa): undefined reference to `print_something&#39;
+</code></pre></div>
+<p>这是因为 <code>main.c</code> 不知道函数 <code>print_something</code> 的实现。而函数 <code>print_something</code> 的实现在文件 <code>print.c</code> 中，我们需要在编译命令中加上它，如下所示。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.out<span class="w"> </span>main.c<span class="w"> </span>print.c
+</code></pre></div>
+<p>上面的命令也可以这样写。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>main.c<span class="w"> </span>print.c<span class="w"> </span>-o<span class="w"> </span>main.out<span class="w"> </span>
+</code></pre></div>
+<p>在本例中，我们使用了 gcc 直接将代码 <code>main.c print.c print.h</code> 编译成可执行文件 <code>main.out</code> 的。实际上，C/C++ 编译器在编译代码时包含如下几个步骤。</p>
+<ul>
+<li><strong>预处理</strong>。处理宏定义，如 <code>#include</code> ,  <code>#define</code> ,  <code>#ifndef</code> 等，生成<strong>预处理文件</strong>，一般以 <code>.i</code> 为后缀。</li>
+<li><strong>编译</strong>。将预处理文件转换成<strong>汇编代码文件</strong>，一般以 <code>.S</code> 为后缀。</li>
+<li><strong>汇编</strong>。将汇编代码文件文件转换成<strong>可重定位文件</strong>，一般以 <code>.o</code> 为后缀。</li>
+<li><strong>链接</strong>。将多个可重定位文件链接生成<strong>可执行文件</strong>，一般以 <code>.o</code> 为后缀。</li>
+</ul>
+<p>下面我们分别来学习这四个过程。</p>
+<h2 id="_3">预处理<a class="headerlink" href="#_3" title="Permanent link">🚁</a></h2>
+<p>预处理又被称为预编译，主要处理宏定义，如 <code>#include</code> ,  <code>#define</code> ,  <code>#ifndef</code> 等，并删除注释行，还会添加行号和文件名标识。在编译时，编译器会使用上述信息产生调试、警告和编译错误时需要用到的行号信息。</p>
+<p>经过预编译生成的 <code>.i</code> 文件不包含任何宏定义，因为所有的宏已经被展开，并且包含的文件也已经被插入到 <code>.i</code> 文件中。在上面的例子中，我们对 <code>main.c</code> 进行预处理，生成 <code>main.i</code> 预处理文件，命令如下。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.i<span class="w"> </span>-E<span class="w"> </span>main.c
+</code></pre></div>
+<p>生成的内容如下。</p>
+<div class="highlight"><pre><span></span><code># 1 &quot;main.c&quot;
+# 1 &quot;&lt;built-in&gt;&quot;
+# 1 &quot;&lt;command-line&gt;&quot;
+# 1 &quot;/usr/include/stdc-predef.h&quot; 1 3 4
+# 1 &quot;&lt;command-line&gt;&quot; 2
+# 1 &quot;main.c&quot;
+# 1 &quot;print.h&quot; 1
+
+
+
+void print_something();
+# 2 &quot;main.c&quot; 2
+
+int main() {
+    print_something();
+}
+</code></pre></div>
+<h2 id="_4">编译<a class="headerlink" href="#_4" title="Permanent link">🚁</a></h2>
+<p>编译则是将预处理文件转换成汇编代码文件（<code>.S</code> 文件）的过程，具体的步骤主要有：词法分析 -&gt; 语法分析 -&gt; 语义分析及相关的优化 -&gt; 中间代码生成 -&gt; 目标代码生成。</p>
+<p>我们生成 <code>main.c</code> 代码对应的汇编代码。命令如下，其中， <code>-masm=intel</code> 是为了生成 Intel 风格的汇编代码，否则默认 AT&amp;T 风格的代码。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>hello.s<span class="w"> </span>-S<span class="w"> </span>hello.c<span class="w"> </span>-masm<span class="o">=</span>intel
+</code></pre></div>
+<p>生成的 <code>hello.s</code> 内容如下。</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="na">.file</span><span class="w">   </span><span class="s">&quot;main.c&quot;</span>
+<span class="w">    </span><span class="na">.intel_syntax</span><span class="w"> </span><span class="no">noprefix</span>
+<span class="w">    </span><span class="na">.text</span>
+<span class="w">    </span><span class="na">.globl</span><span class="w">  </span><span class="no">main</span>
+<span class="w">    </span><span class="na">.type</span><span class="w">   </span><span class="no">main</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
+<span class="nl">main:</span>
+<span class="nl">.LFB0:</span>
+<span class="w">    </span><span class="na">.cfi_startproc</span>
+<span class="w">    </span><span class="nf">push</span><span class="w">    </span><span class="no">rbp</span>
+<span class="w">    </span><span class="na">.cfi_def_cfa_offset</span><span class="w"> </span><span class="mi">16</span>
+<span class="w">    </span><span class="na">.cfi_offset</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w"> </span><span class="no">rbp</span><span class="p">,</span><span class="w"> </span><span class="no">rsp</span>
+<span class="w">    </span><span class="na">.cfi_def_cfa_register</span><span class="w"> </span><span class="mi">6</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w"> </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="nf">call</span><span class="w">    </span><span class="no">print_something</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w"> </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="nf">pop</span><span class="w"> </span><span class="no">rbp</span>
+<span class="w">    </span><span class="na">.cfi_def_cfa</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">    </span><span class="nf">ret</span>
+<span class="w">    </span><span class="na">.cfi_endproc</span>
+<span class="nl">.LFE0:</span>
+<span class="w">    </span><span class="na">.size</span><span class="w">   </span><span class="no">main</span><span class="p">,</span><span class="w"> </span><span class="no">.-main</span>
+<span class="w">    </span><span class="na">.ident</span><span class="w">  </span><span class="s">&quot;GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609&quot;</span>
+<span class="w">    </span><span class="na">.section</span><span class="w">    </span><span class="no">.note.GNU-stack</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="na">@progbits</span>
+</code></pre></div>
+<h2 id="_5">汇编<a class="headerlink" href="#_5" title="Permanent link">🚁</a></h2>
+<p>汇编阶段是将汇编代码编译成可重定位文件（Relocatable file）。汇编器（as）将 <code>main.S</code> 翻译成机器语言指令，把这些指令和其他附加的信息打包成可重定位文件（ <code>.o</code> 文件）。可重定位文件是一个二进制文件，它的字节编码是机器语言指令而不是字符。如果我们在文本编译器中打开可重定位文件，看到的将是一堆乱码，生成命令如下。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.o<span class="w"> </span>-c<span class="w"> </span>main.c
+</code></pre></div>
+<p>在 Linux 下，可重定位文件的格式是ELF文件格式，其包含了ELF头（ELF header）、程序头表（Program header table）、节（Section）和节头表（Section header table）等信息。</p>
+<h2 id="_6">链接<a class="headerlink" href="#_6" title="Permanent link">🚁</a></h2>
+<p>链接阶段就是把若干个可重定位文件( <code>.o</code> 文件)整合成一个可执行文件（Executable file）。上面已经提到，正是因为函数的实现可能分布在多个文件中，所以在链接阶段，我们需要提供函数实现的位置，然后最终生成可执行文件。链接阶段是通过链接器(ld)完成的，链接器将输入的可重定位文件加工后合成一个可执行文件。这些目标文件中往往有相互的数据、函数引用。例如，我们在 <code>main.c</code> 的main函数中引用了 <code>print.c</code> 中 <code>print_something</code> 函数的实现。</p>
+<p>我们可以使用gcc来进行链接，命令如下。</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.o<span class="w"> </span>-c<span class="w"> </span>main.c
+gcc<span class="w"> </span>-o<span class="w"> </span>print.o<span class="w"> </span>-c<span class="w"> </span>print.c
+gcc<span class="w"> </span>-o<span class="w"> </span>main.out<span class="w"> </span>main.o<span class="w"> </span>print.o
+</code></pre></div>
+<p>链接完成后，我们使用命令 <code>./main.out</code> 即可执行。事实上，上面三条语句等价于</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-o<span class="w"> </span>main.out<span class="w"> </span>main.c<span class="w"> </span>print.c
+</code></pre></div>
+<p>生成的两个 <code>main.out</code> 也是完全一样的。</p>
+<p>同学们可能会感到奇怪为什么预处理、编译、汇编和链接都是使用gcc，而不是使用as、ld等，这是因为gcc全名叫GNU Compiler Collection，是一个编译工具的集合，我们可以简单理解为gcc内部会自动调用as、ld等。在本例中，我们只需简单使用gcc来完成上述过程即可。</p>
+<p>链接实际上可以分为静态链接和动态链接两种方式。上面呈现的链接方式是静态链接。在静态链接时，链接器将函数的实现代码从给出的可重定位文件或静态链接库中拷贝到最终的可执行程序中，形成一个文件。由于可执行程序可能链接了多个可重定位文件，而在每一个可重定位文件中，各个函数的地址又是独立的。为了将这些函数放到可执文件中，需要为其重新分配地址。因此，在静态链接时，链接器会做两件事，一是符号解析，把可执行程序中用到的函数的声明和其在可重定位中的实现联系起来；二是重定位，把函数的起始地址和内存地址对应起来，然后修改所有对函数的引用。</p>
+<p>静态链接会把所有函数的实现都包含进最终的可执行文件中，但这会使得可执行文件的大小变得非常大。注意到可执行文件最终会被加载到内存中执行，有没有一种办法能够让可执行文件中的函数的实现不必包含进文件中，而是在被调用时才加载进内存？这样就能够大大减小可执行文件的大小。这种链接方式被称为动态链接。在编译的链接阶段，动态链接库只提供符号表和其他少量信息用于保证所有符号引用都有定义，保证编译顺利通过。动态链接器（ld.so）在运行过程中根据记录的共享对象的符号定义来动态加载共享库，然后完成重定位。在此可执行文件被执行时，动态链接库的全部内容将被映射到运行时相应进程的虚地址空间。动态链接程序将根据可执行程序中记录的信息找到相应的函数代码。 </p>
+<p>两种链接方式各自都有优缺点。</p>
+<p>静态链接的缺点很明显，一是浪费空间，因为每个可执行程序中对所有需要的目标文件都要有一份副本，所以如果多个程序对同一个目标文件都有依赖，如多个程序中都调用了 <code>printf</code> 函数，则这多个程序中都含有 <code>printf.o</code> ，所以同一个目标文件都在内存存在多个副本；另一方面就是更新比较困难，因为每当库函数的代码修改了，这个时候就需要重新进行编译链接形成可执行程序。但是静态链接的优点就是，在可执行程序中已经具备了所有执行程序所需要的任何东西，在执行的时候运行速度快。</p>
+<p>动态链接的优点显而易见，就是即使需要每个程序都依赖同一个库，但是该库不会像静态链接那样在内存中存在多份副本，而是这多个程序在执行时共享同一份副本；另一个优点是，更新也比较方便，更新时只需要替换原来的目标文件，而无需将所有的程序再重新链接一遍。当程序下一次运行时，新版本的目标文件会被自动加载到内存并且链接起来，程序就完成了升级的目标。但是动态链接也是有缺点的，因为把链接推迟到了程序运行时，所以每次执行程序都需要进行链接，所以性能会有一定损失。</p>
+<h2 id="_7">自定义链接脚本<a class="headerlink" href="#_7" title="Permanent link">🚁</a></h2>
+<p>上面我们都是使用的默认链接脚本来进行链接的，但是我们也可以自定义链接脚本来进行链接，这样可以更加灵活的控制链接的过程。我们可以通过 <code>-T</code> 选项来指定链接脚本，如下所示：</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>gcc<span class="w"> </span>-T<span class="w"> </span>myscript.ld<span class="w"> </span>hello.o<span class="w"> </span>-o<span class="w"> </span>hello
+</code></pre></div>
+<p>而链接脚本的内容大致如下：</p>
+<div class="highlight"><pre><span></span><code>OUTPUT_ARCH( &quot;riscv&quot; )
+ENTRY(_start)
+
+SECTIONS
+{
+  . = 0x00001000;
+  .text : { *(.text.init) *(.text.startup) *(.text) }
+  .data ALIGN(0x1000) : { *(.data*) *(.rodata*) *(.sdata*) }
+  . = 0x00100000;
+  .bss : { *(.bss) }
+  _end = .;
+}
+</code></pre></div>
+<p>链接脚本的第一行指定了输出的指令格式，也就是 RISC-V，第二行指定了程序的入口地址，也就是 <code>_start</code> 函数，第三行开始指定了程序的各个段的位置，其中 <code>.text</code> 段的起始地址为 <code>0x00001000</code> ，<code>.data</code> 段的起始地址在 <code>.text</code> 后面对齐 <code>0x1000</code> 的地址 ，<code>.bss</code> 段的起始地址为 <code>0x00100000</code>。最后一行指定了程序的结束地址，也就是 <code>_end</code> 变量的地址。</p>
+<h2 id="elf">ELF 格式简介<a class="headerlink" href="#elf" title="Permanent link">🚁</a></h2>
+<p>ELF（Executable and Linkable Format）是一种可执行文件格式，它是 Linux 系统中最常见的可执行文件格式。对于完成实验来说，ELF 的格式不需要了解具体的细节，只需要了解一些大概的结构即可。</p>
+<p>在 ELF 中存储了一些程序的元数据，比如程序的入口地址、程序的段信息、程序的符号信息等等。其中，段信息是最重要的，因为它存储了程序的代码和数据，而符号信息则是用来支持调试的。代码段和数据段是程序运行时必须的，而符号信息则是调试时需要的，所以在实验中我们只需要关注代码段和数据段即可。</p>
+<p>代码段通常命名为 <code>.text</code> ，数据段（通常存储字符串、常量等）通常命名为 <code>.data</code>。代码段在程序运行的时候，由操作系统加载到内存中，然后让 CPU 跳转到程序的入口地址执行。数据段在程序运行的时候，由操作系统加载到内存中，然后程序就可以访问这些数据了。</p>
+<p>由于我们的 CPU 还没有操作系统，因此，我们直接在 Chisel 代码中将 CPU 的入口地址（<code>Parameters.scala</code> 文件中的 <code>EntryAddress</code>）修改为链接时的入口地址，然后将代码段和数据段加载到内存中，就可以直接执行程序了。程序和数据段在 Chisel 3 的综合阶段被作为 ROM 的初始化数据一并烧入 FPGA 逻辑中，<code>InstructionROM</code> 模块负责解析节选后的 ELF 文件，并生成对应的 ROM 初始化文件。而在 CPU 启动时加载到内存的功能是通过一个专门的模块 <code>ROMLoader</code> 来完成的，它负责从 <code>InstructionROM</code> 中读取数据，并将数据写入到内存中。当 <code>ROMLoader</code> 完成了拷贝操作后，CPU 就可以正式地开始执行程序了。</p>
+<h2 id="cpu">CPU 可执行文件的生成<a class="headerlink" href="#cpu" title="Permanent link">🚁</a></h2>
+<p>我们只需要 ELF 格式中的代码段和数据段，其他的段都暂时不需要。在链接器脚本中，我们将代码段和数据段分配到相邻的地址，简化后续实现。而代码段开始于 0x1000 地址，前面的空间是预留给程序运行的栈。然后，我们需要使用 <code>objcopy</code> 工具，单独将文件中的代码段和数据段拷贝到一个文件中，在这个文件里，只有二进制的代码和数据。</p>
+<h2 id="_8">课后练习<a class="headerlink" href="#_8" title="Permanent link">🚁</a></h2>
+<ol>
+<li>使用 <code>gcc</code> 将 <code>main.c</code> ， <code>print.c</code> 编译成 <code>main.S</code> ， <code>print.S</code> ，然后使用 <code>as</code> 将 <code>main.S</code> ， <code>print.S</code> 编译成 <code>main.o</code> ， <code>print.o</code> ，最后使用 <code>ld</code> 将 <code>main.o</code> ， <code>print.o</code> 链接成一个可执行文件来执行。</li>
+<li>使用 <code>gcc</code> 将 <code>print.c</code> 编译成静态链接库，然后使用 <code>gcc</code> 将 <code>main.c</code> 编译成可执行文件并在编译参数中指定静态链接库的位置。</li>
+<li>使用 <code>gcc</code> 将 <code>print.c</code> 编译成动态链接库，然后使用 <code>gcc</code> 将 <code>main.c</code> 编译成可执行文件并在编译参数中指定动态链接库的位置。</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2023 Tokisakix
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "navigation.expand"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
