@@ -1,6 +1,6 @@
 # Scala 和 Chisel 编程语言
 
-Writen By: [Howard Lau], [Tiger9Tu], [PurplePower](https://github.com/PurplePower)
+Writen By: [Howard Lau](https://github.com/howardlau1999), [Tiger9Tu](), [PurplePower](https://github.com/PurplePower)
 
 > 工欲善其事，必先利其器。
 
