@@ -1,0 +1,77 @@
+site_name: 2023-Yatcpu-Fall-Docs
+site_author: Tokisakix
+copyright: Copyright © 2023 Tokisakix
+
+nav:
+- 前言: index.md
+
+
+- 最终验收: test.md
+- docs/better-tut/intro.md
+- 实验环境配置:
+  - docs/better-tut/getting-started/index.md
+  - docs/better-tut/getting-started/windows.md
+  - docs/better-tut/getting-started/linux-wsl.md
+  - docs/better-tut/getting-started/macos.md
+  # - docs/better-tut/getting-started/docker.md
+  - 一键配置 docker 环境: env.md
+
+- 基础工程知识与技能:
+  - docs/better-tut/practice/envvar-and-cmd.md
+  - docs/better-tut/practice/scala-and-chisel.md
+  - docs/better-tut/practice/chisel-test.md
+  - docs/better-tut/practice/simulation.md
+  - docs/better-tut/practice/compliance-test.md
+  - docs/better-tut/practice/coremark-benchmark.md
+  - docs/better-tut/practice/program-device.md
+  - docs/better-tut/practice/hardware-debug.md
+  - docs/better-tut/practice/compile-and-link.md
+  - docs/better-tut/practice/cmake.md
+  - 如何一键烧板: board.md
+  
+- 理论知识基础:
+  - docs/better-tut/theory/cpu-arch.md
+  - docs/better-tut/theory/riscv-isa.md
+  - docs/better-tut/theory/interrupt-and-exception.md
+  - docs/better-tut/theory/bus.md
+- 实验:
+  - docs/better-tut/labs/lab1/lab1-single-cycle-cpu.md
+  - docs/better-tut/labs/lab2/lab2-interrupt.md
+  - docs/better-tut/labs/lab3/lab3-pipelined-cpu.md
+  - docs/better-tut/labs/lab4/lab4-bus.md
+  - docs/better-tut/labs/challenge1/challenge1-running-os.md
+- 快速参考资料:
+  - docs/better-tut/cheatsheets/riscv-isa.md
+  - docs/better-tut/cheatsheets/ide-tips.md
+- docs/references.md
+- docs/acknowledgement.md
+
+theme:
+  name: material
+  features:
+    - content.tabs.link
+    - navigation.expand
+
+use_directory_urls: false
+markdown_extensions:
+  - toc:
+      permalink: "🚁"
+  - pymdownx.superfences
+  - admonition
+  - footnotes
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - tables
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.keys
+
+plugins:
+  - glightbox:
+      zoomable: true
+      width: 100%
