@@ -1,6 +1,7 @@
 site_name: 2025-Yatcpu-Fall-Docs
 site_author: Tokisakix
 copyright: Copyright © 2023 Tokisakix
+site_url: https://purplepower.github.io/2025-fall-yatcpu-repo/
 use_directory_urls: false
 
 nav:
