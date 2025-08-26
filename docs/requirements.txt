@@ -1,6 +1,6 @@
 mkdocs
 mkdocs-material
 mkdocs-material-extensions
-mkdocs-git-revision-date-localized-plugin==0.9.2
-mkdocs-git-authors-plugin==0.3.3
-mkdocs-glightbox==0.40
+mkdocs-git-revision-date-localized-plugin
+mkdocs-git-authors-plugin
+mkdocs-glightbox
