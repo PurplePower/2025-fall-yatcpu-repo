@@ -5,6 +5,17 @@ By: [:material-github: wu-kan](https://github.com/wu-kan)、[:material-github: h
 !!! tips "善于搜索问题及提问"
     TODO
 
+## 实验代码下载
+
+请使用 Git 克隆以下仓库到你的电脑进行开发。
+
+https://github.com/PurplePower/2025-fall-yatcpu-repo
+
+例如，当你安装好 Git 之后，可以在命令行执行以下命令克隆：
+
+```
+git clone https://github.com/PurplePower/2025-fall-yatcpu-repo
+```
 
 ## 安装 IDE
 
