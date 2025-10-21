@@ -5,18 +5,17 @@ By: [:material-github: wu-kan](https://github.com/wu-kan)、[:material-github: h
 
 下面介绍如何在 Linux 或 WSL(Windows Subsystem for Linux) 环境中搭建本实验的开发环境。[这里](https://liuhaohua.com/server-programming-guide/appendix/build-env/)给出搭建相关环境的一个参照。
 
-这里假设你使用的 Linux 或 WSL 系统是 Debian 11。对于使用其他 Linux 系统的同学，操作是类似的，相信你有足够的能力参考下面的指令搭建环境。
+这里假设你使用的 Linux 或 WSL 系统是 Debian 13。对于使用其他 Linux 系统的同学，操作是类似的，相信你有足够的能力参考下面的指令搭建环境。
 
 ## 安装必要工具
 
-本实验将会使用到以下工具，除 sbt 外，可以通过下面提供的命令一键安装：
+本实验将会使用到以下工具，除 Scala SDK 外，可以通过下面提供的命令一键安装：
 
 ```bash
 sudo apt install -y git \
     clang \
     make \
     gnupg \
-    scala \
     libtinfo5 \
     coreutils \
     cmake \
@@ -39,21 +38,42 @@ sudo apt install -y git \
 
 安装完成之后，在任意目录执行 `git clone --recursive https://github.com/PurplePower/2025-fall-yatcpu-repo` 下载代码仓库。
 
-## 安装 sbt 包管理器
+## 安装 Scala SDK
 
-[sbt](https://www.scala-sbt.org/) 是 Scala 的构建系统及包管理器，可按照 [官方安装指示](https://www.scala-sbt.org/1.x/docs/zh-cn/Installing-sbt-on-Linux.html#Ubuntu%E5%92%8C%E5%85%B6%E4%BB%96%E5%9F%BA%E4%BA%8EDebian%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88) 进行安装，该教程可能随着系统及版本更新而变化，以其官网为准。
+目前 Scala SDK 通过 [Coursier](https://get-coursier.io/) 这个辅助工具安装。Coursier 用于管理 Scala SDK 一系列组件的安装。
+
+首先利用下面的命令下载并解压得到 Coursier 二进制 cs。
 
 ```bash
-echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
-echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
-curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo tee /etc/apt/trusted.gpg.d/sbt.asc
-sudo apt-get update
-sudo apt-get install sbt
-# up to 2025-08-19
+# On x86-64 (aka AMD64)
+curl -fL "https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz" | gzip -d > cs
+# On ARM64
+curl -fL "https://github.com/VirtusLab/coursier-m1/releases/latest/download/cs-aarch64-pc-linux.gz" | gzip -d > cs
+```
+
+接着利用 cs 安装 scala SDK 组件。
+
+```bash
+# 安装 scala 2.13.10 版本
+./cs install scala:2.13.10
+./cs install scalac:2.13.10
+
+# 安装 sbt:1.9.7
+./cs install sbt:1.9.7
+./cs install sbtn:1.9.7
+```
+
+最后，你需要修改你的 `~/.bashrc`，以便将以下路径添加到默认路径环境变量中。
+
+```bash
+# Warning: ~/.local/share/coursier/bin is not in your PATH
+# To fix that, add the following line to ~/.bashrc
+
+export PATH="$PATH:~/.local/share/coursier/bin"
 ```
 
 
-
+如果出现网络问题，你可能需要参考[这里](https://get-coursier.io/docs/other-proxy)设置代理。
 
 
 
