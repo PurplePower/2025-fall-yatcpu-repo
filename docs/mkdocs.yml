@@ -51,6 +51,8 @@ theme:
   features:
     - content.tabs.link
     - navigation.expand
+    - search.suggest
+    - search.highlight
 
 
 markdown_extensions:
@@ -78,5 +80,6 @@ plugins:
   - glightbox:
       zoomable: true
       width: 100%
+  - search
 
 
