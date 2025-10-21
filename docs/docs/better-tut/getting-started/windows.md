@@ -66,6 +66,11 @@ git clone https://github.com/PurplePower/2025-fall-yatcpu-repo
 
 使用 vscode 需要手动安装 JDK、Scala，并设置相应系统环境变量，仅建议有相应经验或想要探索的同学使用。若希望快速上手项目开始写码，安装 IDEA 后即可进行后面的配置。
 
+出于**兼容性考虑**，请你在安装软件时，采用以下版本：
+
+- Java JDK 请使用 JDK 17 或 JDK 19。JDK 有很多的实现，例如甲骨文官方提供 [Oracle JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- Scala SDK 请使用 2.13.10 版本。Scala SDK 通常通过一个叫做 [Coursier](https://get-coursier.io/docs/cli-overview) 的安装工具辅助安装。具体安装请参考 [Scala 官方安装文档](https://docs.scala-lang.org/getting-started/install-scala.html)
+
 
 ??? note "安装 vscode"
 
