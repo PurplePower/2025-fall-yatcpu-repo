@@ -2,37 +2,128 @@
 
 [//]: # (完成流水线 CPU 实验后，你就已经对基于流水线 CPU 的原理和设计有初步认识了。但是这个简单的 CPU 只能按照预先的程序指令一直运行，无法中途打断。然而，我们生活的世界充满了不确定性，一个实用的 CPU 需要能够时刻准备好处理来自外部的事件，及时处理中断，并返回到原来的程序中继续执行。)
 
-完成单周期 CPU 实验后，你获得了一个可以简单的按照预期指令执行的处理器。但是这个简单的 CPU 只能按照预先的程序指令一直运行，无法中途打断。然而，我们生活的世界充满了不确定性，一个实用的 CPU 需要能够时刻准备好处理来自外部的事件，及时处理中断，并返回到原来的程序中继续执行。
+完成单周期 CPU 实验后，您实现了一个可以简单的按照预期指令执行的处理器。但是这个简单的 CPU 只能按照预先的程序指令一直运行，无法中途打断。世界充满了不确定性，一个实用的 CPU 需要能够时刻准备好处理来自外部的事件，及时处理中断，并返回到原来的程序中继续执行。
 
 在本实验中，你将学习到：
 
-- CSR 寄存器以及其操作命令
+- CSR 寄存器如何记录信息
+- CSR 指令如何修改 CSR 内容
 - 中断控制器的原理和设计
-- 编写一个简单的定时中断发生器
+- 如何编写一个简单的定时中断发生器
 
 下面的内容中，不管使用 IDE 还是执行命令，根目录是 `lab2` 文件夹。
-
-## CSR指令支持
-
-从预备知识[中断与异常](../../theory/interrupt-and-exception.md)我们已经学习到了 CSR 寄存器的基本概念。本实验里我们在单周期 CPU 的基础上增加对 CSR 寄存器的操作指令的支持。
-
-CSR相关操作指令集的细节，包括指令的语义，编码等，都可以通过阅读[非特权集手册](https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf)的第九章获得。
-中断相关的具体CSR寄存器的内容与对应含义，请查阅[特权级手册](https://github.com/riscv/riscv-isa-manual/releases/download/Priv-v1.12/riscv-privileged-20211203.pdf)
-
-有了实现单周期 CPU 的经验，我们可以把对 CSR 指令的支持分解为：
-
-- **CSR 寄存器组**：CSR 寄存器是一组类似于 RegisterFile 寄存器组的，地址空间大小为 4096 字节，独立编址的寄存器。
-   从指令手册可以看到对CSR寄存器的操作都是原子读写的，CSR指令具体的语义请查阅手册。
-   CSR寄存器组需要根据ID模块译码后给出的控制信号和CSR寄存器地址，来对内部寄存器进行寻址，获取其内容并且修改。
-- **ID 译码单元**：ID 译码单元需要识别 CSR 指令，根据手册里描述的指令语义和编码规范，产生相应的传给其它模块的控制信号与数据。
-- **EX 执行单元**：CSR 指令都是原子读写的，即一条指令的执行结果中，既要把目标 CSR 寄存器原来的内容写入到目标通用寄存器中，还要按指令语义把从目标 CSR 寄存器读出来的内容修改之后再写回给该CSR 寄存器。此时 EX 里面的 ALU 单元是空闲的，要得到写入 CSR 寄存器的值，可以复用 ALU，也可以不复用。
-- **WB 写回单元**：支持 CSR 相关操作指令后，写回到目标通用寄存器的数据来源就多了一个从目标 CSR 寄存器读出来的修改前的值。
 
 
 <!-- ----------------------------------------------------------------------- -->
 
+## 控制状态寄存器 CSR
 
-## 中断控制器（CLINT）
+从预备知识[中断与异常](../../theory/interrupt-and-exception.md)我们已经介绍了中断、异常和陷入的概念，并简单介绍了 CSR 的作用，本节将深入介绍 CSR 的作用。
+
+为了处理各种各样的中断和异常，CPU 需要 控制状态寄存器（Control and Status Register，CSR）以记录信息。
+RISC-V 定义至多每个 CPU 核心有 4096 个 CSR，包括 RISC-V 要求实现的及允许 CPU 厂商自定义的。
+本实验仅实现 RISC-V 的 Machine 特权级，因此我们只实现 M 特权级下关于中断和异常的 CSR，它们的名称均以 m 开头，包括：`mstatus`, `mtvec`, `mcause`, `mepc`。
+
+
+关于更详细的 M 特权级下 CSR 定义，可参考 特权级手册 第三章 Machine-Level ISA ，以下从其中摘取将要实现 CSR 的相应内容，您应能阅读并从中理解相应 CSR 的作用。
+
+
+
+### mstatus
+
+`mstatus` 寄存器指示中断与异常、特权级等状态，其格式如下：
+
+![mstatus-def](assets/mstatus-1.png)
+
+
+!!! quote "在 Machine 模式下，`MIE` 位指示当前中断开关 "
+      When a hart is executing in privilege mode x, interrupts are globally enabled when `xIE=1` and globally disabled when `xIE=0`. 
+
+!!! quote "中断或异常导致陷入时，记录当前中断启用至 `MPIE`" 
+      `xPIE` holds the value of the interrupt-enable bit active prior to the trap, and `xPP` holds the previous privilege mode.
+      When a trap is taken from privilege mode y into privilege mode x, `xPIE` is set to the value of `xIE`; `xIE` is set to 0.
+
+!!! quote "从陷入返回时，恢复 `MIE`"
+      An MRET or SRET instruction is used to return from a trap in M-mode or S-mode respectively.
+      When executing an xRET instruction, supposing xPP holds the value y, xIE is set to xPIE; ... xPIE is set to 1;
+
+---
+
+### mtvec
+
+`mtvec` 是 陷入向量基址寄存器（Trap-Vector Base-Address Register），它记录由中断或异常引发陷入时，陷入处理程序所在的地址。其格式如下：
+
+![mtvec-def](assets/mtvec.png)
+
+`BASE` 会由操作系统设置为陷入处理程序的地址。
+
+
+**`MODE` 字段总设置为 0** ，即所有陷入发生时， `pc` 设置为 `BASE`。`MODE` 设置为 1 时会跳转至 `BASE + 4 * cause` 地址，以便处理不同原因造成的中断，但不在目前实验的考虑范围内。
+
+---
+
+### mcause
+
+`mcause` 记录陷入发生时导致其发生的原因代码，寄存器格式及相应原因代码列出如下：
+
+![mcause-def](assets/mcause.png)
+
+
+??? quote "`mcause`原因代码表格"
+
+      ![mcause-code](assets/mcause-code.png){width=80%}
+
+
+--- 
+
+### mepc
+
+`mepc` 格式与 `pc` 相同，其记录陷入发生时指令的地址：
+
+!!! quote "mepc的设置"
+      When a trap is taken into M-mode, mepc is written with the virtual address of the instruction that was interrupted or that encountered the exception. Otherwise, mepc is never written by the implementation, ...
+
+
+
+<!-- ----------------------------------------------------------------------- -->
+---
+
+## CSR 指令
+
+前面一小节定义了相应的 CSR，那如何让 CPU 的使用者利用这些 CSR 呢？RISC-V 的 Zicsr 扩展提供了 CSR 相关的读写指令，其在非特权级手册的第六章描述如下：
+
+![csr-inst](assets/csr-inst-format.png)
+
+CSR 指令都在一条指令内先读取、再修改 CSR 的内容，`CSRRW`, `CSRRS`, `CSRRC` 区别于如何对 CSR 进行修改。同时它们还有立即数版本（I后缀的 `CSRRWI`, `CSRRSI`, `CSRRCI`）。
+
+!!! quote "CSR 指令操作"
+      The CSRRW (Atomic Read/Write CSR) instruction atomically swaps values in the CSRs and integer 
+      registers. CSRRW reads the old value of the CSR, zero-extends the value to XLEN bits, then writes it to 
+      integer register rd. The initial value in rs1 is written to the CSR. If rd=x0, then the instruction shall not read 
+      the CSR and shall not cause any of the side effects that might occur on a CSR read.
+
+      The CSRRS (Atomic Read and Set Bits in CSR) instruction reads the value of the CSR, zero-extends the 
+      value to XLEN bits, and writes it to integer register rd. The initial value in integer register rs1 is treated as a 
+      bit mask that specifies bit positions to be set in the CSR. Any bit that is high in rs1 will cause the 
+      corresponding bit to be set in the CSR, if that CSR bit is writable.
+
+      The CSRRC (Atomic Read and Clear Bits in CSR) instruction reads the value of the CSR, zero-extends the 
+      value to XLEN bits, and writes it to integer register rd. The initial value in integer register rs1 is treated as a 
+      bit mask that specifies bit positions to be cleared in the CSR. Any bit that is high in rs1 will cause the 
+      corresponding bit to be cleared in the CSR, if that CSR bit is writable.
+
+      The CSRRWI, CSRRSI, and CSRRCI variants are similar to CSRRW, CSRRS, and CSRRC respectively, 
+      except they update the CSR using an XLEN-bit value obtained by zero-extending a 5-bit unsigned 
+      immediate (uimm[4:0]) field encoded in the rs1 field instead of a value from an integer register. 
+
+了解了上述 6 条 CSR 指令后，您应能在 EX 执行单元添加相应的运算操作，CSR 指令在 IF、ID 和 WB 的操作与普通指令相同。
+
+
+
+<!-- ----------------------------------------------------------------------- -->
+---
+
+## 中断控制器 CLINT
 
 CLINT（Core-Local Interrupt）是 RISC-V 架构中提供简单中断和定时器功能的中断处理器，其在中断或异常发生且中断开启时，将暂停CPU当前执行流，设置好相关 CSR 寄存器信息后跳转到中断处理程序中执行中断处理程序。
 
@@ -105,7 +196,7 @@ CLINT（Core-Local Interrupt）是 RISC-V 架构中提供简单中断和定时�
 CLINT 具体的实现方法很多，我们采用纯组合逻辑实现这个中断控制器。由于基于单周期 CPU 且 CLINT 是组合逻辑，所以外部中断到来时，CLINT 会马上响应。
 目前 YatCPU 的主仓库的多周期CPU中的 CLINT 采用状态机来实现。
 
-CLINT 需要一个周期就把多个寄存器的内容修改的功能，而正常的 CSR 指令只能对一个寄存器读-修改-写（Read-Modify-Write, RMW）。所以 CLINT 和 CSR 之间有独立的优先级更高的通路，用来快速更新 CSR 寄存器的值。
+CLINT 需要一个周期就把多个寄存器的内容修改的功能，而正常的 CSR 指令只能对一个寄存器读-修改-写（Read-Modify-Write, RMW）。所以 CLINT 和 CSR 之间有独立的优先级更高的通路，用来快速更新 CSR 寄存器的值，这通过 `CLINT.scala` 中 `io.csr_bundle` 实现。
 
 
 
@@ -132,13 +223,16 @@ MMIO （Memory Mapped I/O）简单来说就是：该外设用来和 CPU 交互�
 - `enable` 寄存器用来控制定时中断发生器的使能，为 `false` 则不产生中断， 映射到地址空间的逻辑地址为 0x80000008。
 - `limit` 寄存器用来控制定时器的中断发生间隔，映射到地址空间的逻辑地址为 0x80000004。中断发生器内部有一个加一计数器，当计数器的值到达 `limit` 为标准的界限时，定时器会发生一次中断信号（`enable` 使能情况下）。注：产生中断信号的时长没有太大关系，但是至少应该大于一个 CPU 时钟周期，确保 CPU 能够正确捕捉到该信号即可。
 
+
+<!-- -------------------------------------------------------------- -->
+
 ## 实验任务
 
 !!! note "实验任务：支持中断处理"
 
-    1. 使 EX 单元支持 CSR 指令的运算。
-    2. 使 CSR 寄存器组支持 CLINT 和来自 CSR 指令的读写操作。
-    3. 使 CLINT 支持响应中断并且在中断结束后回到原来的执行流。
+    1. 使 CSR 寄存器组支持 CLINT 和来自 CSR 指令的读写操作。
+    2. 使 EX 单元支持 CSR 指令的运算。
+    3. 实现 CLINT，使其能正确设置 CSR 并 完成中断处理。
     4. 使定时中断发生器可以正确产生中断信号，并且实现 Timer 寄存器的 MMIO。
 
     请在 `// lab2(CLINTCSR)` 注释处完成上述支持，并通过 `CPUTest`、`ExecuteTest`、`CLINTCSRTest`、`TimerTest` 测试。
