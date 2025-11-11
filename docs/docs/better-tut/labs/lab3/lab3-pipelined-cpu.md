@@ -225,10 +225,6 @@ TODO：查看输出截图
 
 ## 烧板验证
 
-!!! note "烧板安排"
-
-    按照目前的计划，开发板暂时不发给大家。期末的时候统一安排给大家烧板验证。如果有同学非常想烧板，可以自行联系助教或老师。
-
 如果你已经完成了所有基础实验，那么你的 CPU 应该能够运行简单的程序，你可以通过 `Top` 模块中传入 `CPU` 模块构造函数的参数来选择你要使用的 CPU 版本：如果你只完成了基础实验，请选择 `ImplementationType.FiveStageStall`；如果你完成了第一个拓展实验，请选择 `ImplementationType.FiveStageForward`；如果你完成了第二个拓展实验，请选择 `ImplementationType.FiveStageFinal`。
 
 ---
