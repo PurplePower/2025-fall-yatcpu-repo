@@ -146,7 +146,7 @@ Verilator 4.219 devel rev UNKNOWN.REV (mod)
 
 ```bash
 # 下载
-curl -O https://mirrors.matrix.moe/software/Xilinx/Xilinx_Unified_2020.1_0602_1208.tar.gz
+curl -O http://172.18.198.233:8080/Xilinx_Unified_2020.1_0602_1208.tar.gz
 # 也可以在 Xilinx 的官网下载
 # https://china.xilinx.com/support/download/index.html/content/xilinx/zh/downloadNav/vivado-design-tools/archive.html
 ```
