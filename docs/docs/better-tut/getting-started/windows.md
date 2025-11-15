@@ -171,7 +171,7 @@ verilator_bin --version
 
 完成 IDEA / Vscode，以及 Verilator 的安装后， `lab1` 项目应该能被正确加载，在 IDEA 中 `双击` ++shift++ 打开 `RegisterFileTest.scala` ，应该能看见测试左侧的绿色箭头，点击运行如果能提示测试通过，则说明环境配置正确。
 
-其他利用命令行测试的方法可以查看教程 [快速测试](../practice/chisel-test.md#快速测试) 。
+其他利用命令行测试的方法可以查看教程 [运行测试](../practice/test-and-understand-vcd.md) 。
 
 ![](images/idea-test-passed.png){width=80%}
 

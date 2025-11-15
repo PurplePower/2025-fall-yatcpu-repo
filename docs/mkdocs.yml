@@ -18,8 +18,7 @@ nav:
 
 - 基础工程知识与技能:
   - better-tut/practice/envvar-and-cmd.md
-  - better-tut/practice/chisel-test.md
-  - better-tut/practice/simulation.md
+  - better-tut/practice/test-and-understand-vcd.md
   - better-tut/practice/compliance-test.md
   - better-tut/practice/coremark-benchmark.md
   - better-tut/practice/program-device.md

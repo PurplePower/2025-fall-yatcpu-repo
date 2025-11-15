@@ -123,7 +123,7 @@ Verilator 4.219 devel rev UNKNOWN.REV (mod)
 
 ![](images/idea-test-passed.png){width=80%}
 
-如果您使用纯文本模式写码，您可以参考 [快速测试](../practice/chisel-test.md#快速测试) 教程，在终端中用命令测试。
+如果您使用纯文本模式写码，您可以参考 [运行测试](../practice/test-and-understand-vcd.md#运行测试并生成波形图) 教程，在终端中用命令测试。
 
 
 ---
