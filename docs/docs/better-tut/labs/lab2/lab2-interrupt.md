@@ -69,7 +69,7 @@ RISC-V 定义至多每个 CPU 核心有 4096 个 CSR，包括 RISC-V 要求实�
 ![mcause-def](assets/mcause.png)
 
 
-??? quote "`mcause`原因代码表格"
+??? quote "`mcause`原因代码对照表"
 
       ![mcause-code](assets/mcause-code.png){width=80%}
 
@@ -114,10 +114,16 @@ CSR 指令都在一条指令内先读取、再修改 CSR 的内容，`CSRRW`, `C
 
       The CSRRWI, CSRRSI, and CSRRCI variants are similar to CSRRW, CSRRS, and CSRRC respectively, 
       except they update the CSR using an XLEN-bit value obtained by zero-extending a 5-bit unsigned 
-      immediate (uimm[4:0]) field encoded in the rs1 field instead of a value from an integer register. 
+      immediate (uimm[4:0]) field encoded in the **rs1 field** instead of a value from an integer register. 
 
 了解了上述 6 条 CSR 指令后，您应能在 EX 执行单元添加相应的运算操作，CSR 指令在 IF、ID 和 WB 的操作与普通指令相同。
 
+
+!!! tip "CSR 指令的立即数版本"
+      如上面 RISC-V 标准所述，CSR 指令的立即数版本使用指令中 `rs1` 字段作为立即数，而非 `Execute` 中由译码器传入的 `io.immediate` 。
+
+!!! warning "注意位运算的长度"
+      Chisel3 进行两个不同长度的操作数的位逻辑运算时，会在较短的一个左侧填 0 。这可能导致意想不到的结果，例如 `0x12345678 & ~(1.U << 3)` 将得到 `0x12345678 & ~(0b1000) = 0x12345678 & zero-extend(0b0111) = 0x12345678 & 0x00000007`
 
 
 <!-- ----------------------------------------------------------------------- -->
