@@ -1,0 +1,1794 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="PurplePower">
+      
+      
+        <link rel="canonical" href="https://purplepower.github.io/2025-fall-yatcpu-repo/better-tut/practice/test-and-understand-vcd.html">
+      
+      
+        <link rel="prev" href="envvar-and-cmd.html">
+      
+      
+        <link rel="next" href="compliance-test.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>运行测试并解读波形图 - 2025-Yatcpu-Fall-Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-header__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2025-Yatcpu-Fall-Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              运行测试并解读波形图
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="2025-Yatcpu-Fall-Docs" class="md-nav__button md-logo" aria-label="2025-Yatcpu-Fall-Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    2025-Yatcpu-Fall-Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    最终验收
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    欢迎来到 YatCPU 教程仓库！
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验环境配置
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实验环境配置
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/windows.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows 配置指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/linux-wsl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux/WSL 配置指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/macos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    macOS 配置指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../env.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    一键配置 docker 环境
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础工程知识与技能
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础工程知识与技能
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="envvar-and-cmd.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境变量、Shell 与 常用指令
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    运行测试并解读波形图
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="test-and-understand-vcd.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    运行测试并解读波形图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        运行测试并生成波形图
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        解读波形图
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="解读波形图">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        打开波形图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        分析波形图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compliance-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    配置 RISC-V 合规性测试
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coremark-benchmark.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    配置 CoreMark 性能基准测试
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="program-device.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    烧板验证
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hardware-debug.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    硬件调试
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compile-and-link.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    编译与链接
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cmake.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cmake
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../board.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    如何一键烧板
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    理论知识基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    理论知识基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/cpu-arch.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    处理器架构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RISC-V 指令集架构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/interrupt-and-exception.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    中断和异常
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    总线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实验
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="scala-and-chisel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验零 Scala 和 Chisel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab1/lab1-single-cycle-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验一 单周期CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab2/lab2-interrupt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验二 中断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab3/lab3-pipelined-cpu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验三 流水线 CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/lab4/lab4-bus.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验四 总线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/challenge1/challenge1-running-os.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    挑战实验一 运行操作系统
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    快速参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/riscv-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RISC-V 指令集格式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheets/ide-tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDEA 和 VSCode 使用技巧
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../acknowledgement.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    致谢
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        运行测试并生成波形图
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        解读波形图
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="解读波形图">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        打开波形图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        分析波形图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="_1">运行测试并解读波形图<a class="headerlink" href="#_1" title="Permanent link">🚁</a></h1>
+<p>By: <a href="https://github.com/howardlau1999"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"></path></svg></span> howardlau1999</a>、<a href="https://github.com/PurplePower"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"></path></svg></span> PurplePower</a></p>
+<p>当您实现 CPU 后，可通过仿真测试以验证，并查看波形图以进一步分析测试过程及硬件运行情况。
+在本教程，您将了解如何执行仿真测试，并解读波形图。</p>
+<h2 id="_2">运行测试并生成波形图<a class="headerlink" href="#_2" title="Permanent link">🚁</a></h2>
+<p>当您完成实验中的代码时，您有多种方法执行测试。</p>
+<div class="admonition tip">
+<p class="admonition-title">波形图生成的启用注释</p>
+<p>若您使用 Scala 和 Chisel 测试，仓库默认于 <code>TestAnnotations</code> 中定义了 <code>WriteVcdAnnotation</code>，以生成波形图。
+若您自定义了某些超长周期测试，您可以去掉其以避免生成波形图占据大量磁盘空间。</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">使用 IDE 界面</label><label for="__tabbed_1_2">使用 sbt（Linux仅命令行）</label><label for="__tabbed_1_3">使用 C++ 和 Verilator</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>您可直接在 IDEA 或 VSCode 中点击测试文件中测试旁运行按钮，即可运行测试。该方法最为直接简单。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">IDEA</label><label for="__tabbed_2_2">VSCode</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>点击测试左侧的运行按钮，选择“运行”或“调试”，即可启动测试。</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/idea-click-test.png" data-desc-position="bottom"><img alt="idea-click-test" src="images/idea-click-test.png" width="70%"></a></p>
+<p>测试成功时，您应能在运行或调试标签页里看到测试通过提示：</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/idea-test-done.png" data-desc-position="bottom"><img alt="idea-test-done" src="images/idea-test-done.png" width="70%"></a></p>
+</div>
+<div class="tabbed-block">
+<p>左击测试左侧的运行按钮，或右击选择运行或调试以启动测试。</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/vscode-click-test.png" data-desc-position="bottom"><img alt="vscode-click-test" src="images/vscode-click-test.png" width="70%"></a></p>
+<p>测试完成时，您应能在 Debug Console 看到测试结果：</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/vscode-test-done.png" data-desc-position="bottom"><img alt="vscode-test-done" src="images/vscode-test-done.png" width="70%"></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="tabbed-block">
+<p>sbt （Scala Build Tool）可用于自动编译并运行项目。该方法适合习惯终端界面的同学。</p>
+<p>首先，您需要打开 sbt ：</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio"><input id="__tabbed_3_2" name="__tabbed_3" type="radio"><div class="tabbed-labels"><label for="__tabbed_3_1">IDEA 中打开</label><label for="__tabbed_3_2">命令行中打开</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>在 IDEA 界面左下角点击打开 sbt shell，或双击 <span class="keys"><kbd class="key-shift">Shift</kbd></span> 搜索 sbt shell 以打开。</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/idea-sbt-shell.png" data-desc-position="bottom"><img alt="idea-sbt-shell" src="images/idea-sbt-shell.png" width="70%"></a></p>
+</div>
+<div class="tabbed-block">
+<p>在键入 <code>sbt</code> 并确认前，您需确认以下事项避免测试失败。</p>
+<details class="tip" open="open">
+<summary>设置代理</summary>
+<p>首次打开 sbt 时，其会在编译时自动下载依赖库。如果下载失败或者网络不稳定，可以尝试设置代理。请根据自己的实际情况填写代理地址。
+</p><div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span>http://127.0.0.1:1080
+<span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_OPTS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$JAVA_OPTS</span><span class="s2"> -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1080"</span>
+</code></pre></div><p></p>
+</details>
+<details class="tip" open="open">
+<summary>确认 Java 版本</summary>
+<p>由于本实验的 Scala 和 Chisel 版本，Java 版本需要为 17 或 19 。您可以通过以下命令确认您系统上的 Java 安装。</p>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>java<span class="w"> </span>--version<span class="w">  </span><span class="c1"># 查看默认 java 的版本</span>
+openjdk<span class="w"> </span><span class="m">17</span>.0.9<span class="w"> </span><span class="m">2023</span>-10-17
+OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span>Temurin-17.0.9+9<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">17</span>.0.9+9<span class="o">)</span>
+OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span>Temurin-17.0.9+9<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">17</span>.0.9+9,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
+
+&gt;<span class="w"> </span>which<span class="w"> </span>-a<span class="w"> </span>java<span class="w">   </span><span class="c1"># 查看所有 java 的路径，第一项是默认 java</span>
+/e/Eclipse<span class="w"> </span>Adoptium/jdk-17.0.9.9-hotspot/bin/java
+</code></pre></div>
+</details>
+</div>
+</div>
+</div>
+<p>随后，您可以打开 sbt 。</p>
+<div class="highlight"><pre><span></span><code>sbt
+
+<span class="c1"># 使用指定的 JAVA 以启动 sbt</span>
+sbt<span class="w"> </span>--java-home<span class="w"> </span>&lt;JAVA路径&gt;
+</code></pre></div>
+<p>在 sbt 中，您可以使用如下指令运行全部测试。初次运行或修改文件后，可能花费较长时间进行重新编译。</p>
+<div class="highlight"><pre><span></span><code><span class="nb">test</span>
+</code></pre></div>
+<p>或使用 <code>testOnly</code> 以运行指定的测试，指定测试的名称是文件开头的 <code>package</code> 包名，用句号接上测试 class 的名称，如运行 <code>RegisterFileTest.scala</code> 中的 <code>RegisterFileTest</code> 测试，则使用：</p>
+<div class="highlight"><pre><span></span><code>testOnly<span class="w"> </span>riscv.singlecycle.RegisterFileTest
+</code></pre></div>
+<p>运行结束时，您应能看到测试结果：</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/sbt-test-done.png" data-desc-position="bottom"><img alt="sbt-test-done" src="images/sbt-test-done.png"></a></p>
+</div>
+<div class="tabbed-block">
+<div class="admonition question">
+<p class="admonition-title">Why?</p>
+<p>前两种测试方式中均由 Chisel 调用了 Verilator 进行模拟，使用 C++ 调用 Verilator 编译运行给予更大的模拟自由度。
+该方法将 Verilator 中模拟耗时的大容量内存拆出由 C++ 数组替代，<strong>请仅在确有该需求时才使用该测试方式。</strong></p>
+</div>
+<p>按以下随意一个方式为您实现的 CPU 生成 Verilog 代码。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio"><input id="__tabbed_4_2" name="__tabbed_4" type="radio"><div class="tabbed-labels"><label for="__tabbed_4_1">使用 IDEA</label><label for="__tabbed_4_2">使用命令行</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>打开 <code>src/main/scala/board/verilator/Top.scala</code>，点击 <code>object VerilogGenerator</code> 一行左边的绿色三角形运行即可。</p>
+<p>或者可以在 "sbt shell" 窗口中，等 sbt 启动完毕后，执行 <code>runMain board.verilator.VerilogGenerator</code>。</p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>sbt<span class="w"> </span><span class="s2">"runMain board.verilator.VerilogGenerator"</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>之后，进入 <code>verilog/verilator</code> 目录，执行以下命令生成仿真程序：</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio"><input id="__tabbed_5_2" name="__tabbed_5" type="radio"><div class="tabbed-labels"><label for="__tabbed_5_1">Linux/macOS</label><label for="__tabbed_5_2">Windows</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p></p><div class="highlight"><pre><span></span><code>verilator<span class="w"> </span>--cc<span class="w"> </span>--exe<span class="w"> </span>--trace<span class="w"> </span>--build<span class="w"> </span>Top.v<span class="w"> </span>sim_main.cpp
+</code></pre></div>
+或
+<div class="highlight"><pre><span></span><code>verilator<span class="w"> </span>--cc<span class="w"> </span>--exe<span class="w"> </span>--trace<span class="w"> </span>Top.v<span class="w"> </span>sim_main.cpp
+make<span class="w"> </span>-C<span class="w"> </span>obj_dir<span class="w"> </span>-f<span class="w"> </span>VTop.mk
+</code></pre></div><p></p>
+</div>
+<div class="tabbed-block">
+<p></p><div class="highlight"><pre><span></span><code>verilator_bin<span class="w"> </span>--cc<span class="w"> </span>--exe<span class="w"> </span>--trace<span class="w"> </span>--build<span class="w"> </span>Top.v<span class="w"> </span>sim_main.cpp
+</code></pre></div>
+或
+<div class="highlight"><pre><span></span><code>verilator_bin<span class="w"> </span>--cc<span class="w"> </span>--exe<span class="w"> </span>--trace<span class="w"> </span>Top.v<span class="w"> </span>sim_main.cpp
+make<span class="w"> </span>-C<span class="w"> </span>obj_dir<span class="w"> </span>-f<span class="w"> </span>VTop.mk
+</code></pre></div><p></p>
+</div>
+</div>
+</div>
+<p>编译完成后，会生成 <code>obj_dir/VTop</code> （Windows 下为 <code>obj_dir/VTop.exe</code>）的可执行文件。该可执行文件可以传入参数从而运行不同的代码文件。参数以及其用法如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-memory</code></td>
+<td>指定仿真内存的大小，单位为字（4字节）。用例：<code>-memory 4096</code></td>
+</tr>
+<tr>
+<td><code>-instruction</code></td>
+<td>指定用于初始化仿真内存的 RISC-V 程序。用例：<code>-instruction ~/yatcpu/src/main/resources/hello.asmbin</code></td>
+</tr>
+<tr>
+<td><code>-signature</code></td>
+<td>指定仿真结束后，需要输出的内存范围以及目的文件。用例：<code>-signature 0x100 0x200 mem.txt</code></td>
+</tr>
+<tr>
+<td><code>-halt</code></td>
+<td>指定停机标识符地址，往该内存地址写入 <code>0xBABECAFE</code> 即停止仿真。用例：<code>-halt 0x8000</code></td>
+</tr>
+<tr>
+<td><code>-vcd</code></td>
+<td>指定仿真过程波形保存的文件名，不指定则不会生成波形文件。用例：<code>-vcd dump.vcd</code></td>
+</tr>
+<tr>
+<td><code>-time</code></td>
+<td>指定最大仿真时间，注意时间是周期数的两倍。用例：<code>-time 1000</code></td>
+</tr>
+</tbody>
+</table>
+<p>例如，如果想加载 <code>hello.asmbin</code> 文件，仿真 1000 个周期，并将仿真波形保存到 <code>dump.vcd</code> 文件，可以运行：</p>
+<div class="highlight"><pre><span></span><code>obj_dir/VTop<span class="w"> </span>-instruction<span class="w"> </span>~/yatcpu/src/main/resources/hello.asmbin<span class="w"> </span><span class="se">\</span>
+-time<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-vcd<span class="w"> </span>dump.vcd
+</code></pre></div>
+<p>另外，使用 Verilator 仿真时，向内存地址 <code>0x40000010</code>（也即 UART 的 MMIO 地址）写入的数据将转换为字符输出到标准输出，可以用来实现 <code>printf</code> 等功能，方便调试。 </p>
+</div>
+</div>
+</div>
+<hr>
+<h2 id="_3">解读波形图<a class="headerlink" href="#_3" title="Permanent link">🚁</a></h2>
+<h3 id="_4">打开波形图<a class="headerlink" href="#_4" title="Permanent link">🚁</a></h3>
+<p>我们推荐您使用 GTKWave 以查看波形图：</p>
+<ul>
+<li><a href="https://sourceforge.net/projects/gtkwave/files/gtkwave-3.3.100-bin-win64/gtkwave-3.3.100-bin-win64.zip/download">Windows 版本</a>，解压后运行 <code>bin\gtkwave.exe</code></li>
+<li><a href="https://sourceforge.net/projects/gtkwave/files/gtkwave-3.3.107-osx-app/">macOS 版本</a></li>
+<li><a href="https://sourceforge.net/projects/gtkwave/files/">Linux 源码</a></li>
+</ul>
+<p>除此之外，VSCode 还可使用 <a href="https://github.com/Lramseyer/vaporview">Vaporiew</a> 扩展查看。</p>
+<p>使用 GTKWave 打开测试生成的波形文件，如 <code>test_run_dir</code> 下对应测试的 <code>.vcd</code> 文件，您应看到如下界面：</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/gtkwave-glance.png" data-desc-position="bottom"><img alt="gtkwave-glance" src="images/gtkwave-glance.png"></a></p>
+<p>以下是一些简单的操作：</p>
+<ul>
+<li>在部件树视图，您可以逐级展开所测试的部件，并选择部件，该部件里的信号会显示在下方的信号列表。</li>
+<li>双击信号，其会被添加到信号列表和波形图视图，右击信号列表可以添加空行和红字注释，右击信号可以修改其颜色及 Data Format 中显示进制。</li>
+<li>使用滚轮使波形图在时间轴上移动，使用 <span class="keys"><kbd class="key-control">Ctrl</kbd></span> + 滚轮缩放。</li>
+<li>选择信号后，从 Search - Pattern Search 窗口可以搜索特定信号值的出现时刻。</li>
+<li>左击波形图以放置红色标记线，其指向时刻各信号的值显示在 信号列表右侧。</li>
+<li>使用鼠标中健放下白色标记线，使用 Markers 菜单下的选项放置或收回黄色的标记线。</li>
+<li>使用 File - Write Save File 选项保存当前的信号布局为 <code>.gtkw</code> 文件，这样打开该文件时，将恢复目前的信号选择及视图。</li>
+</ul>
+<h3 id="_5">分析波形图<a class="headerlink" href="#_5" title="Permanent link">🚁</a></h3>
+<p>要分析波形图，您必须结合产生波形图的测试。例如，上方图片展示了单周期 CPU 执行 <code>csrc/sb.S</code> 中程序的波形图，其对应 <code>CPUTest.scala</code> 中 <code>ByteAccessTest</code>。首先，Scala 的代码控制了时钟推进及输入输出信号，从而检查执行正确性。</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/byte-access-scala-test.png" data-desc-position="bottom"><img alt="byte-access-scala-test" src="images/byte-access-scala-test.png" width="70%"></a></p>
+<p>这可以帮助您了解某些 <code>poke</code> 和 <code>expect</code> 信号出现于何时，如上述对 <code>regs_debug_read_[address|data]</code> 信号的读写，会在波形图视图的最后一个周期。</p>
+<p>然后，您应查看该测试所运行的二进制文件，即 <code>csrc/sb.S</code> 编译所得的指令。您可以使用 <a href="https://godbolt.org/">godbolt</a> 以了解编译后的具体二进制指令，查看二进制的方法适用于指令很少的测试。</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="images/byte-access-binary.png" data-desc-position="bottom"><img alt="byte-access-binary" src="images/byte-access-binary.png" width="60%"></a></p>
+<p>结合前述 GTKWave 波形图，能够从 IF 和 ID 的 <code>io_instruction</code> 信号看出其正逐条执行指令。分析方法可以运用到其他测试，包括您自己写的其他测试。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2025 PurplePower
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.tabs.link", "navigation.expand", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
