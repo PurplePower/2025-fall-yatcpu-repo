@@ -86,7 +86,7 @@ Chisel 3 严格意义上并不是 Verilog 的等价替代，而是一个生成�
 
 !!! abstract "实践：动手练习 Chisel"
 
-    完成 [Chisel 3 在线实验](https://mybinder.org/v2/gh/freechipsproject/chisel-bootcamp/master) 的 `3.6_types` 以及之前的所有练习，这样您将具备基本的硬件设计能力。
+    完成 [Chisel 3 在线实验](https://mybinder.org/v2/gh/PurplePower/chisel-bootcamp/HEAD) 的 从 `0_demo` 到 `3.6_types` 的练习，这样您将具备基本的硬件设计能力。
 
 ## 参考资源和 Cheat Sheet
 
