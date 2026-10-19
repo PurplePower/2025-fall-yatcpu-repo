@@ -100,14 +100,11 @@ D:\msys64\usr\bin\bash
 # 安装所需包，若网络不好安装失败，则重新执行
 pacman -Sy --noconfirm --needed base-devel mingw-w64-x86_64-toolchain git flex mingw-w64-x86_64-cmake mingw-w64-x86_64-autotools mingw-w64-x86_64-python3 
 
-# 临时设置 PATH 包含 core perl
-export PATH=/mingw64/bin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:$PATH   
-
 # 切换到 ~ 用户目录，并查看当前路径
-cd /home/$USER; pwd
+cd /home/$USER; ls
 
 # 克隆到 ~/verilator，如果您已克隆或复制了包，请略过
-git clone --depth 1 -b v4.226 https://github.com/verilator/verilator;	
+git clone --depth 1 -b v4.226 https://gh-proxy.com/https://github.com/verilator/verilator
 ```
 
 !!!warning "Windows 和 Unix 路径分隔符的区别"
@@ -126,10 +123,13 @@ git clone --depth 1 -b v4.226 https://github.com/verilator/verilator;
 
 ```bash
 # 进入verilator文件夹
-cd ~/verilator  
+cd /home/$USER/verilator  
 
 # 设置 shell 编码，避免安装错误
 export LC_ALL=en_US.UTF-8; export LANG=en_US.UTF-8  
+
+# 临时设置 PATH 包含 core perl
+export PATH=/mingw64/bin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:$PATH   
 
 # 如果成功不会有任何输出
 autoconf  
@@ -141,7 +141,6 @@ autoconf
 # 进行编译安装
 cp /usr/include/FlexLexer.h /mingw64/include;
 make -j$(nproc); make install    
-
 ```
 
 完成上述步骤后，在 `bash` 输入下述指令，若成功输出版本号 4.226 则为成功。
