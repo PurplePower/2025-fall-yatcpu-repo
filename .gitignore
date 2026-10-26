@@ -16,8 +16,8 @@ target
 **/riscv-z710-v2020
 .Xil
 
-# 
-misc/lab*_ans.yaml
+# Answers
+**/lab*_ans.yaml
 
 # github pages
 site/**/*
