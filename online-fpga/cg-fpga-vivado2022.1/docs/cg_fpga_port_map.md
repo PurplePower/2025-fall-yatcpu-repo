@@ -5,7 +5,10 @@
 用户逻辑（CPU）作为独立的 BD 模块，与 `cg_fpga` 平级连接。
 
 > 方向说明：下表的“方向”是**相对 `cg_fpga`** 而言。
-> `输出` = 平台给用户逻辑；`输入` = 用户逻辑驱动给平台。
+> `输出` = `cg_fpga` 驱动给用户逻辑；`输入` = 用户逻辑驱动给 `cg_fpga`。
+>
+> 特别注意：UART 的 `rx_0` / `tx_0` 是按**内部 AXI Uartlite** 命名的，
+> 不是按网页侧命名的。CPU 侧必须做 TX/RX 交叉，见 §4。
 
 ## 1. 时钟与复位
 
@@ -87,10 +90,10 @@ ledm_cs    = {panel[1:0], row[3:0]}
 
 ## 4. 串口
 
-| 端口 | 方向 | 位宽 | 说明 |
+| 端口 | 方向（相对 cg_fpga） | 位宽 | 说明 |
 |---|---|---|---|
-| `rx_0` | 输入 | 1 | 串口接收 |
-| `tx_0` | **输出** | 1 | 串口发送，内部由 AXI Uartlite 驱动 |
+| `rx_0` | 输入 | 1 | 内部 AXI Uartlite 的 RX：接 CPU 的 `uart_tx` |
+| `tx_0` | **输出** | 1 | 内部 AXI Uartlite 的 TX：接 CPU 的 `uart_rx` |
 
 参数（来自 `cg_fpga_axi_uartlite_0_0.xci`）：
 
@@ -102,7 +105,7 @@ ledm_cs    = {panel[1:0], row[3:0]}
 | 停止位 | 1（AXI Uartlite 固定） |
 | 参考时钟 | 100 MHz |
 
-### 重要限制
+### 正确接法：TX/RX 交叉
 
 `cg_fpga` 内部已经这样连接：
 
@@ -114,11 +117,32 @@ cg_fpga_axi_uartlite_0_0 cg_axi_uartlite_0
      (.rx(rx_0_1), .tx(cg_axi_uartlite_0_tx), ...);
 ```
 
-因此：
+也就是说：
 
-- CPU 可以**并行读取** `rx_0`（扇入），实现 UART 接收；
-- CPU **不能驱动** `tx_0`，因为它是 `cg_fpga` 的输出，已经由内部 Uartlite 驱动；
-- 如果 CPU 需要发送，必须获得一个去掉 Uartlite 的 `cg_fpga` 封装（把 `tx_0` 让给用户逻辑）。
+- `rx_0` 是 Uartlite 的 **RX 输入**，CPU 的 `uart_tx` 接这里；
+- `tx_0` 是 Uartlite 的 **TX 输出**，CPU 的 `uart_rx` 接这里；
+- 网页/PS 位于 Uartlite 的 AXI 侧，不在 `rx_0` / `tx_0` 这一侧。
+
+CPU 侧必须交叉连接：
+
+| CPU 侧 | cg_fpga 侧 | 数据方向 |
+|---|---|---|
+| `uart_rx` | `tx_0` | Uartlite TX → CPU RX |
+| `uart_tx` | `rx_0` | CPU TX → Uartlite RX |
+
+完整数据流：
+
+```text
+网页/PS7 → 写 Uartlite TX → cg_fpga.tx_0 → CPU UART RX
+CPU UART TX → cg_fpga.rx_0 → Uartlite RX → PS7 读 → 网页
+```
+
+注意事项：
+
+- **不要**把 CPU 的 `uart_tx` 接到 `tx_0`：`tx_0` 是 `cg_fpga` 的输出，会多驱动；
+- **不要**把 CPU 的 `uart_rx` 接到 `rx_0`：`rx_0` 是 Uartlite 的输入，不是网页数据输出；
+- 不需要“CPU 版” `cg_fpga`，也不需要删除内部 Uartlite；
+- 前提是 PS 侧网页程序确实在读写这个 Uartlite。接入 CPU 前，可先把 `tx_0` 与 `rx_0` 短接，在网页串口输入字符验证通路。
 
 ## 5. PS7 / DDR
 

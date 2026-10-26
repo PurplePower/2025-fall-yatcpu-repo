@@ -115,8 +115,8 @@ led_flow_0/led[31:0] → cg_fpga_0/gpio_led[31:0]
 | `ledm_cs[5:0]` / `ledm_data[15:0]` | 输入 | 4×16×16 LED 矩阵，行列扫描 |
 | `audio[6:0]` | 输入 | 7 个音调，低有效 |
 | `vid_*` | 输入 | 视频窗口 |
-| `rx_0` | 输入 | UART RX，9600-8-N-1 |
-| `tx_0` | **输出** | UART TX，由内部 AXI Uartlite 驱动 |
+| `rx_0` | 输入 | 内部 AXI Uartlite RX，接 CPU 的 `uart_tx` |
+| `tx_0` | **输出** | 内部 AXI Uartlite TX，接 CPU 的 `uart_rx` |
 | `DDR_*` / `FIXED_IO` | inout | 内部 PS7 的 DDR / MIO |
 
 ## 迁移到 RISC-V CPU 仓库
@@ -134,16 +134,19 @@ riscv-cpu-teaching/
     └── cpu_soc.xpr
 ```
 
-集成步骤、BD 连线、MMIO 地址建议、UART 限制详见
+集成步骤、BD 连线、MMIO 地址建议、UART 接法详见
 [`docs/riscv_cpu_integration.md`](docs/riscv_cpu_integration.md)。
 
-### 三个必须知道的限制
+### 三个必须知道的要点
 
-1. **UART TX 不能直接接**
-   `tx_0` 是 `cg_fpga` 的输出，内部已由 `cg_fpga_axi_uartlite_0_0` 驱动。
-   CPU 不能把自己的 `uart_tx` 直接接到 `tx_0`，否则多驱动。
-   - `rx_0` 可以扇入给 CPU 做接收；
-   - 需要发送时，必须向课程方索取去掉 Uartlite 的 `cg_fpga` BD 源工程，或使用“CPU 版”封装 IP。
+1. **UART 需要 TX/RX 交叉**
+   `tx_0` 是内部 AXI Uartlite 的 TX 输出，接 CPU 的 `uart_rx`；
+   `rx_0` 是内部 AXI Uartlite 的 RX 输入，接 CPU 的 `uart_tx`。
+   - CPU 不能驱动 `tx_0`，否则多驱动；
+   - CPU 的 `uart_rx` 不能接 `rx_0`，`rx_0` 不是网页数据输出；
+   - 网页/PS 位于 Uartlite 的 AXI 侧，CPU 通过该 Uartlite 与网页双向通信；
+   - 不需要“CPU 版” `cg_fpga`，也不需要删除内部 Uartlite；
+   - 接入 CPU 前，可先把 `tx_0` 与 `rx_0` 短接，验证网页串口通路。
 2. **PL CPU 不能直接访问 DDR**
    `cg_fpga` 内部的 DDR 只连到它自己的 PS7，封装 IP 没有向外暴露 AXI 主/从端口。
    简易 RISC-V CPU 请使用 BRAM 作为指令/数据存储器。

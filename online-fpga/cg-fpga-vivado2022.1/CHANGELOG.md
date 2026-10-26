@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-26 — UART 接法文档修正
+
+- 修正 `rx_0` / `tx_0` 的方向说明：二者是内部 AXI Uartlite 的 RX/TX，
+  不是网页侧的 RX/TX。
+- CPU 侧应交叉连接：`cg_fpga.tx_0 → CPU UART RX`，
+  `cg_fpga.rx_0 ← CPU UART TX`。
+- 删除“需要 CPU 版 cg_fpga 才能发送 UART”的错误结论；现有 v1.4 IP
+  可直接用于双向 UART。
+- 同步更新 `README.md`、`docs/cg_fpga_port_map.md`、
+  `docs/riscv_cpu_integration.md`。
+
 ## 2026-10-26 — 资源包整理
 
 - 新增 `dist/cg-fpga-vivado2022.1/` 资源包，用于迁移到教学用 RISC-V CPU 仓库。

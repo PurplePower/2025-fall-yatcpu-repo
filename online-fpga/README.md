@@ -27,6 +27,11 @@
   并执行 Generate Output Products，成功（`cg_fpga_0` / `led_flow_0` 均生成）
 - 原工程综合通过：0 errors / 0 critical warnings
 
+> 说明：本目录中的 `cg-fpga-vivado2022.1/` 已根据 UART 接法修正文档，
+> 文件级校验和以 `cg-fpga-vivado2022.1/SHA256SUMS.txt` 为准。
+> 上表中 `cg-fpga-vivado2022.1.zip` 的 SHA256 对应修正前的原始打包文件；
+> 如需重新打包，请重新生成该 zip 及其 SHA256。
+
 ## 使用
 
 解压后进入 `cg-fpga-vivado2022.1/`，先阅读 `README.md`。

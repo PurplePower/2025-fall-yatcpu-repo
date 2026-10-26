@@ -14,9 +14,12 @@ cg_fpga_0 (平台封装 IP)
    ├── ledm_cs   ◄────────────── cpu_top/ledm_cs
    ├── ledm_data ◄────────────── cpu_top/ledm_data
    ├── gpio_led  ◄────────────── cpu_top/gpio_led
-   └── rx_0      ──────────────► cpu_top/uart_rx
-       tx_0      ──(内部Uartlite)──► 不能由 CPU 驱动
+   ├── tx_0      ──────────────► cpu_top/uart_rx   (Uartlite TX → CPU RX)
+   └── rx_0      ◄────────────── cpu_top/uart_tx   (CPU TX → Uartlite RX)
 ```
+
+> `rx_0` / `tx_0` 是按**内部 AXI Uartlite** 命名的，不是按网页侧命名的。
+> 网页/PS 位于 Uartlite 的 AXI 侧；CPU 侧必须做 TX/RX 交叉，见第 6 节。
 
 CPU 是 BD 里的一个 **Add Module**，与 `cg_fpga_0` 平级；不要把 CPU 放进 `cg_fpga` 内部。
 
@@ -35,8 +38,8 @@ module cpu_top (
     output wire [15:0] ledm_data,
     output wire [31:0] gpio_led,   // 低电平点亮
 
-    input  wire        uart_rx,    // cg_fpga/rx_0
-    output wire        uart_tx     // 暂时不要接 tx_0
+    input  wire        uart_rx,    // cg_fpga/tx_0（Uartlite TX）
+    output wire        uart_tx     // cg_fpga/rx_0（Uartlite RX）
 );
 ```
 
@@ -65,8 +68,11 @@ CpuTop u_cpu (
 | `ledm_cs[5:0]` | `ledm_cs[5:0]` | CPU 输出 |
 | `ledm_data[15:0]` | `ledm_data[15:0]` | CPU 输出，低电平点亮 |
 | `gpio_led[31:0]` | `gpio_led[31:0]` | CPU 输出，低电平点亮 |
-| `uart_rx` | `rx_0` | 可接 |
-| `uart_tx` | `tx_0` | **不可直接接**，见第 6 节 |
+| `uart_rx` | `tx_0` | Uartlite TX → CPU RX |
+| `uart_tx` | `rx_0` | CPU TX → Uartlite RX |
+
+> UART 是 **TX/RX 交叉**，不是同名相连。`tx_0` 是 `cg_fpga` 的输出，CPU 不能驱动；
+> `rx_0` 是 `cg_fpga` 的输入，CPU 的 `uart_tx` 接这里。
 
 连接完成后：
 
@@ -164,37 +170,50 @@ static inline void ledm_row(int panel, int row, unsigned short bits) {
 ### 6.1 参数
 
 - 9600 bps，8 数据位，无校验，1 停止位
-- 100 MHz 下分频系数：`100_000_000 / 9600 ≈ 10417`
+- 分频系数按 CPU 实际时钟计算：100 MHz 约 10417，50 MHz 约 5208，25 MHz 约 2604
 
-### 6.2 RX
+### 6.2 数据流
 
-`UartRx.io.rx <- cg_fpga_0/rx_0` 可以直接接。
-CPU 和内部 Uartlite 并行接收，互不影响。
+`cg_fpga` 内部的 Axi Uartlite 是网页/PS 与 CPU 之间的桥：
 
-### 6.3 TX
+```text
+网页/PS7 → AXI 写 Uartlite TX → cg_fpga.tx_0 → CPU UART RX
+CPU UART TX → cg_fpga.rx_0 → Uartlite RX → AXI 读 → PS7 → 网页
+```
 
-`tx_0` 是 `cg_fpga` 的**输出**，内部已由 `cg_fpga_axi_uartlite_0_0` 驱动：
-`assign tx_0 = cg_axi_uartlite_0_tx;`
+### 6.3 RX
 
-因此 **不能**把 CPU 的 `uart_tx` 直接接到 `tx_0`，否则是多驱动。
+CPU 的 `UartRx.io.rx` 接 `cg_fpga_0/tx_0`。
 
-可选方案：
+`tx_0` 是 Uartlite 的**发送输出**，不是 CPU 需要驱动的信号。
 
-1. **向课程方索取 CPU 版 cg_fpga**（推荐）
-   - 去掉内部 AXI Uartlite
-   - 把 `tx_0` 改成输入，或新增 `uart_tx` / `uart_rx` 端口
-   - 重新打包 IP
-2. **只收不发**
-   - CPU 只接 `rx_0`
-   - 运行结果用 LED 矩阵或数码管显示
-3. **修改封装 IP（进阶，不推荐课程实验使用）**
-   - 编辑 `ip_repo/src/cg_fpga.v`
-   - 删除 Uartlite 实例和 `assign tx_0 = ...`
-   - 同步修改 `component.xml` 的端口方向并重新打包
+### 6.4 TX
 
-### 6.4 C 程序输出
+CPU 的 `UartTx.io.tx` 接 `cg_fpga_0/rx_0`。
 
-TX 可用时：
+`rx_0` 是 Uartlite 的**接收输入**；CPU 发送的数据进入 Uartlite，由 PS 读取后转发到网页。
+
+不要：
+
+- 不要把 CPU 的 `uart_tx` 接到 `tx_0`（`tx_0` 已由 Uartlite 驱动，会多驱动）；
+- 不要把 CPU 的 `uart_rx` 接到 `rx_0`（`rx_0` 不是网页数据输出）。
+
+不需要：
+
+- 不需要向课程方索取“CPU 版” `cg_fpga`；
+- 不需要删除内部 Uartlite；
+- 不需要修改 `cg_fpga` IP。
+
+### 6.5 先验证网页串口通路
+
+在接入 CPU 前，可先把 `tx_0` 与 `rx_0` 短接，上传 bitstream，在网页串口输入字符：
+
+- 有回显：说明网页/PS/Uartlite 通路正常，可以接 CPU；
+- 无回显：说明网页串口可能走的是 PS UART0 而不是这个 Uartlite，需要检查 PS 侧网页程序。
+
+### 6.6 C 程序输出
+
+UART 双向可用。按你的 CPU UART 寄存器地址实现轮询发送/接收即可：
 
 ```c
 #define UART_BASE 0x10000000u
@@ -207,7 +226,8 @@ void uart_putc(char c) {
 }
 ```
 
-重定向 newlib 的 `_write` 即可让 `printf` 走串口。
+> 上面的 `UART_BASE` / 寄存器偏移是示例；lab1 现有 `Uart` 模块的偏移是
+> `+0x4` 波特率、`+0x8` 中断、`+0xC` 接收、`+0x10` 发送，按实际模块调整。
 
 ## 7. 存储器与 C 程序
 
@@ -217,7 +237,7 @@ void uart_putc(char c) {
 - IMEM / DMEM 使用 BRAM；
 - 用 `$readmemh` 或 `.coe` 初始化程序；
 - 程序随 bitstream 一起烧录，修改程序需要重新生成 bitstream；
-- 如果需要在线加载程序，需要额外设计 UART/BRAM 加载器（TX 可用时）。
+- 如果需要在线加载程序，可通过 UART 接收（`tx_0`）设计加载器。
 
 ## 8. 集成检查清单
 
@@ -225,7 +245,8 @@ void uart_putc(char c) {
 - [ ] `btn_rst` 经过复位同步后再接 CPU
 - [ ] `ledm_cs` / `ledm_data` 位宽和方向正确
 - [ ] LED 矩阵扫描周期约 200 µs/行
-- [ ] UART RX 接 `rx_0`
-- [ ] UART TX 未直接接 `tx_0`（或已换成 CPU 版 cg_fpga）
+- [ ] UART RX 接 `tx_0`（Uartlite TX）
+- [ ] UART TX 接 `rx_0`（Uartlite RX）
+- [ ] 未把 CPU RX 接到 `rx_0`、未把 CPU TX 接到 `tx_0`
 - [ ] CPU 使用 BRAM，未假设可访问 DDR
 - [ ] Vivado 2022.1 使用本包 `ip_repo`；2022.2 使用 `upstream/` 原始包

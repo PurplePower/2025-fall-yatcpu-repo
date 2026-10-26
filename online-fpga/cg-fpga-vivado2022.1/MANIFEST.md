@@ -1,7 +1,7 @@
 # 文件清单
 
 - 文件总数：55
-- 生成时间：2026-10-26 20:17:40
+- 生成时间：2026-10-26 23:09:07
 - 完整 SHA256：见 `SHA256SUMS.txt`
 
 | 文件 | 大小 | SHA256（前 16 位） |
@@ -14,11 +14,11 @@
 | `board_files/pynq-z2/A.0/pynq_z2.jpg` | 1.18 MB | `8d1d94615b69fa94` |
 | `board_files/pynq-z2/A.0/xitem.json` | 787 B | `b83d088ab05af10e` |
 | `board_files/README.md` | 2.2 KB | `c9eba675b90ca8be` |
-| `CHANGELOG.md` | 1.4 KB | `fb4c19e53ae6956f` |
-| `docs/cg_fpga_port_map.md` | 4.4 KB | `9343883433ffbb93` |
+| `CHANGELOG.md` | 1.8 KB | `d9eec32477217a38` |
+| `docs/cg_fpga_port_map.md` | 5.4 KB | `827605965cbc0067` |
 | `docs/CG-FPGA-Pin-Map-v1.pdf` | 351.0 KB | `edbb4cc178ac371d` |
 | `docs/exp1-guidebook.pdf` | 1.23 MB | `36f71c4d20f93ecf` |
-| `docs/riscv_cpu_integration.md` | 6.9 KB | `8a8d4a0ae5b99ee1` |
+| `docs/riscv_cpu_integration.md` | 8.0 KB | `379f2deaa1001f86` |
 | `example_project_1/design_1.tcl` | 41.2 KB | `e911d2d971c8b56f` |
 | `example_project_1/project_1.srcs/sources_1/bd/design_1/design_1.bd` | 4.2 KB | `f25d42be2b972e95` |
 | `example_project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_cg_fpga_0_0/design_1_cg_fpga_0_0.xci` | 17.2 KB | `28939e7a2640ab7b` |
@@ -57,7 +57,7 @@
 | `ip_repo/xgui/cg_fpga_v1_2.tcl` | 195 B | `afd3e4fc7270a93d` |
 | `ip_repo/xgui/cg_fpga_v1_3.tcl` | 195 B | `afd3e4fc7270a93d` |
 | `ip_repo/xgui/cg_fpga_v1_4.tcl` | 195 B | `afd3e4fc7270a93d` |
-| `README.md` | 6.1 KB | `2782ef1babad6e71` |
+| `README.md` | 6.3 KB | `cd0dbb44fc9e6661` |
 | `tools/patch_ip_repo_for_vivado_2022_1.py` | 1.8 KB | `e1645e1aebe86697` |
 | `upstream/ip_repo_v2022.2_original.zip` | 128.7 KB | `44bb0d7d13263b36` |
 | `upstream/README.md` | 942 B | `8980a571da010b4f` |
