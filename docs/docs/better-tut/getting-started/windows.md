@@ -175,7 +175,13 @@ verilator_bin --version
 
 安装包体积较大，**推荐使用带断点续传功能的下载工具如迅雷、Free Download Manager 下载**。
 
-如果你在**中山大学校园网内**下载 Vivado 2020.1 安装包，可以使用我们提供的镜像：[点此下载](https://mirrors.matrix.moe/software/Xilinx/Xilinx_Unified_2020.1_0602_1208.tar.gz)。
+如果你在**中山大学校园网内**下载 Vivado 2020.1 安装包，可以使用我们提供的超算网盘地址：
+[下载part1](https://pan.nscc-gz.cn/f/b4abc3888ab44a84a7d7/)、
+[part2](https://pan.nscc-gz.cn/f/ab86f1cf06c94d858c57/)、
+[part3](https://pan.nscc-gz.cn/f/2d7bdbd4a1774ff5848c/)、
+[part4](https://pan.nscc-gz.cn/f/3e1ec48ba2c643aba8e8/)、
+[part5](https://pan.nscc-gz.cn/f/50af9caf83cd44d1bc88/)
+。分卷压缩包全部下载后放在同一目录下解压即可。
 
 也可以在 Xilinx 的官网下载（可能需要注册AMD账户）：[点击跳转](https://china.xilinx.com/support/download/index.html/content/xilinx/zh/downloadNav/vivado-design-tools/archive.html)。
 
