@@ -31,6 +31,12 @@ pynq:
 z710:
 	sbt "runMain board.z710.VerilogGenerator"
 
+cloud-pynq-program:
+	cd csrc && sh build_cloud_pynq.sh
+
+cloud_pynq: cloud-pynq-program
+	sbt "runMain board.cloud_pynq.VerilogGenerator"
+
 bitstream-basys3: basys3
 	cd vivado/basys3 && vivado -mode batch -source generate_bitstream.tcl
 
@@ -58,4 +64,7 @@ program-z710: bitstream-z710
 vivado-sim-z710: z710
 	cd vivado/z710 && vivado -mode batch -source run_simulation.tcl
 
-.PHONY: basys3 verilator z710 test bitstream program verilator-sim vivado-sim
+bitstream-cloud_pynq: cloud_pynq
+	cd vivado/cloud_pynq && vivado -mode batch -source generate_bitstream.tcl
+
+.PHONY: basys3 verilator z710 cloud_pynq cloud-pynq-program test bitstream program verilator-sim vivado-sim

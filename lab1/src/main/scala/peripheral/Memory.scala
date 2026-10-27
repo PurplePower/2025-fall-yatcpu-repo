@@ -52,6 +52,10 @@ class BlockRAM(capacity: Int) extends Module {
   io.debug_read_data := mem.read((io.debug_read_address >> 2.U).asUInt, true.B).asUInt
 }
 
+// NOTE: SyncReadMem has one Memory-clock-cycle read latency.
+// The CPU must be clocked slower than this memory (>= 2x, recommended 4x),
+// otherwise the single-cycle CPU samples the previous instruction/data.
+// See peripheral.ClockRatioCheck for the runtime assertion.
 class Memory(capacity: Int) extends Module {
   val io = IO(new Bundle {
     val bundle = new RAMBundle
