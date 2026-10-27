@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mmio_cloud_pynq.h"
+#include "mmio.h"
 
 // Common-cathode 7-segment patterns, active high.
 static const unsigned char seg_code[16] = {

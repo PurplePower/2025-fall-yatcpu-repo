@@ -8,6 +8,11 @@ set script_dir [file normalize [file dirname [info script]]]
 cd $script_dir
 source [file join $script_dir open_project.tcl]
 
+# Use the shortest-runtime strategies.  These trade some QoR for much faster
+# synthesis/implementation, which is appropriate for iterative bitstream builds.
+set_property strategy Flow_RuntimeOptimized [get_runs synth_1]
+set_property strategy Flow_RuntimeOptimized [get_runs impl_1]
+
 # Refresh the module-reference IP so the regenerated Top.v (and the CPU
 # clock divider change) are picked up by synthesis.
 update_module_reference design_1_Top_0_0

@@ -21,8 +21,12 @@
 
 ```bash
 cd lab1
-make cloud-pynq-program   # 生成 src/main/resources/seg_demo.asmbin
+make cloud-pynq-program   # 生成 src/main/resources/say_goodbye.asmbin
 make cloud_pynq           # 生成 verilog/cloud_pynq/Top.v
+
+# 当前 cloud_pynq 默认运行 say_goodbye。
+# 如需切回数码管 demo，可重新编译并修改 Top 的 binaryFilename：
+make program PROGRAM=seg_demo
 ```
 
 ## 生成 bitstream
@@ -70,6 +74,24 @@ Uartlite 的 RX 输入；网页/PS 位于 Uartlite 的 AXI 侧。
 | 2 | `0x4000_0000` | UART 9600-8-N-1 |
 | 3 | `0x6000_0000` | 8 位数码管（SegDisplay） |
 
+UART 寄存器：
+
+```text
++0x04  波特率（只读）
++0x08  中断
++0x0C  接收数据（读清除 rx_valid）
++0x10  发送数据
++0x14  状态：bit0 = TX ready，bit1 = RX valid
+```
+
+`say_goodbye.c` 通过轮询 `UART_STAT` 的 bit0 做流控，不再依赖固定延时。
+MMIO 定义统一在 `csrc/mmio.h`。
+
+> 注意：`cg_fpga` 内部的 AXI Uartlite RX FIFO 只有 16 字节。CPU 侧流控只能
+> 保证自己的 1 字节发送缓冲不溢出，不能保证 PS/网页侧及时读走 Uartlite。
+> 如果网页串口轮询较慢，9600 下仍可能丢字符；`say_goodbye.c` 因此加入了
+> `uart_pace()` 节流。若网页端能连续读取，可去掉该延时以提高速度。
+
 数码管寄存器（32 位写）：
 
 ```text
@@ -78,7 +100,9 @@ bit[7:0] = 段码（平台为低有效，0 点亮；C 程序负责把高有效�
 bit[8]   = 显示使能
 ```
 
-`seg_demo.c` 会向 8 位数码管写入 `1 2 3 4 5 6 7 8`。
+当前默认程序 `say_goodbye.c` 通过 UART 输出字符串；如需数码管演示，
+可用 `make program PROGRAM=seg_demo` 生成 `seg_demo.asmbin`，再把
+`Top.scala` 的 `binaryFilename` 改回 `seg_demo.asmbin` 并重新生成 bitstream。
 
 ## 说明
 

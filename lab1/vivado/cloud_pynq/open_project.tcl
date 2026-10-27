@@ -114,4 +114,12 @@ add_files -norecurse $wrapper
 set_property top design_1_wrapper [current_fileset]
 update_compile_order -fileset sources_1
 
+# Minimize build time for iterative bitstream generation.
+if {[llength [get_runs -quiet synth_1]] > 0} {
+    set_property strategy Flow_RuntimeOptimized [get_runs synth_1]
+}
+if {[llength [get_runs -quiet impl_1]] > 0} {
+    set_property strategy Flow_RuntimeOptimized [get_runs impl_1]
+}
+
 puts "cloud_pynq project is ready: [file normalize $project_dir/$project_name.xpr]"

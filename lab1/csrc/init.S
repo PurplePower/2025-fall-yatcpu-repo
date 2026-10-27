@@ -15,7 +15,19 @@
 .section .text.init
 .globl _start
 _start:
-  li sp, 0x10000000 # Initialize stack pointer
+  la sp, __stack_top   # Stack top is provided by the unified linker script
+
+  # Zero .bss.  The BRAM is usually zero after configuration, but this makes
+  # the startup deterministic in simulation and on all boards.
+  la t0, __bss_start
+  la t1, __bss_end
+bss_clear:
+  bgeu t0, t1, bss_done
+  sw zero, 0(t0)
+  addi t0, t0, 4
+  j bss_clear
+bss_done:
+
   call main   # Jump to main function
 loop:
   j loop      # Loop forever

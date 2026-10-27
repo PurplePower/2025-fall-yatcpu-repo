@@ -81,6 +81,6 @@ vivado -mode batch -source ./program_device.tcl
 本板子 Zynq7010 Soc 引了 PL 到 UART3，因此可以直连而不必通过 ARM 核心转发 UART 信号。但有以下需要注意的：
 
 - reset 信号在 Vivado 2020 中不要连接至 button 或使用 Utility Vector Logic 做 NOT 门，否则会导致乱码输出，原因未知，好像可以将 TX 输出连接到一个 ILA debug 模块使输出正常。在 Vivado 2022 中使用则无问题。
-- `say_goodbye.c` 中打印间隔调大，因为时钟信号只有 50MHz
+- `say_goodbye.c` 现在通过 `UART_STAT` 的 TX ready 位做流控，不再依赖打印间隔
 - 其他引线等资源参考 resources 下的内容
 - 其他可参考 Z710 的 README.md

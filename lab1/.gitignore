@@ -344,6 +344,8 @@ verilog/basys3/*
 verilog/pynq/*
 verilog/verilator/*
 verilog/cloud_pynq/Top.*
+verilog/z710/Top.*
+verilog/z710v1.3/Top.*
 !verilog/basys3/test.v
 !verilog/pynq/design_1_wrapper.v
 !verilog/pynq/test.v
@@ -358,5 +360,8 @@ vivado/pynq/riscv-pynq
 vivado/pynq/NA
 vivado/cloud_pynq/cloud_pynq/
 vivado/cloud_pynq/NA
+vivado/cloud_pynq/strategy_comparison/
+vivado/z710/riscv-z710-v2020/
+vivado/z710v1.3/rv-z710v1.3-20/
 .vscode
 .metals

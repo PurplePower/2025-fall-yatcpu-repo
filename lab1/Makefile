@@ -28,11 +28,19 @@ basys3:
 pynq:
 	sbt "runMain board.pynq.VerilogGenerator"
 	
-z710:
+z710: cloud-pynq-program
 	sbt "runMain board.z710.VerilogGenerator"
 
+z710v1.3: cloud-pynq-program
+	sbt "runMain board.z710v1_3.VerilogGenerator"
+
+# Build any lab1 program with the unified startup/linker script.
+# Usage: make program PROGRAM=say_goodbye
+program:
+	cd csrc && cmake -B build_cloud_pynq -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake" . && cmake --build build_cloud_pynq --target $(PROGRAM)
+
 cloud-pynq-program:
-	cd csrc && sh build_cloud_pynq.sh
+	cd csrc && cmake -B build_cloud_pynq -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake" . && cmake --build build_cloud_pynq --target cloud_pynq
 
 cloud_pynq: cloud-pynq-program
 	sbt "runMain board.cloud_pynq.VerilogGenerator"
@@ -64,7 +72,10 @@ program-z710: bitstream-z710
 vivado-sim-z710: z710
 	cd vivado/z710 && vivado -mode batch -source run_simulation.tcl
 
+bitstream-z710v1.3: z710v1.3
+	cd vivado/z710v1.3 && vivado -mode batch -source generate_bitstream.tcl
+
 bitstream-cloud_pynq: cloud_pynq
 	cd vivado/cloud_pynq && vivado -mode batch -source generate_bitstream.tcl
 
-.PHONY: basys3 verilator z710 cloud_pynq cloud-pynq-program test bitstream program verilator-sim vivado-sim
+.PHONY: basys3 verilator z710 z710v1.3 cloud_pynq cloud-pynq-program program test bitstream verilator-sim vivado-sim

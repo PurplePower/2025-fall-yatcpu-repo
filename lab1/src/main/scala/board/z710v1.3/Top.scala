@@ -37,13 +37,8 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   // val display = Module(new CharacterDisplay)
   // val timer = Module(new Timer)
   val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200)) // 31M or 32M is good, 33M more error
-  val dummy = Module(new Dummy)
 
-  // display.io.bundle <> dummy.io.bundle
-  mem.io.bundle <> dummy.io.bundle
   mem.io.debug_read_address := 0.U
-  // timer.io.bundle <> dummy.io.bundle
-  uart.io.bundle <> dummy.io.bundle
   io.tx := uart.io.txd
   uart.io.rxd := io.rx
 
@@ -72,25 +67,37 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
 
-    when(!rom_loader.io.load_finished) {
-      rom_loader.io.bundle <> mem.io.bundle
-      cpu.io.memory_bundle.read_data := 0.U
-    }.otherwise {
-      rom_loader.io.bundle.read_data := 0.U
-      when(cpu.io.deviceSelect === 2.U) {
-        cpu.io.memory_bundle <> uart.io.bundle
-      }.otherwise {
-        cpu.io.memory_bundle <> mem.io.bundle
-      }
-    }
+    val loading = !rom_loader.io.load_finished
 
-    when(!rom_loader.io.load_finished) {
-      rom_loader.io.bundle <> mem.io.bundle
-      cpu.io.memory_bundle.read_data := 0.U
-    }.otherwise {
-      rom_loader.io.bundle.read_data := 0.U
-      cpu.io.memory_bundle <> mem.io.bundle
-    }
+    // Memory bus: ROMLoader owns it during loading, CPU afterwards.
+    mem.io.bundle.address :=
+      Mux(loading, rom_loader.io.bundle.address, cpu.io.memory_bundle.address)
+    mem.io.bundle.write_data :=
+      Mux(loading, rom_loader.io.bundle.write_data, cpu.io.memory_bundle.write_data)
+    // The CPU is clocked at 1/4 of the memory clock; qualify the write with
+    // CPU_tick so one store becomes one memory write.
+    mem.io.bundle.write_enable := Mux(
+      loading,
+      rom_loader.io.bundle.write_enable,
+      cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 0.U && CPU_tick
+    )
+    mem.io.bundle.write_strobe :=
+      Mux(loading, rom_loader.io.bundle.write_strobe, cpu.io.memory_bundle.write_strobe)
+    rom_loader.io.bundle.read_data := 0.U
+
+    // UART bus.
+    uart.io.bundle.address := cpu.io.memory_bundle.address
+    uart.io.bundle.write_data := cpu.io.memory_bundle.write_data
+    uart.io.bundle.write_enable :=
+      !loading && cpu.io.memory_bundle.write_enable &&
+        cpu.io.deviceSelect === 2.U && CPU_tick
+    uart.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
+
+    cpu.io.memory_bundle.read_data := Mux(
+      loading,
+      0.U,
+      Mux(cpu.io.deviceSelect === 2.U, uart.io.bundle.read_data, mem.io.bundle.read_data)
+    )
 
     when (uart.io.bundle.write_enable) {
       val the_char = cpu.io.memory_bundle.write_data(7, 0)

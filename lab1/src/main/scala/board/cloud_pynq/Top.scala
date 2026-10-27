@@ -36,7 +36,7 @@ import riscv.core.CPU
   *
   * 这样 CPU 比 Memory 慢 4 倍，满足同步读 BRAM 的时序要求。
   */
-class Top(binaryFilename: String = "seg_demo.asmbin") extends RawModule {
+class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
   val clock   = IO(Input(Clock()))
   val reset_n = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
 
@@ -132,7 +132,11 @@ class Top(binaryFilename: String = "seg_demo.asmbin") extends RawModule {
     }.otherwise {
       mem.io.bundle.address      := cpu.io.memory_bundle.address
       mem.io.bundle.write_data   := cpu.io.memory_bundle.write_data
-      mem.io.bundle.write_enable := cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 0.U
+      // The CPU clock is the memory clock divided by 4, so its write_enable
+      // stays high for four memory cycles.  Qualify it with CPU_tick so a
+      // single store becomes a single-cycle write pulse.
+      mem.io.bundle.write_enable :=
+        cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 0.U && CPU_tick
       mem.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
     }
     rom_loader.io.bundle.read_data := 0.U
@@ -140,14 +144,16 @@ class Top(binaryFilename: String = "seg_demo.asmbin") extends RawModule {
     // MMIO：deviceSelect 2 = UART，3 = 数码管
     uart.io.bundle.address      := cpu.io.memory_bundle.address
     uart.io.bundle.write_data   := cpu.io.memory_bundle.write_data
-    uart.io.bundle.write_enable := cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 2.U
+    uart.io.bundle.write_enable :=
+      !loading && cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 2.U && CPU_tick
     uart.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
     uart.io.rxd := uart_rx.asUInt
     uart_tx := uart.io.txd.asBool
 
     seg.io.bundle.address      := cpu.io.memory_bundle.address
     seg.io.bundle.write_data   := cpu.io.memory_bundle.write_data
-    seg.io.bundle.write_enable := cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 3.U
+    seg.io.bundle.write_enable :=
+      !loading && cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 3.U && CPU_tick
     seg.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
 
     val mmio_read = MuxLookup(cpu.io.deviceSelect, 0.U(32.W))(
@@ -182,6 +188,6 @@ class Top(binaryFilename: String = "seg_demo.asmbin") extends RawModule {
 object VerilogGenerator extends App {
   (new ChiselStage).execute(
     Array("-X", "verilog", "-td", "verilog/cloud_pynq"),
-    Seq(ChiselGeneratorAnnotation(() => new Top("seg_demo.asmbin")))
+    Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))
   )
 }
