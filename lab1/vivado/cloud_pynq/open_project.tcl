@@ -42,7 +42,7 @@ if {[llength [get_files -quiet design_1.bd]] == 0} {
     create_bd_cell -type ip -vlnv educg.net:user:cg_fpga:1.4 cg_fpga_0
     create_bd_cell -type module -reference Top Top_0
 
-    # 100 MHz -> 50 MHz for Memory/UART/Seg/ROM. Top divides CPU by 4 again.
+    # 100 MHz -> 50 MHz for Memory/UART/Seg/LED matrix/ROM. Top divides CPU by 4 again.
     create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0
     set_property -dict [list \
         CONFIG.PRIM_IN_FREQ {100.000} \

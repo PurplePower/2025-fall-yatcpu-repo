@@ -23,13 +23,14 @@
 //   2: UART
 //   3: 8-digit seven-segment display (cloud_pynq)
 //   4: timer (reserved; not instantiated on current lab1 boards)
+//   5: four 16x16 LED matrices (cloud_pynq)
 //
 // Not every board implements every device.  Current board capabilities:
 //   basys3      : VRAM
 //   pynq        : VRAM
 //   z710        : UART (115200)
 //   z710v1.3    : UART (115200)
-//   cloud_pynq  : UART (9600), 8-digit seven-segment display
+//   cloud_pynq  : UART (9600), 8-digit seven-segment display, LED matrices
 //   verilator   : external bus / testbench
 //
 // Programs that use a device must only be run on a board that implements it.
@@ -49,6 +50,13 @@
 #define SEG_REG(d) (*(volatile unsigned int *) (SEG_BASE + (((unsigned int) (d)) << 2)))
 #define SEG_ENABLE 0x00000100u
 
+#define LEDM_BASE 0xA0000000u
+#define LEDM_PANELS 4u
+#define LEDM_ROWS 16u
+#define LEDM_COLS 16u
+#define LEDM_REG(panel, row) (*(volatile unsigned int *) \
+    (LEDM_BASE + ((((unsigned int) (panel)) * LEDM_ROWS + ((unsigned int) (row))) << 2)))
+
 #define TIMER_BASE 0x80000000
 #define TIMER_LIMIT ((volatile unsigned int *) (TIMER_BASE + 4))
 #define TIMER_ENABLED ((volatile unsigned int *) (TIMER_BASE + 8))
@@ -67,6 +75,12 @@
 #define VA_UART_STAT ((volatile unsigned int *) (VA_UART_BASE + 20))
 
 #ifndef __ASSEMBLER__
+// Software uses active-high row bitmaps; hardware inverts ledm_data.
+static inline void ledm_set_row(unsigned int panel, unsigned int row,
+                                unsigned short pixels) {
+    LEDM_REG(panel, row) = (unsigned int) pixels;
+}
+
 // cloud_pynq's seg_data is active low (0 lights the segment).
 // seg_set writes the pattern as-is; callers must encode active-low patterns.
 static inline void seg_set(unsigned int digit, unsigned char pattern) {

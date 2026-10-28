@@ -24,13 +24,13 @@ lab1/vivado/cloud_pynq/
     - `seg_data` 低有效，由 C 程序对段码取反
   - 时钟：
     - `clk_wiz`：100 MHz → 50 MHz
-    - Memory / UART / SegDisplay / ROMLoader：50 MHz
+    - Memory / UART / SegDisplay / LedMatrixDisplay / ROMLoader：50 MHz
     - CPU：50 MHz / 4 = 12.5 MHz
   - UART 交叉连接：
     - `cg_fpga.tx_0` → CPU `uart_rx`
     - CPU `uart_tx` → `cg_fpga.rx_0`
   - `gpio_led` 显示当前 PC，低有效取反
-  - LED 矩阵、音频、视频输出暂时关闭
+  - LED 矩阵由 `LedMatrixDisplay` 扫描，音频、视频输出暂时关闭
 
 - `lab1/vivado/cloud_pynq/open_project.tcl`
   - 创建 `cg_fpga` + `Top_0` + `clk_wiz_0`
@@ -144,6 +144,7 @@ lab1/csrc/mmio_cloud_pynq.h
 | 2 | `0x4000_0000` | UART |
 | 3 | `0x6000_0000` | 8 位数码管 |
 | 4 | `0x8000_0000` | Timer（预留） |
+| 5 | `0xA000_0000` | 四块 16x16 LED 矩阵 |
 
 `deviceSelect = addr[31:29]`。
 
@@ -161,6 +162,7 @@ UART 寄存器：
 
 - `VRAM`
 - `SEG_REG` / `seg_set` / `seg_clear`
+- `LEDM_REG` / `ledm_set_row`
 - `TIMER_*`
 - MMU 程序使用的 `VA_*`
 - 各板能力矩阵注释
@@ -306,7 +308,7 @@ online-fpga/cg-fpga-vivado2022.1/docs/riscv_cpu_integration.md
 
 | 路径 | 内容 | 同步建议 |
 |---|---|---|
-| `lab1/src/main/scala/peripheral/` | `SegDisplay.scala`、`ClockRatioCheck.scala`、`UART.scala`、`Memory.scala` | 通用，可直接复制；UART 参数按板子调整 |
+| `lab1/src/main/scala/peripheral/` | `SegDisplay.scala`、`LedMatrixDisplay.scala`、`ClockRatioCheck.scala`、`UART.scala`、`Memory.scala` | 通用，可直接复制；UART 参数按板子调整 |
 | `lab1/src/main/scala/board/cloud_pynq/` | cloud_pynq 顶层 | 仅适用于 cg_fpga 云平台，需按目标板改 |
 | `lab1/src/main/scala/board/z710*/` | UART/总线连接方式 | 作为其他板 Top 的参考 |
 | `lab1/csrc/mmio.h` | 统一 MMIO | 通用，合并板级地址即可 |
@@ -385,3 +387,12 @@ asmbin → Top.v → synthesis → implementation → bitstream
   - `Flow_RuntimeOptimized` Vivado strategy
   - `say_goodbye` pace 调整
 - `main` 未改动，`dev` 尚未 push。
+
+## 12. LED 矩阵支持
+
+新增 `LedMatrixDisplay.scala`、`led_matrix_demo.c` 和对应 ChiselTest。
+控制器使用 64 行 x 16 位帧缓存，以 50 MHz 时钟每 200 us 扫描一行，
+并将软件的高有效行位图取反后输出到低有效的 `ledm_data`。
+`led_matrix_demo` 在四块矩阵上分别显示 `R`、`I`、`S`、`C`，并作为
+cloud_pynq 的默认程序；重新构建使用统一的
+`asmbin -> Top.v -> Vivado bitstream` 流程。

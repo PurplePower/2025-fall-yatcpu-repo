@@ -31,12 +31,12 @@ import riscv.core.CPU
   *
   * 时钟：
   *   - clock = cg_fpga.clk_100M 经 clk_wiz 分频 = 50 MHz
-  *   - Memory / UART / SegDisplay / ROMLoader：50 MHz
+  *   - Memory / UART / SegDisplay / LedMatrixDisplay / ROMLoader：50 MHz
   *   - CPU：50 MHz / 4 = 12.5 MHz
   *
   * 这样 CPU 比 Memory 慢 4 倍，满足同步读 BRAM 的时序要求。
   */
-class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
+class Top(binaryFilename: String = "led_matrix_demo.asmbin") extends RawModule {
   val clock   = IO(Input(Clock()))
   val reset_n = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
 
@@ -93,6 +93,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
     val mem  = Module(new Memory(Parameters.MemorySizeInWords))
     val uart = Module(new Uart(frequency = clock_freq, baudRate = 9600))
     val seg  = Module(new SegDisplay(frequency = clock_freq, refreshUs = 1000))
+    val ledm = Module(new LedMatrixDisplay(frequency = clock_freq, refreshUs = 200))
 
     val instruction_rom = Module(new InstructionROM(binaryFilename))
     val rom_loader      = Module(new ROMLoader(instruction_rom.capacity))
@@ -141,7 +142,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
     }
     rom_loader.io.bundle.read_data := 0.U
 
-    // MMIO：deviceSelect 2 = UART，3 = 数码管
+    // MMIO：deviceSelect 2 = UART，3 = 数码管，5 = LED 矩阵
     uart.io.bundle.address      := cpu.io.memory_bundle.address
     uart.io.bundle.write_data   := cpu.io.memory_bundle.write_data
     uart.io.bundle.write_enable :=
@@ -156,25 +157,32 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
       !loading && cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 3.U && CPU_tick
     seg.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
 
+    ledm.io.bundle.address      := cpu.io.memory_bundle.address
+    ledm.io.bundle.write_data   := cpu.io.memory_bundle.write_data
+    ledm.io.bundle.write_enable :=
+      !loading && cpu.io.memory_bundle.write_enable && cpu.io.deviceSelect === 5.U && CPU_tick
+    ledm.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
+
     val mmio_read = MuxLookup(cpu.io.deviceSelect, 0.U(32.W))(
       Seq(
         0.U(3.W) -> mem.io.bundle.read_data,
         2.U(3.W) -> uart.io.bundle.read_data,
-        3.U(3.W) -> seg.io.bundle.read_data
+        3.U(3.W) -> seg.io.bundle.read_data,
+        5.U(3.W) -> ledm.io.bundle.read_data
       )
     )
     cpu.io.memory_bundle.read_data := Mux(loading, 0.U, mmio_read)
 
-    seg_cs   := seg.io.seg_cs
-    seg_data := seg.io.seg_data
+    seg_cs    := seg.io.seg_cs
+    seg_data  := seg.io.seg_data
+    ledm_cs   := ledm.io.ledm_cs
+    ledm_data := ledm.io.ledm_data
 
     // 32 位 LED 显示当前 PC；平台低有效，所以取反。
     gpio_led := ~cpu.io.instruction_address
 
     // 其余外设先关闭（低有效平台，全 1 为关闭）。
-    ledm_cs   := 0.U
-    ledm_data := ~0.U(16.W)
-    audio     := ~0.U(7.W)
+    audio := ~0.U(7.W)
 
     vid_active := false.B
     vid_data   := 0.U
@@ -188,6 +196,6 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends RawModule {
 object VerilogGenerator extends App {
   (new ChiselStage).execute(
     Array("-X", "verilog", "-td", "verilog/cloud_pynq"),
-    Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))
+    Seq(ChiselGeneratorAnnotation(() => new Top("led_matrix_demo.asmbin")))
   )
 }

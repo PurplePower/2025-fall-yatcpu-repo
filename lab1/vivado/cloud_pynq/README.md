@@ -21,12 +21,12 @@
 
 ```bash
 cd lab1
-make cloud-pynq-program   # 生成 src/main/resources/say_goodbye.asmbin
+make cloud-pynq-program   # 生成 src/main/resources/led_matrix_demo.asmbin
 make cloud_pynq           # 生成 verilog/cloud_pynq/Top.v
 
-# 当前 cloud_pynq 默认运行 say_goodbye。
-# 如需切回数码管 demo，可重新编译并修改 Top 的 binaryFilename：
-make program PROGRAM=seg_demo
+# 当前 cloud_pynq 默认运行 led_matrix_demo，在四个矩阵上显示 R I S C。
+# 如需构建其他程序，可使用统一入口：
+make program PROGRAM=say_goodbye
 ```
 
 ## 生成 bitstream
@@ -51,7 +51,7 @@ lab1/vivado/cloud_pynq/cloud_pynq/cloud_pynq.runs/impl_1/design_1_wrapper.bit
 
 ```text
 cg_fpga_0/clk_100M -> clk_wiz_0/clk_in1
-clk_wiz_0/clk_50m  -> Top_0/clock     -> Memory/UART/Seg = 50 MHz
+clk_wiz_0/clk_50m  -> Top_0/clock     -> Memory/UART/Seg/LED matrix = 50 MHz
 cg_fpga_0/btn_rst  -> reset logic     -> Top_0/reset_n
 cg_fpga_0/tx_0     -> Top_0/uart_rx   -> CPU UART RX
 cg_fpga_0/rx_0     <- Top_0/uart_tx   -> CPU UART TX
@@ -73,6 +73,7 @@ Uartlite 的 RX 输入；网页/PS 位于 Uartlite 的 AXI 侧。
 | 0 | `0x0000_0000` | 32 KiB RAM |
 | 2 | `0x4000_0000` | UART 9600-8-N-1 |
 | 3 | `0x6000_0000` | 8 位数码管（SegDisplay） |
+| 5 | `0xA000_0000` | 四块 16x16 LED 矩阵（LedMatrixDisplay） |
 
 UART 寄存器：
 
@@ -100,12 +101,19 @@ bit[7:0] = 段码（平台为低有效，0 点亮；C 程序负责把高有效�
 bit[8]   = 显示使能
 ```
 
-当前默认程序 `say_goodbye.c` 通过 UART 输出字符串；如需数码管演示，
-可用 `make program PROGRAM=seg_demo` 生成 `seg_demo.asmbin`，再把
-`Top.scala` 的 `binaryFilename` 改回 `seg_demo.asmbin` 并重新生成 bitstream。
+LED 矩阵帧缓存（32 位写，低 16 位有效）：
+
+```text
+LEDM_BASE + (panel * 16 + row) * 4
+panel = 0..3（从左到右），row = 0..15（从上到下）
+bit[15:0] = 行位图（软件写 1 点亮，硬件输出时取反）
+```
+
+硬件以约 200 us/行独立扫描四块矩阵。当前默认程序 `led_matrix_demo.c`
+在四块矩阵上分别显示 `R`、`I`、`S`、`C`；`say_goodbye.c` 仍可用于 UART 演示。
 
 ## 说明
 
-- LED 矩阵、音频、视频接口已在 Top 中预留；当前版本输出关闭。
+- 音频、视频接口已在 Top 中预留；当前版本输出关闭。
 - 视频的 `vid_io_in_clk` 目前临时接 `clk_100M`，后续应改为 74.25 MHz。
 - 程序随 bitstream 烧录，修改 C 程序后需要重新生成 asmbin、Verilog 和 bitstream。
