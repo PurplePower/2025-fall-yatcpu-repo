@@ -5,6 +5,17 @@ By: [:material-github: wu-kan](https://github.com/wu-kan)、[:material-github: h
 !!! tips "善于搜索问题及提问"
     TODO
 
+## 实验代码下载
+
+请使用 Git 克隆以下仓库到你的电脑进行开发。
+
+https://github.com/PurplePower/2025-fall-yatcpu-repo
+
+例如，当你安装好 Git 之后，可以在命令行执行以下命令克隆：
+
+```
+git clone https://github.com/PurplePower/2025-fall-yatcpu-repo
+```
 
 ## 安装 IDE
 
@@ -54,6 +65,11 @@ By: [:material-github: wu-kan](https://github.com/wu-kan)、[:material-github: h
 ### 选项2：安装 Visual Studio Code
 
 使用 vscode 需要手动安装 JDK、Scala，并设置相应系统环境变量，仅建议有相应经验或想要探索的同学使用。若希望快速上手项目开始写码，安装 IDEA 后即可进行后面的配置。
+
+出于**兼容性考虑**，请你在安装软件时，采用以下版本：
+
+- Java JDK 请使用 JDK 17 或 JDK 19。JDK 有很多的实现，例如甲骨文官方提供 [Oracle JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- Scala SDK 请使用 2.13.10 版本。Scala SDK 通常通过一个叫做 [Coursier](https://get-coursier.io/docs/cli-overview) 的安装工具辅助安装。具体安装请参考 [Scala 官方安装文档](https://docs.scala-lang.org/getting-started/install-scala.html)
 
 
 ??? note "安装 vscode"
@@ -154,7 +170,7 @@ verilator_bin --version
 
 完成 IDEA / Vscode，以及 Verilator 的安装后， `lab1` 项目应该能被正确加载，在 IDEA 中 `双击` ++shift++ 打开 `RegisterFileTest.scala` ，应该能看见测试左侧的绿色箭头，点击运行如果能提示测试通过，则说明环境配置正确。
 
-其他利用命令行测试的方法可以查看教程 [快速测试](../practice/chisel-test.md#快速测试) 。
+其他利用命令行测试的方法可以查看教程 [运行测试](../practice/test-and-understand-vcd.md) 。
 
 ![](images/idea-test-passed.png){width=80%}
 

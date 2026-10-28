@@ -1,6 +1,6 @@
 site_name: 2025-Yatcpu-Fall-Docs
-site_author: Tokisakix
-copyright: Copyright © 2023 Tokisakix
+site_author: PurplePower
+copyright: Copyright © 2025 PurplePower
 site_url: https://purplepower.github.io/2025-fall-yatcpu-repo/
 use_directory_urls: false
 
@@ -18,8 +18,7 @@ nav:
 
 - 基础工程知识与技能:
   - better-tut/practice/envvar-and-cmd.md
-  - better-tut/practice/chisel-test.md
-  - better-tut/practice/simulation.md
+  - better-tut/practice/test-and-understand-vcd.md
   - better-tut/practice/compliance-test.md
   - better-tut/practice/coremark-benchmark.md
   - better-tut/practice/program-device.md
@@ -51,6 +50,8 @@ theme:
   features:
     - content.tabs.link
     - navigation.expand
+    - search.suggest
+    - search.highlight
 
 
 markdown_extensions:
@@ -78,5 +79,6 @@ plugins:
   - glightbox:
       zoomable: true
       width: 100%
+  - search
 
 

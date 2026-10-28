@@ -41,6 +41,21 @@ By: [:material-github: wu-kan](https://github.com/wu-kan)
 
 ## 烧板
 
+
+???+ info "按开发板型号选择后续烧板教程"
+    ![](images/z710.png){width=30%} 
+    
+    橙色盒子的该板子对应 `z710` 型号，参考各实验文件夹下 `vivado/z710/README.md` 里的说明。
+
+    ![](images/z710v1.3.png){width=30%} 
+    
+    白色盒子+数据线的该板子对应 `z710v1.3` 型号，参考各实验文件夹下 `vivado/z710v1.3/README.md` 里的说明。
+
+    ![](images/board.png){width=30%} 
+    
+    该板子型号是 BASYS 3，请查看本教程页面下面的说明。
+
+
 === "Windows"
     假设你的 Vivado 安装目录是 `C:\Xilinx`（其他目录自行修改）：
     ```bash

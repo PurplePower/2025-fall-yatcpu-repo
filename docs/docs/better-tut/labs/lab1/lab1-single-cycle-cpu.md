@@ -269,9 +269,9 @@ CPUBundle 是 CPU 和内存等外设进行数据交换的通道。
 请你观察 `Execute` 模块输入端口代码以及 CPU 结构图，填写 `Execute` 模块的输入与其他模块输出的连线。
 
 !!! note "实验任务"
-    请在 `core/CPU.scala` 的 `// lab1(CPU)` 注释处填入代码，并在lab1下运行 `sbt test`。
+    请在 `core/CPU.scala` 的 `// lab1(CPU)` 注释处填入代码以连接各CPU组件，使其能通过 `CPUTest` 里的各个测试。
 
-`sbt test` 会执行包括 CPUTest 以及上述所有单元测试，这一步完成后我们就成功构造出了一个 RISC-V 单周期 CPU 了!
+这一步通过后说明我们的单周期 CPU 能成功执行如 计算 Fibonacci 数列、快排等程序了！
 
 ## 使用自定义应用测试
 
