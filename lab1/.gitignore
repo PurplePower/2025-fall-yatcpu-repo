@@ -348,6 +348,15 @@ verilog/verilator/*
 !verilog/pynq/test.v
 !verilog/pynq/TMDS_PLLVR.v
 !verilog/verilator/sim_main.cpp
+# Chisel 生成产物（VerilogGenerator 输出），由学生本地的 Top.scala 生成
+verilog/z710/Top.v
+verilog/z710/Top.fir
+verilog/z710/Top.anno.json
+verilog/z710v1.3/Top.v
+verilog/z710v1.3/Top.fir
+verilog/z710v1.3/Top.anno.json
+# csrc 交叉编译输出目录
+csrc/build_*/
 *.jou
 *.log
 .Xil

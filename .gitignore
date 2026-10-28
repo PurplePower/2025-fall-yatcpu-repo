@@ -14,6 +14,7 @@ target
 
 **/hello_z710-test
 **/riscv-z710-v2020
+**/cloud_pynq
 .Xil
 
 # 
