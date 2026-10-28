@@ -72,17 +72,21 @@ git clone https://github.com/PurplePower/2025-fall-yatcpu-repo
 - Scala SDK 请使用 2.13.10 版本。Scala SDK 通常通过一个叫做 [Coursier](https://get-coursier.io/docs/cli-overview) 的安装工具辅助安装。具体安装请参考 [Scala 官方安装文档](https://docs.scala-lang.org/getting-started/install-scala.html)
 
 
-??? note "安装 vscode"
 
-    !!! warning "😦别搞混 vscode 和 vs"
-        虽然都是微软公司的软件，但 Visial Studio（VS）专为 Windows 上的 C++、C# 开发设计，而 Visual Studio Code（vscode）则更具普适性，适合各种系统的各种编程语言的开发。
+!!! warning "😦别搞混 vscode 和 vs"
+    虽然都是微软公司的软件，但 Visial Studio（VS）专为 Windows 上的 C++、C# 开发设计，而 Visual Studio Code（vscode）则更具普适性，适合各种系统的各种编程语言的开发。
 
-    在 [](https://code.visualstudio.com/download) 处下载适合的版本，一般为 Windows x64 版本。vscode 运行 scala 依赖于 Metals 这款插件，配置教程可看：[极客教程](https://geek-docs.com/scala/scala-questions/475_scala_how_to_run_an_existing_scala_project_using_vs_code_and_metals.html) 和 [Metals官方文档](https://scalameta.org/metals/docs/editors/vscode) 。
+在 [](https://code.visualstudio.com/download) 处下载适合的版本，一般为 Windows x64 版本。vscode 运行 scala 依赖于 Metals 这款插件，配置教程可看：[极客教程](https://geek-docs.com/scala/scala-questions/475_scala_how_to_run_an_existing_scala_project_using_vs_code_and_metals.html) 和 [Metals官方文档](https://scalameta.org/metals/docs/editors/vscode) 。
 
 
-    参照 [Using the Scala Installer (recommended way)](https://docs.scala-lang.org/getting-started/install-scala.html#install-scala-on-your-computer) ，在页面处下载 Coursier 工具，并跟随指引安装。Coursier 会自动安装 JDK 和 sbt 。
+参照 [Using the Scala Installer (recommended way)](https://docs.scala-lang.org/getting-started/install-scala.html#install-scala-on-your-computer) ，在页面处下载 Coursier 工具，并跟随指引安装。Coursier 会自动安装 JDK 和 sbt 。
 
-    完成这两项后，打开 vscode，打开 `lab1` 作为根目录。注意 vscode 右下角提示 "Import project" 时，点击导入项目，即可加载。
+
+完成这两项后，打开 vscode，打开 `lab1` 作为根目录。
+注意 vscode 右下角提示 "Import project" 时，点击导入项目。
+随后点击左侧 Metals 侧栏图标，切换构建服务器。若不切换，则实验项目会持续构建失败。
+
+![](images/vscode-switch-build-server.png){width=50%}
 
 ---
 
