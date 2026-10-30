@@ -44,6 +44,67 @@ lab1/vivado/cloud_pynq/cloud_pynq/cloud_pynq.runs/impl_1/design_1_wrapper.bit
 
 在云平台网页的 FPGA 烧录入口上传该 `.bit` 文件，等待烧录完成后按 RST。
 
+## 使用 Vivado 2020.1 + 2018 IP 生成 bitstream
+
+Vivado 2020.1 不能使用 `cg-fpga-vivado2022.1/ip_repo`，因为其中的
+`cg_fpga` 1.4 依赖 `v_vid_in_axi4s:5.0`，而 2020.1 只有 4.0。
+改用仓库中的 2018 IP：
+
+```text
+online-fpga/cg_fpga_2018_1_6_3/
+```
+
+该 IP 的 VLNV 为 `educg.net:user:cg_fpga:1.6.3`，在 Vivado 2020.1 中可
+完整走通 generate / synthesis / implementation / bitstream。
+
+2018 IP 比 1.4 多出 `PS7_MAXI`（AXI4-Lite master）和 `aresetn`。
+本工程不使用 PS 访问 PL，因此二者均保持未连接，由 Vivado 自动 tie-off；
+不要把它们引到顶层引脚。
+
+```bash
+cd lab1
+
+# 1. 生成程序 asmbin
+make program PROGRAM=seg_demo
+
+# 2. 生成对应的 Top.v（默认是 led_matrix_demo）
+sbt "runMain board.cloud_pynq.VerilogGenerator seg_demo"
+
+# 3. 用 Vivado 2020.1 生成 bitstream
+cd vivado/cloud_pynq
+vivado -mode batch -source generate_bitstream_2020.tcl
+```
+
+默认输出：
+
+```text
+lab1/vivado/cloud_pynq/cloud_pynq_2020/cloud_pynq_2020.runs/impl_1/design_1_wrapper.bit
+```
+
+为多个程序分别保留工程时，可用 `CG_FPGA_PROJECT_DIR` 指定工程目录：
+
+```powershell
+$env:CG_FPGA_PROJECT_DIR = "cp2020_seg"
+vivado -mode batch -source generate_bitstream_2020.tcl
+```
+
+本次已生成的三个 bitstream：
+
+```text
+lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_seg_demo.bit
+lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_led_matrix_demo.bit
+lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_say_goodbye.bit
+```
+
+| 程序 | 大小 | SHA256 |
+|---|---:|---|
+| `seg_demo` | 4,045,676 | `523250BFD16E3A9933320308576E7D9417F9DCCF2B290AE939C9AEA269A3C3B3` |
+| `led_matrix_demo` | 4,045,676 | `C739C9CB39AC5AF602BE64AEBE886955E7D5F4BE5EED5807A1B013D2DC30C6B7` |
+| `say_goodbye` | 4,045,676 | `AD8A5FB172A268067E8E0325169697A1898F46DF2996E707D5104B730EA5C9F4` |
+
+> `Top.v` 中的 `$readmemh` 路径在 Chisel elaboration 时固定，因此每个程序
+> 都必须重新执行第 2 步生成 `Top.v`，再重新综合。
+
 ## 连接关系
 
 `Top.scala` 是 `RawModule`，显式声明 `clock` / `reset_n`，BD 直接例化 `Top`，

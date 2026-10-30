@@ -194,8 +194,14 @@ class Top(binaryFilename: String = "led_matrix_demo.asmbin") extends RawModule {
 }
 
 object VerilogGenerator extends App {
+  // Allow selecting the embedded program without editing this file:
+  //   sbt "runMain board.cloud_pynq.VerilogGenerator seg_demo"
+  // Both "seg_demo" and "seg_demo.asmbin" are accepted.
+  val program = args.headOption.getOrElse("led_matrix_demo")
+  val binary  = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+
   (new ChiselStage).execute(
     Array("-X", "verilog", "-td", "verilog/cloud_pynq"),
-    Seq(ChiselGeneratorAnnotation(() => new Top("led_matrix_demo.asmbin")))
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
   )
 }

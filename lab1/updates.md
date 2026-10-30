@@ -396,3 +396,23 @@ asmbin → Top.v → synthesis → implementation → bitstream
 `led_matrix_demo` 在四块矩阵上分别显示 `R`、`I`、`S`、`C`，并作为
 cloud_pynq 的默认程序；重新构建使用统一的
 `asmbin -> Top.v -> Vivado bitstream` 流程。
+
+## 13. Vivado 2020.1 + cg_fpga 1.6.3
+
+- 2018 IP 路径：`online-fpga/cg_fpga_2018_1_6_3/`
+- VLNV：`educg.net:user:cg_fpga:1.6.3`
+- 2020.1 脚本：
+  - `lab1/vivado/cloud_pynq/open_project_2020.tcl`
+  - `lab1/vivado/cloud_pynq/generate_bitstream_2020.tcl`
+- 2018 IP 多出的 `PS7_MAXI` / `aresetn` 保持未连接，由 Vivado 自动 tie-off，
+  不要引到顶层引脚。
+- `Top.scala` 的 `VerilogGenerator` 支持程序名参数：
+  `sbt "runMain board.cloud_pynq.VerilogGenerator seg_demo"`。
+- `CMakeLists.txt` 的 `C_PROGRAMS` 补充 `seg_demo`。
+- 已生成：
+  - `bitstreams/cloud_pynq_2020_seg_demo.bit`
+  - `bitstreams/cloud_pynq_2020_led_matrix_demo.bit`
+  - `bitstreams/cloud_pynq_2020_say_goodbye.bit`
+- 三个工程 `cp2020_led` / `cp2020_seg` / `cp2020_say` 已加入 `.gitignore`。
+- 时序（Vivado 2020.1，50 MHz）：WNS 分别约 +0.304 / +0.757 / +0.800 ns，
+  均满足约束。

@@ -1,8 +1,11 @@
-# Generate the cloud_pynq bitstream with Vivado 2022.1.
+# Generate the cloud_pynq bitstream.
 #
-# Usage:
+# Usage (Vivado 2022.1 + cg_fpga 1.4):
 #   cd lab1/vivado/cloud_pynq
 #   vivado -mode batch -source generate_bitstream.tcl
+#
+# Usage (Vivado 2020.1 + cg_fpga 1.6.3):
+#   vivado -mode batch -source generate_bitstream_2020.tcl
 
 set script_dir [file normalize [file dirname [info script]]]
 cd $script_dir
@@ -35,7 +38,7 @@ if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
     exit 1
 }
 
-set bit [file normalize "cloud_pynq/cloud_pynq.runs/impl_1/design_1_wrapper.bit"]
+set bit [file normalize "$project_dir/$project_name.runs/impl_1/design_1_wrapper.bit"]
 if {![file exists $bit]} {
     puts "ERROR: bitstream not found: $bit"
     exit 1

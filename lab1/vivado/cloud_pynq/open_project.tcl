@@ -1,18 +1,34 @@
-# Build/open the cloud_pynq Vivado 2022.1 project.
+# Build/open the cloud_pynq Vivado project.
 #
 # Run from this directory, or source it from Vivado:
 #   cd lab1/vivado/cloud_pynq
 #   vivado -mode batch -source open_project.tcl
+#
+# The defaults target Vivado 2022.1 with the cg_fpga 1.4 IP.  The
+# open_project_2020.tcl wrapper overrides these environment variables for
+# Vivado 2020.1 and the 2018 cg_fpga 1.6.3 IP.
 
 set script_dir [file normalize [file dirname [info script]]]
 cd $script_dir
 
 set project_dir  "cloud_pynq"
-set project_name "cloud_pynq"
+if {[info exists ::env(CG_FPGA_PROJECT_DIR)]} {
+    set project_dir $::env(CG_FPGA_PROJECT_DIR)
+}
+set project_name [file tail $project_dir]
 set part         "xc7z020clg400-1"
 set board_part   "tul.com.tw:pynq-z2:part0:1.0"
 
 set ip_repo [file normalize "../../../online-fpga/cg-fpga-vivado2022.1/ip_repo"]
+if {[info exists ::env(CG_FPGA_IP_REPO)]} {
+    set ip_repo [file normalize $::env(CG_FPGA_IP_REPO)]
+}
+
+set ip_vlnv "educg.net:user:cg_fpga:1.4"
+if {[info exists ::env(CG_FPGA_IP_VLNV)]} {
+    set ip_vlnv $::env(CG_FPGA_IP_VLNV)
+}
+
 set top_v   [file normalize "../../verilog/cloud_pynq/Top.v"]
 
 if {![file exists $top_v]} {
@@ -39,7 +55,7 @@ update_compile_order -fileset sources_1
 if {[llength [get_files -quiet design_1.bd]] == 0} {
     create_bd_design "design_1"
 
-    create_bd_cell -type ip -vlnv educg.net:user:cg_fpga:1.4 cg_fpga_0
+    create_bd_cell -type ip -vlnv $ip_vlnv cg_fpga_0
     create_bd_cell -type module -reference Top Top_0
 
     # 100 MHz -> 50 MHz for Memory/UART/Seg/LED matrix/ROM. Top divides CPU by 4 again.
