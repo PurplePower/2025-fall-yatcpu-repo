@@ -315,7 +315,7 @@ online-fpga/cg-fpga-vivado2022.1/docs/riscv_cpu_integration.md
 | `lab1/csrc/link.lds` | 统一链接布局 | 通用，按 BRAM 大小/入口调整 |
 | `lab1/csrc/init.S` | 栈、bss 清零 | 通用，依赖 linker symbol |
 | `lab1/csrc/say_goodbye.c` | UART 轮询、CRLF、pace | 通用，pace 按平台 FIFO/轮询调整 |
-| `lab1/csrc/seg_demo.c` | 数码管 demo | cloud_pynq 专用 |
+| `lab1/csrc/led_control_demo.c` | 数码管 + LED 矩阵合并 demo | cloud_pynq 专用 |
 | `lab1/csrc/CMakeLists.txt` | 统一构建 | 通用，改程序列表 |
 | `lab1/csrc/toolchain.cmake` | RISC-V GCC 工具链 | 通用，按工具链前缀调整 |
 | `lab1/csrc/build.bat` / `build.sh` | Windows/Linux 构建入口 | 通用 |
@@ -416,3 +416,14 @@ cloud_pynq 的默认程序；重新构建使用统一的
 - 三个工程 `cp2020_led` / `cp2020_seg` / `cp2020_say` 已加入 `.gitignore`。
 - 时序（Vivado 2020.1，50 MHz）：WNS 分别约 +0.304 / +0.757 / +0.800 ns，
   均满足约束。
+
+## 14. LED 控制 demo 合并
+
+- `seg_demo.c` 和 `led_matrix_demo.c` 合并为 `led_control_demo.c`。
+- 程序同时初始化 8 位数码管（显示 `1 2 3 4 5 6 7 8`）和四块 16x16
+  LED 矩阵（显示 `R I S C`）。
+- 修正 LED 矩阵水平镜像：软件位图改为 bit0 对应最左列，
+  使用 `pixels |= 1u << col`，硬件仍负责取反为低有效 `ledm_data`。
+- `CMakeLists.txt`、`Top.scala` 默认程序、`README.md` 同步更新。
+- 新 bitstream：`bitstreams/cloud_pynq_2020_led_control_demo.bit`；
+  旧的 `seg_demo` / `led_matrix_demo` bitstream 已不再生成。

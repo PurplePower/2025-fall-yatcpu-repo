@@ -36,7 +36,7 @@ import riscv.core.CPU
   *
   * 这样 CPU 比 Memory 慢 4 倍，满足同步读 BRAM 的时序要求。
   */
-class Top(binaryFilename: String = "led_matrix_demo.asmbin") extends RawModule {
+class Top(binaryFilename: String = "led_control_demo.asmbin") extends RawModule {
   val clock   = IO(Input(Clock()))
   val reset_n = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
 
@@ -195,9 +195,9 @@ class Top(binaryFilename: String = "led_matrix_demo.asmbin") extends RawModule {
 
 object VerilogGenerator extends App {
   // Allow selecting the embedded program without editing this file:
-  //   sbt "runMain board.cloud_pynq.VerilogGenerator seg_demo"
-  // Both "seg_demo" and "seg_demo.asmbin" are accepted.
-  val program = args.headOption.getOrElse("led_matrix_demo")
+  //   sbt "runMain board.cloud_pynq.VerilogGenerator led_control_demo"
+  // Both "led_control_demo" and "led_control_demo.asmbin" are accepted.
+  val program = args.headOption.getOrElse("led_control_demo")
   val binary  = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
 
   (new ChiselStage).execute(

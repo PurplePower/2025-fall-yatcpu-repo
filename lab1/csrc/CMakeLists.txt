@@ -5,7 +5,7 @@ project(yatcpu-programs C CXX ASM)
 # Setting variables
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
-set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu say_goodbye seg_demo led_matrix_demo)
+set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu say_goodbye led_control_demo)
 set(ASM_PROGRAMS mmio sb)
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link.lds)
 set(LINKER_FLAGS -T ${LINKER_SCRIPT}) 
@@ -32,7 +32,7 @@ endforeach()
 target_compile_options(say_goodbye PRIVATE -O2)
 
 # Convenience target used by the top-level Makefile.
-add_custom_target(cloud_pynq DEPENDS led_matrix_demo)
+add_custom_target(cloud_pynq DEPENDS led_control_demo)
 
 foreach(program IN LISTS ASM_PROGRAMS)
 	add_executable(${program} ${program}.S)

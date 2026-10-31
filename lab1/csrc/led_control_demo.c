@@ -22,7 +22,15 @@ static const unsigned char glyphs[LEDM_PANELS][7] = {
     {0x0F, 0x10, 0x10, 0x10, 0x10, 0x10, 0x0F}
 };
 
-int main(void) {
+// Common-cathode 7-segment patterns, active high.
+static const unsigned char seg_code[16] = {
+    0x3F, 0x06, 0x5B, 0x4F,
+    0x66, 0x6D, 0x7D, 0x07,
+    0x7F, 0x6F, 0x77, 0x7C,
+    0x39, 0x5E, 0x79, 0x71
+};
+
+static void show_led_matrix(void) {
     unsigned int panel;
 
     // Show one 10x14 glyph, centered on each 16x16 panel: R I S C.
@@ -39,17 +47,34 @@ int main(void) {
                     unsigned int mask = 1u << (4u - glyph_col);
 
                     if ((glyphs[panel][glyph_row] & mask) != 0u) {
-                        // Software bit 15 is the leftmost column. The controller
-                        // converts this active-high bitmap to active-low outputs.
-                        pixels |= (unsigned short) (1u << (15u - col));
+                        // Software bit 0 is the leftmost column. The
+                        // controller converts this active-high bitmap to
+                        // active-low ledm_data outputs.
+                        pixels |= (unsigned short) (1u << col);
                     }
                 }
             }
             ledm_set_row(panel, row, pixels);
         }
     }
+}
+
+static void show_seven_segment(void) {
+    unsigned int i;
+
+    // cloud_pynq's seg_data is active low: 0 lights the segment.
+    // seg_code is the common-cathode active-high pattern, so invert it.
+    for (i = 0; i < 8u; ++i) {
+        seg_set(i, (unsigned char) ~seg_code[(i + 1u) & 0xFu]);
+    }
+}
+
+int main(void) {
+    show_led_matrix();
+    show_seven_segment();
 
     for (;;) {
-        // The LED matrix controller refreshes all four panels in hardware.
+        // Both the LED matrices and the seven-segment display are refreshed
+        // by hardware, so the CPU only needs to initialize them once.
     }
 }

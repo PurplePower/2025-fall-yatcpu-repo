@@ -21,11 +21,11 @@
 
 ```bash
 cd lab1
-make cloud-pynq-program   # 生成 src/main/resources/led_matrix_demo.asmbin
+make cloud-pynq-program   # 生成 src/main/resources/led_control_demo.asmbin
 make cloud_pynq           # 生成 verilog/cloud_pynq/Top.v
 
-# 当前 cloud_pynq 默认运行 led_matrix_demo，在四个矩阵上显示 R I S C。
-# 如需构建其他程序，可使用统一入口：
+# 当前 cloud_pynq 默认运行 led_control_demo：四块矩阵显示 R I S C，
+# 8 位数码管显示 1~8。如需构建其他程序，可使用统一入口：
 make program PROGRAM=say_goodbye
 ```
 
@@ -65,10 +65,10 @@ online-fpga/cg_fpga_2018_1_6_3/
 cd lab1
 
 # 1. 生成程序 asmbin
-make program PROGRAM=seg_demo
+make program PROGRAM=led_control_demo
 
-# 2. 生成对应的 Top.v（默认是 led_matrix_demo）
-sbt "runMain board.cloud_pynq.VerilogGenerator seg_demo"
+# 2. 生成对应的 Top.v（默认是 led_control_demo）
+sbt "runMain board.cloud_pynq.VerilogGenerator led_control_demo"
 
 # 3. 用 Vivado 2020.1 生成 bitstream
 cd vivado/cloud_pynq
@@ -84,22 +84,20 @@ lab1/vivado/cloud_pynq/cloud_pynq_2020/cloud_pynq_2020.runs/impl_1/design_1_wrap
 为多个程序分别保留工程时，可用 `CG_FPGA_PROJECT_DIR` 指定工程目录：
 
 ```powershell
-$env:CG_FPGA_PROJECT_DIR = "cp2020_seg"
+$env:CG_FPGA_PROJECT_DIR = "cp2020_ctrl"
 vivado -mode batch -source generate_bitstream_2020.tcl
 ```
 
-本次已生成的三个 bitstream：
+本次已生成的 cloud_pynq bitstream：
 
 ```text
-lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_seg_demo.bit
-lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_led_matrix_demo.bit
+lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_led_control_demo.bit
 lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_say_goodbye.bit
 ```
 
 | 程序 | 大小 | SHA256 |
 |---|---:|---|
-| `seg_demo` | 4,045,676 | `523250BFD16E3A9933320308576E7D9417F9DCCF2B290AE939C9AEA269A3C3B3` |
-| `led_matrix_demo` | 4,045,676 | `C739C9CB39AC5AF602BE64AEBE886955E7D5F4BE5EED5807A1B013D2DC30C6B7` |
+| `led_control_demo` | 4,045,676 | `7AB22FEC12CC8B30405E78AC8D0A417B60BA8AEF168A3F4A50D439BBF2CB3ADC` |
 | `say_goodbye` | 4,045,676 | `AD8A5FB172A268067E8E0325169697A1898F46DF2996E707D5104B730EA5C9F4` |
 
 > `Top.v` 中的 `$readmemh` 路径在 Chisel elaboration 时固定，因此每个程序
@@ -167,11 +165,12 @@ LED 矩阵帧缓存（32 位写，低 16 位有效）：
 ```text
 LEDM_BASE + (panel * 16 + row) * 4
 panel = 0..3（从左到右），row = 0..15（从上到下）
-bit[15:0] = 行位图（软件写 1 点亮，硬件输出时取反）
+bit[15:0] = 行位图（bit0 为最左列；软件写 1 点亮，硬件输出时取反）
 ```
 
-硬件以约 200 us/行独立扫描四块矩阵。当前默认程序 `led_matrix_demo.c`
-在四块矩阵上分别显示 `R`、`I`、`S`、`C`；`say_goodbye.c` 仍可用于 UART 演示。
+硬件以约 200 us/行独立扫描四块矩阵。当前默认程序 `led_control_demo.c`
+在四块矩阵上分别显示 `R`、`I`、`S`、`C`，同时在 8 位数码管上显示
+`1 2 3 4 5 6 7 8`；`say_goodbye.c` 仍可用于 UART 演示。
 
 ## 说明
 
