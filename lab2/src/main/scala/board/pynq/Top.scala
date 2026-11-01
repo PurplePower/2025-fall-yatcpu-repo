@@ -66,6 +66,8 @@ class Top extends Module {
 
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
+    uart.io.receive_read := rom_loader.io.load_finished && CPU_tick &&
+      cpu.io.deviceSelect === 2.U && mem.io.instruction(6, 0) === "b0000011".U
     cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
     cpu.io.csr_regs_debug_read_address := 0.U
     cpu.io.regs_debug_read_address := 0.U

@@ -356,3 +356,11 @@ vivado/pynq/riscv-pynq
 vivado/pynq/NA
 .vscode
 .metals
+
+# cloud_pynq generated outputs (sources and scripts remain tracked)
+csrc/build_cloud_pynq/
+verilog/cloud_pynq/
+vivado/cloud_pynq/cloud_pynq/
+vivado/cloud_pynq/cloud_pynq_2020/
+vivado/cloud_pynq/cp2020_lab2/
+vivado/cloud_pynq/bitstreams/

@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ifeq ($(OS),Windows_NT)
+CMAKE_GENERATOR = -G "MinGW Makefiles"
+EXE_EXT = .exe
+endif
+PROGRAM ?= led_control_demo
+VIVADO ?= vivado
+
 test:
 	sbt test
 
@@ -59,3 +66,40 @@ vivado-sim-z710: z710
 	cd vivado/z710 && vivado -mode batch -source run_simulation.tcl
 
 .PHONY: basys3 verilator z710 test bitstream program verilator-sim vivado-sim
+
+program:
+	cmake -S csrc -B csrc/build_cloud_pynq $(CMAKE_GENERATOR) -DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake"
+	cmake --build csrc/build_cloud_pynq --target $(PROGRAM) --parallel
+
+cloud-pynq-program: program
+
+cloud_pynq: program
+	sbt "runMain board.cloud_pynq.VerilogGenerator $(PROGRAM)"
+
+bitstream-cloud_pynq: cloud_pynq
+	cd vivado/cloud_pynq && $(VIVADO) -mode batch -source generate_bitstream.tcl
+
+bitstream-cloud_pynq-2020: cloud_pynq
+	cd vivado/cloud_pynq && $(VIVADO) -mode batch -source generate_bitstream_2020.tcl
+
+z710v1.3:
+	sbt "runMain board.z710v1_3.VerilogGenerator"
+
+.PHONY: program cloud-pynq-program cloud_pynq bitstream-cloud_pynq bitstream-cloud_pynq-2020 z710v1.3
+
+# Run from a shell with Verilator, make and native g++ on PATH (MSYS2 MinGW64 on Windows).
+native-cloud-test: cloud_pynq
+	verilator --cc --exe --build -j 4 --top-module Top -Wno-fatal --Mdir target/cloud-native verilog/cloud_pynq/Top.v "$(CURDIR)/verilog/cloud_timer_sim.cpp"
+	./target/cloud-native/VTop$(EXE_EXT)
+
+.PHONY: native-cloud-test
+
+# Test the production UART player without replacing the LED-demo Vivado RTL.
+native-goodbye-test:
+	cmake -S csrc -B csrc/build_cloud_pynq $(CMAKE_GENERATOR) -DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake"
+	cmake --build csrc/build_cloud_pynq --target say_goodbye --parallel
+	sbt "Test / runMain riscv.CloudGoodbyeVerilog"
+	verilator --cc --exe --build -j 4 --top-module Top -Wno-fatal --Mdir target/goodbye-native target/goodbye-verilog/Top.v "$(CURDIR)/verilog/cloud_goodbye_sim.cpp"
+	./target/goodbye-native/VTop$(EXE_EXT)
+
+.PHONY: native-goodbye-test
