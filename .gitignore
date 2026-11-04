@@ -17,7 +17,10 @@ target
 .Xil
 
 # Answers
-**/lab*_ans.yaml
+**/lab*_ans*.yaml
 
 # github pages
 site/**/*
+
+# private AGENTS.md
+AGENTS.md
