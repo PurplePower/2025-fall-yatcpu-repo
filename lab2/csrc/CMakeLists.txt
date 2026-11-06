@@ -5,7 +5,10 @@ project(yatcpu-programs C CXX ASM)
 # Setting variables
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
-set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu simpletest say_goodbye led_control_demo)
+set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu simpletest say_goodbye led_control_demo pi)
+# pi.c uses the 1 MHz MTime MMIO counter, so it does not depend on the CPU clock.
+set(PI_COMPUTE_DIGITS 200 CACHE STRING "Number of pi digits computed by pi.c")
+set(PI_PRINT_DIGITS 20 CACHE STRING "Number of pi decimals printed by pi.c")
 set(ASM_PROGRAMS mmio sb)
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link.lds)
 set(LINKER_FLAGS -T ${LINKER_SCRIPT}) 
@@ -30,6 +33,12 @@ endforeach()
 # Optimize the cloud demos' foreground MMIO polling loops.
 target_compile_options(say_goodbye PRIVATE -O2)
 target_compile_options(led_control_demo PRIVATE -O2)
+# pi.c is the compute benchmark; keep its software M-extension visible
+# (no builtins) and optimize the integer loop.
+target_compile_options(pi PRIVATE -O2 -fno-builtin -fno-stack-protector)
+target_compile_definitions(pi PRIVATE
+	PI_COMPUTE_DIGITS=${PI_COMPUTE_DIGITS}
+	PI_PRINT_DIGITS=${PI_PRINT_DIGITS})
 # Fast functional simulation uses the same source and startup, a shorter period only.
 add_executable(led_control_demo_fast EXCLUDE_FROM_ALL led_control_demo.c)
 target_compile_options(led_control_demo_fast PRIVATE -O2)

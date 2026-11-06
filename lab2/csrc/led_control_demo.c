@@ -107,10 +107,8 @@ int main(void) {
             shown = now;
         }
         // Echo one received byte in the foreground; never block the ISR on TX.
-        if (received_valid && (*UART_STAT & 1u)) {
-            unsigned int ch = received;
+        if (received_valid && uart_try_putc((char) received)) {
             received_valid = 0;
-            *UART_SEND = ch;
         }
     }
 }

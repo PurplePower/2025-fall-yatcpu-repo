@@ -8,6 +8,16 @@ set_property IOSTANDARD LVCMOS33 [get_ports io_clock];
 set_property PACKAGE_PIN U18 [get_ports io_clock];
 create_clock -period 20.000 -name io_clock -waveform {0.000 10.000} -add [get_ports io_clock];
 
+# This board uses CPU_tick = (CPU_clkdiv == 0), a one-cycle pulse every
+# four master cycles.  Preserve its 25% duty cycle in the timing model.
+# After reset to zero it falls on source edge 1, then rises/falls/rises
+# on edges 7, 9 and 15.  Find the actual clock driver from the CPU clock net
+# so the constraint does not depend on the synthesized LUT/BUFG name.
+set cpu_clock_nets [get_nets -segments -of_objects [get_pins -hierarchical -filter {NAME =~ */regs/clock}]]
+set cpu_clock_driver [get_pins -leaf -of_objects $cpu_clock_nets -filter {DIRECTION == OUT}]
+set cpu_div_c [get_pins -of_objects [get_cells -hierarchical -regexp {.*CPU_clkdiv_reg\[1\]}] -filter {REF_PIN_NAME == C}]
+create_generated_clock -name cpu_clk -source $cpu_div_c -edges {7 9 15} $cpu_clock_driver
+
 # LEDs
 set_property IOSTANDARD LVCMOS33 [get_ports io_led];
 set_property PACKAGE_PIN J16 [get_ports io_led];   # PL_LED0

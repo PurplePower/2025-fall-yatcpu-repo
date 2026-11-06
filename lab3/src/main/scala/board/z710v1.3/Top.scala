@@ -36,6 +36,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   // val display = Module(new CharacterDisplay)
   val timer = Module(new Timer)
   val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200))
+  val mtime = Module(new MTime(clock_freq))
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
@@ -67,6 +68,11 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
     cpu.io.debug_read_address := 0.U
+    mtime.io.address := cpu.io.memory_bundle.address
+    uart.io.receive_read := rom_loader.io.load_finished &&
+      cpu.io.device_select === 2.U &&
+      cpu.io.memory_bundle.address === 0xC.U &&
+      !cpu.io.memory_bundle.write_enable
 
     when(!rom_loader.io.load_finished) {
       rom_loader.io.bundle <> mem.io.bundle
@@ -77,6 +83,8 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
         cpu.io.memory_bundle <> timer.io.bundle
       }.elsewhen(cpu.io.device_select === 2.U) { // deviceSelect = highest 3 bits of address, thus 0x4000_0000 is mapped to UART
         cpu.io.memory_bundle <> uart.io.bundle
+      }.elsewhen(cpu.io.device_select === 6.U) {
+        cpu.io.memory_bundle.read_data := mtime.io.read_data
       }.otherwise {
         cpu.io.memory_bundle <> mem.io.bundle
       }
@@ -104,5 +112,12 @@ object VerilogGenerator extends App {
   (new ChiselStage).execute(
     Array("-X", "verilog", "-td", "verilog/z710v1.3"), 
     Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
+  )
+}
+
+object PiVerilogGenerator extends App {
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", "verilog/z710v1.3"),
+    Seq(ChiselGeneratorAnnotation(() => new Top("pi.asmbin")))
   )
 }

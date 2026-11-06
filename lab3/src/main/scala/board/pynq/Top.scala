@@ -71,6 +71,10 @@ class Top extends Module {
     cpu.io.instruction_valid := instruction_valid
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
+    uart.io.receive_read := rom_loader.io.load_finished &&
+      cpu.io.device_select === 2.U &&
+      cpu.io.memory_bundle.address === 0xC.U &&
+      !cpu.io.memory_bundle.write_enable
 
     when(!rom_loader.io.load_finished) {
       rom_loader.io.bundle <> mem.io.bundle

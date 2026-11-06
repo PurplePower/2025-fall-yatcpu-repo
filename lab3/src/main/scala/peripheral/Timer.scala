@@ -33,28 +33,32 @@ class Timer extends Module {
   val enabled = RegInit(true.B)
   io.debug_enabled := enabled
 
-  io.bundle.read_data := MuxLookup(
-    io.bundle.address,
-    0.U,
-    IndexedSeq(
-      0x4.U -> limit,
-      0x8.U -> enabled.asUInt,
-    )
-  )
+  //lab2(CLINTCSR)
+  val limit_bound_addr = "x0000_0004".U
+  val enabled_bound_addr = "x0000_0008".U
   when(io.bundle.write_enable) {
-    when(io.bundle.address === 0x4.U) {
+    when(io.bundle.address === limit_bound_addr) {
       limit := io.bundle.write_data
-      count := 0.U
-    }.elsewhen(io.bundle.address === 0x8.U) {
-      enabled := io.bundle.write_data =/= 0.U
+      // printf(cf"[Timer] writing limit with 0x${io.bundle.write_data}%x\n")
+    }
+    .elsewhen(io.bundle.address === enabled_bound_addr) {
+      enabled := io.bundle.write_data
+      // printf(cf"[Timer] writing enable with 0x${io.bundle.write_data}%x\n")
     }
   }
 
-  io.signal_interrupt := enabled && (count >= (limit - 10.U))
+
+  io.bundle.read_data := MuxCase(0.U, Array(
+    (io.bundle.address === limit_bound_addr) -> limit,
+    (io.bundle.address === enabled_bound_addr) -> enabled
+  ).toIndexedSeq)
+
+  io.signal_interrupt := count >= (limit - 1.U) && enabled
 
   when(count >= limit) {
     count := 0.U
   }.otherwise {
     count := count + 1.U
   }
+  //finish the read-write for count,limit,enabled. And produce appropriate signal_interrupt
 }

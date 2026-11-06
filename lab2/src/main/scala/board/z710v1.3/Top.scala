@@ -41,6 +41,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   val CPU_tick = CPU_clkdiv === 1.U
   val cpu = withClock(CPU_clkdiv(1).asClock) { Module(new CPU) }
   val timer = withClock(CPU_clkdiv(1).asClock) { Module(new Timer) }
+  val mtime = Module(new MTime(clock_freq))
   val loading = !rom_loader.io.load_finished
   cpu.io.instruction_valid := !loading
   cpu.io.instruction := mem.io.instruction
@@ -65,8 +66,10 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   timer.io.bundle.write_data := cpu.io.memory_bundle.write_data
   timer.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
   timer.io.bundle.write_enable := !loading && cpu.io.deviceSelect === 4.U && cpu.io.memory_bundle.write_enable
+  mtime.io.address := cpu.io.memory_bundle.address
   cpu.io.memory_bundle.read_data := Mux(loading, 0.U, MuxLookup(cpu.io.deviceSelect, 0.U)(Seq(
-    0.U -> mem.io.bundle.read_data, 2.U -> uart.io.bundle.read_data, 4.U -> timer.io.bundle.read_data)))
+    0.U -> mem.io.bundle.read_data, 2.U -> uart.io.bundle.read_data, 4.U -> timer.io.bundle.read_data,
+    6.U -> mtime.io.read_data)))
   val led_count = RegInit(0.U(32.W))
   led_count := Mux(led_count === (clock_freq - 1).U, 0.U, led_count + 1.U)
   io.led := led_count >= (clock_freq / 2).U
@@ -75,4 +78,9 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 object VerilogGenerator extends App {
   (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/z710v1.3"),
     Seq(ChiselGeneratorAnnotation(() => new Top)))
+}
+
+object PiVerilogGenerator extends App {
+  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/z710v1.3"),
+    Seq(ChiselGeneratorAnnotation(() => new Top("pi.asmbin"))))
 }

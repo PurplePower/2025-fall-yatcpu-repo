@@ -106,6 +106,7 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     val uart = Module(new Uart(frequency = clock_freq, baudRate = 9600))
     val seg  = Module(new SegDisplay(frequency = clock_freq, refreshUs = 1000))
     val ledm = Module(new LedMatrixDisplay(frequency = clock_freq, refreshUs = 200))
+    val mtime = Module(new MTime(clock_freq))
 
     val instruction_rom = Module(new InstructionROM(binaryFilename))
     val rom_loader      = Module(new ROMLoader(instruction_rom.capacity))
@@ -155,6 +156,7 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     timer.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
     // Timer shares the CPU clock; no fast-domain write pulse here.
     timer.io.bundle.write_enable := !loading && cpu.io.deviceSelect === 4.U && cpu.io.memory_bundle.write_enable
+    mtime.io.address := cpu.io.memory_bundle.address
 
     // 启动时 ROMLoader 写 RAM；启动完成后 CPU 访问 RAM/外设。
     when(loading) {
@@ -203,7 +205,8 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
         2.U(3.W) -> uart.io.bundle.read_data,
         3.U(3.W) -> seg.io.bundle.read_data,
         4.U(3.W) -> timer.io.bundle.read_data,
-        5.U(3.W) -> ledm.io.bundle.read_data
+        5.U(3.W) -> ledm.io.bundle.read_data,
+        6.U(3.W) -> mtime.io.read_data
       )
     )
     cpu.io.memory_bundle.read_data := Mux(loading, 0.U, mmio_read)

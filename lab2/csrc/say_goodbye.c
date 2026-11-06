@@ -87,8 +87,8 @@ int main(void)
         // Never wait for TX or sleep in the ISR/foreground. Commands continue
         // to be consumed while output is paced or the TX buffer is occupied.
         if (separator) {
-            if (due(now, next_byte) && (*UART_STAT & 1u)) {
-                *UART_SEND = separator == 2u ? '\r' : '\n';
+            if (due(now, next_byte) &&
+                uart_try_putc(separator == 2u ? '\r' : '\n')) {
                 --separator;
                 next_byte = now + 1u;
             }
@@ -101,12 +101,15 @@ int main(void)
             offset = 0;
             next_line = now + TICKS_PER_LINE;
         }
-        if (active_line && due(now, next_byte) && (*UART_STAT & 1u)) {
-            *UART_SEND = (unsigned char) lyrics[line][offset++];
-            next_byte = now + 1u;
-            if (lyrics[line][offset] == '\0') {
-                active_line = 0;
-                if (++line == LINE_COUNT) playing = 0;
+        if (active_line && due(now, next_byte)) {
+            unsigned char ch = (unsigned char) lyrics[line][offset];
+            if (uart_try_putc((char) ch)) {
+                ++offset;
+                next_byte = now + 1u;
+                if (lyrics[line][offset] == '\0') {
+                    active_line = 0;
+                    if (++line == LINE_COUNT) playing = 0;
+                }
             }
         }
     }

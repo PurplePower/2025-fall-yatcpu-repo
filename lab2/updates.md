@@ -113,3 +113,20 @@ Vivado 2022.1 + cg_fpga 1.4 的入口已迁移并通过综合；对比构建在 
 
 该比特流播放仓库原有的两行歌词片段，支持 `p` 继续、`s` 暂停、`r` 换行后从头重播。
 此前交付的 LED 演示比特流及报告保留。云平台实际烧录与网页 UART 显示仍需上板验证。
+
+## pi 比特流交付（2026-11-06）
+
+- 使用 Vivado 2020.1、cg_fpga 1.6.3、`xc7z020clg400-1`，在独立源码/RTL/ROM 快照和新工程中完整构建。
+- 比特流：[cloud_pynq_2020_pi.bit](vivado/cloud_pynq/bitstreams/pi/cloud_pynq_2020_pi.bit)。主时钟 40 MHz，CPU/Timer 10 MHz，MTime 1 MHz，UART 9600 8-N-1。
+- 默认计算 200 位、输出 20 位小数；正式 ROM 的 UART 引脚仿真输出 `3.14159265358979323846`，计时 7206.324 ms，周期计数/MTime 比例检查通过。
+- 最终 WNS +1.247 ns、WHS +0.051 ns、WPWS +3.000 ns，setup/hold/pulse-width 违例数均为 0；完整 `check_timing` 各项均为 0。
+- DRC 无 Error/Critical Warning，保留平台 IP 的 1 项 warning、3 项 advisory。
+- 固件、源码快照、源码哈希、比特流 SHA-256、仿真日志、最终报告和布线 checkpoint 均保存在 `vivado/cloud_pynq/bitstreams/pi/`；尚未在云平台实际烧录。
+
+## 提交前恢复学生框架与清理（2026-11-06）
+
+- 恢复 CSR、Execute、CLINT、Timer 四个填空文件，与仓库原学生框架逐字节一致。
+- 已核对本地 `misc/lab2_ans.yaml` 能完整还原恢复前的实现；参考答案继续由 Git 忽略。
+- 学生框架的 `sbt "Test / compile"` 通过；上述功能仿真和比特流结果对应完成填空后的 CPU。
+- 清理根目录和 Vivado 入口目录中的临时日志及 journal；本文此前列出的根目录临时日志已移除，交付目录中的归档验证记录保留。
+- 补齐 z710/z710v1.3 生成 RTL、时序实验工程和报告目录的忽略规则。现有比特流及完整交付包保留，不纳入源码提交。

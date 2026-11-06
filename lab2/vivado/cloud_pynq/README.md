@@ -14,6 +14,10 @@ Timer ISR 只递增 `seconds`，主循环根据它更新显示。变化不是忙
 网页 UART 输入单个字符后，UART ISR 读取字符，主循环回显一次；串口设置为
 9600、8 数据位、无校验、1 停止位。GPIO LED 显示取反后的 PC。
 
+仓库中的 CPU 和 Timer 保留学生填空框架。重新生成 RTL、运行功能测试或构建
+比特流前，需要先完成 lab2 的实验填空；下述验证结果对应已完成填空的实现。
+现有比特流不受源码恢复为学生框架的影响。
+
 ## 已生成的比特流
 
 2026-11-01 使用 Vivado 2020.1、cg_fpga 1.6.3、`xc7z020clg400-1` 生成：
@@ -173,3 +177,17 @@ CLINT 仍为课程简化实现，Timer 与 UART 同时发生时沿用原中断�
 
 上传最终 `.bit` 后按 RST，观察四秒样式循环、复位回到初始样式、单字符 UART 回显。
 实际网页显示、云端 UART FIFO 服务速度和复位行为需要云平台上板确认。
+
+## pi 比特流交付（2026-11-06）
+
+已生成 [cloud_pynq_2020_pi.bit](bitstreams/pi/cloud_pynq_2020_pi.bit)，
+使用 Vivado 2020.1 / cg_fpga 1.6.3 / `xc7z020clg400-1`。
+主时钟 40 MHz，CPU/Timer 10 MHz，UART 9600 8-N-1，MTime 1 MHz。
+程序按默认参数计算 200 位，输出小数点后 20 位。
+
+- 实现后 WNS +1.247 ns、WHS +0.051 ns、WPWS +3.000 ns，setup/hold/pulse-width 违例数均为 0。
+- `check_timing` 各检查项均为 0；DRC 无 Error/Critical Warning，保留平台 IP 的 1 项 warning、3 项 advisory。
+- 正式 ROM 的 UART 引脚仿真输出 `3.14159265358979323846`，并通过计算位数、周期计数与 MTime 比例检查；仿真计时为 7206.324 ms。
+- [构建清单](bitstreams/pi/build_manifest.json)、[SHA-256](bitstreams/pi/SHA256SUMS.txt)、[仿真日志](bitstreams/pi/native.log)、[最终时序报告](bitstreams/pi/reports/timing_summary.rpt)、[源码快照](bitstreams/pi/source_snapshot.zip)和最终布线 checkpoint 一并归档。
+
+尚未在云平台实际烧录验证。
