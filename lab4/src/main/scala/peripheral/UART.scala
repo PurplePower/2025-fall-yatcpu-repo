@@ -14,11 +14,10 @@
 
 package peripheral
 
-import bus.{AXI4LiteChannels}
-import bus.AXI4LiteSlave
+import bus.{AXI4LiteChannels, AXI4LiteSlave}
+import riscv.Parameters
 import chisel3._
 import chisel3.util._
-import riscv.Parameters
 
 class UartIO extends DecoupledIO(UInt(8.W)) {
 }
@@ -38,7 +37,11 @@ class Tx(frequency: Int, baudRate: Int) extends Module {
 
   val BIT_CNT = ((frequency + baudRate / 2) / baudRate - 1).U
 
-  val shiftReg = RegInit(0x7ff.U)
+  // 1 start bit + 8 data bits + 1 stop bit = 10 bits.
+  // The shift register must be exactly 10 bits wide; otherwise the unused
+  // high bit is shifted out after the stop bit and is seen as an extra start
+  // bit by the receiver (which produces a spurious 0xFF frame).
+  val shiftReg = RegInit(0x3ff.U)
   val cntReg = RegInit(0.U(20.W))
   val bitsReg = RegInit(0.U(4.W))
 
@@ -50,14 +53,14 @@ class Tx(frequency: Int, baudRate: Int) extends Module {
     cntReg := BIT_CNT
     when(bitsReg =/= 0.U) {
       val shift = shiftReg >> 1
-      shiftReg := Cat(1.U, shift(9, 0))
+      shiftReg := Cat(1.U, shift(8, 0))
       bitsReg := bitsReg - 1.U
     }.otherwise {
       when(io.channel.valid) {
-        shiftReg := Cat(Cat(3.U, io.channel.bits), 0.U) // two stop bits, data, one start bit
-        bitsReg := 11.U
+        shiftReg := Cat(Cat(1.U, io.channel.bits), 0.U) // one stop bit, data, one start bit
+        bitsReg := 10.U
       }.otherwise {
-        shiftReg := 0x7ff.U
+        shiftReg := 0x3ff.U
       }
     }
 
@@ -151,6 +154,10 @@ class BufferedTx(frequency: Int, baudRate: Int) extends Module {
   val io = IO(new Bundle {
     val txd = Output(UInt(1.W))
     val channel = Flipped(new UartIO())
+    // High when the single-byte buffer is empty and can accept a new byte.
+    // This is a level signal that stays valid for a whole frame time, so a
+    // slower CPU can poll it reliably (unlike Tx.ready, which is one cycle).
+    val ready = Output(Bool())
 
   })
   val tx = Module(new Tx(frequency, baudRate))
@@ -159,6 +166,7 @@ class BufferedTx(frequency: Int, baudRate: Int) extends Module {
   buf.io.in <> io.channel
   tx.io.channel <> buf.io.out
   io.txd <> tx.io.txd
+  io.ready := buf.io.in.ready
 }
 
 class Uart(frequency: Int, baudRate: Int) extends Module {
@@ -170,7 +178,8 @@ class Uart(frequency: Int, baudRate: Int) extends Module {
     val signal_interrupt = Output(Bool())
   })
   val interrupt = RegInit(false.B)
-  val rxData = RegInit(0.U)
+  val rxData = RegInit(0.U(8.W))
+  val rxValid = RegInit(false.B)
   val slave = Module(new AXI4LiteSlave(8, Parameters.DataBits))
   slave.io.channels <> io.channels
 
@@ -179,18 +188,25 @@ class Uart(frequency: Int, baudRate: Int) extends Module {
 
   slave.io.bundle.read_data := 0.U
   slave.io.bundle.read_valid := true.B
+  val readOnce = slave.io.bundle.read && !RegNext(slave.io.bundle.read, false.B)
+  val writeOnce = slave.io.bundle.write && !RegNext(slave.io.bundle.write, false.B)
   when(slave.io.bundle.read) {
     when(slave.io.bundle.address === 0x4.U) {
       slave.io.bundle.read_data := baudRate.U
     }.elsewhen(slave.io.bundle.address === 0xC.U) {
       slave.io.bundle.read_data := rxData
-      interrupt := false.B
+      when(readOnce) {
+        interrupt := false.B
+        rxValid := false.B
+      }
+    }.elsewhen(slave.io.bundle.address === 0x14.U) {
+      slave.io.bundle.read_data := Cat(0.U(30.W), rxValid, tx.io.ready)
     }
   }
 
   tx.io.channel.valid := false.B
   tx.io.channel.bits := 0.U
-  when(slave.io.bundle.write) {
+  when(writeOnce && slave.io.bundle.write_strobe(0)) {
     when(slave.io.bundle.address === 0x8.U) {
       interrupt := slave.io.bundle.write_data =/= 0.U
     }.elsewhen(slave.io.bundle.address === 0x10.U) {
@@ -208,5 +224,6 @@ class Uart(frequency: Int, baudRate: Int) extends Module {
     rx.io.channel.ready := true.B
     rxData := rx.io.channel.bits
     interrupt := true.B
+    rxValid := true.B
   }
 }

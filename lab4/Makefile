@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ifeq ($(OS),Windows_NT)
+CMAKE_GENERATOR = -G "MinGW Makefiles"
+EXE_EXT = .exe
+endif
+PROGRAM ?= led_control_demo
+VIVADO ?= vivado
+
 test:
 	sbt test
 
@@ -30,6 +37,12 @@ pynq:
 	
 z710:
 	sbt "runMain board.z710.VerilogGenerator"
+
+cloud_pynq:
+	cmake -S csrc -B csrc/build_cloud_pynq $(CMAKE_GENERATOR) \
+		-DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake"
+	cmake --build csrc/build_cloud_pynq --target $(PROGRAM) --parallel
+	sbt "runMain board.cloud_pynq.VerilogGenerator $(PROGRAM)"
 
 bitstream-basys3: basys3
 	cd vivado/basys3 && vivado -mode batch -source generate_bitstream.tcl
@@ -58,4 +71,15 @@ program-z710: bitstream-z710
 vivado-sim-z710: z710
 	cd vivado/z710 && vivado -mode batch -source run_simulation.tcl
 
+bitstream-cloud_pynq: cloud_pynq
+	cd vivado/cloud_pynq && $(VIVADO) -mode batch -source generate_bitstream.tcl
+
+bitstream-cloud_pynq-2020: cloud_pynq
+	cd vivado/cloud_pynq && $(VIVADO) -mode batch -source generate_bitstream_2020.tcl
+
+native-cloud-test:
+	bash verilog/verify_cloud_pynq.sh
+
 .PHONY: basys3 verilator z710 test bitstream program verilator-sim vivado-sim
+
+.PHONY: cloud_pynq bitstream-cloud_pynq bitstream-cloud_pynq-2020 native-cloud-test
