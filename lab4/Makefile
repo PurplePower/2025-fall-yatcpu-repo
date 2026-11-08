@@ -16,7 +16,7 @@ ifeq ($(OS),Windows_NT)
 CMAKE_GENERATOR = -G "MinGW Makefiles"
 EXE_EXT = .exe
 endif
-PROGRAM ?= led_control_demo
+OUTPUT_DIR ?=
 VIVADO ?= vivado
 
 test:
@@ -35,14 +35,20 @@ basys3:
 pynq:
 	sbt "runMain board.pynq.VerilogGenerator"
 	
+z710: PROGRAM ?= say_goodbye
 z710:
-	sbt "runMain board.z710.VerilogGenerator"
+	sbt "runMain board.z710.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
 
+z710v1.3: PROGRAM ?= say_goodbye
+z710v1.3:
+	sbt "runMain board.z710v1_3.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
+
+cloud_pynq: PROGRAM ?= led_control_demo
 cloud_pynq:
 	cmake -S csrc -B csrc/build_cloud_pynq $(CMAKE_GENERATOR) \
 		-DCMAKE_TOOLCHAIN_FILE="$(CURDIR)/csrc/toolchain.cmake"
-	cmake --build csrc/build_cloud_pynq --target $(PROGRAM) --parallel
-	sbt "runMain board.cloud_pynq.VerilogGenerator $(PROGRAM)"
+	cmake --build csrc/build_cloud_pynq --target $(patsubst %.asmbin,%,$(PROGRAM)) --parallel
+	sbt "runMain board.cloud_pynq.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
 
 bitstream-basys3: basys3
 	cd vivado/basys3 && vivado -mode batch -source generate_bitstream.tcl
@@ -71,6 +77,9 @@ program-z710: bitstream-z710
 vivado-sim-z710: z710
 	cd vivado/z710 && vivado -mode batch -source run_simulation.tcl
 
+bitstream-z710v1.3: z710v1.3
+	cd vivado/z710v1.3 && $(VIVADO) -mode batch -source generate_bitstream.tcl
+
 bitstream-cloud_pynq: cloud_pynq
 	cd vivado/cloud_pynq && $(VIVADO) -mode batch -source generate_bitstream.tcl
 
@@ -82,4 +91,4 @@ native-cloud-test:
 
 .PHONY: basys3 verilator z710 test bitstream program verilator-sim vivado-sim
 
-.PHONY: cloud_pynq bitstream-cloud_pynq bitstream-cloud_pynq-2020 native-cloud-test
+.PHONY: z710v1.3 bitstream-z710v1.3 cloud_pynq bitstream-cloud_pynq bitstream-cloud_pynq-2020 native-cloud-test

@@ -76,11 +76,27 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 }
 
 object VerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/z710v1.3"),
-    Seq(ChiselGeneratorAnnotation(() => new Top)))
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("say_goodbye")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/z710v1.3")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }
 
 object PiVerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/z710v1.3"),
-    Seq(ChiselGeneratorAnnotation(() => new Top("pi.asmbin"))))
+  require(args.length <= 2, "Usage: PiVerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("pi")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/z710v1.3")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

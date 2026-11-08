@@ -112,9 +112,14 @@ class Top(binaryFilename: String = "led_control_demo.asmbin") extends RawModule 
 }
 
 object VerilogGenerator extends App {
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
   val program = args.headOption.getOrElse("led_control_demo")
+  require(program.nonEmpty, "Program name must not be empty")
   val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
   val target = args.lift(1).getOrElse("verilog/cloud_pynq")
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", target),
-    Seq(ChiselGeneratorAnnotation(() => new Top(binary))))
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

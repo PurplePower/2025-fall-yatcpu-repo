@@ -26,8 +26,7 @@ object BootStates extends ChiselEnum {
   val Init, Loading, Finished = Value
 }
 
-class Top extends Module {
-  val binaryFilename = "tetris.asmbin"
+class Top(binaryFilename: String = "tetris.asmbin") extends Module {
   val io = IO(new Bundle {
     val switch = Input(UInt(16.W))
 
@@ -141,5 +140,14 @@ class Top extends Module {
 }
 
 object VerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/basys3"), Seq(ChiselGeneratorAnnotation(() => new Top)))
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("tetris")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/basys3")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

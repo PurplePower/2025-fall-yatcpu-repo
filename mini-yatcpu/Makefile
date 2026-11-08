@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+OUTPUT_DIR ?=
+
 test:
 	sbt test
 
@@ -22,14 +24,17 @@ verilator:
 verilator-sim: verilator
 	cd verilog/verilator && obj_dir/VTop $(SIM_TIME)
 
+basys3: PROGRAM ?= tetris
 basys3:
-	sbt "runMain board.basys3.VerilogGenerator"
+	sbt "runMain board.basys3.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
 	
+pynq: PROGRAM ?= litenes
 pynq:
-	sbt "runMain board.pynq.VerilogGenerator"
+	sbt "runMain board.pynq.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
 	
+z710: PROGRAM ?= say_goodbye
 z710:
-	sbt "runMain board.z710.VerilogGenerator"
+	sbt "runMain board.z710.VerilogGenerator $(PROGRAM) $(OUTPUT_DIR)"
 
 bitstream-basys3: basys3
 	cd vivado/basys3 && vivado -mode batch -source generate_bitstream.tcl
