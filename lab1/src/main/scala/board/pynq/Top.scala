@@ -20,8 +20,7 @@ import peripheral._
 import riscv.Parameters
 import riscv.core.{CPU, ProgramCounter}
 
-class Top extends Module {
-  val binaryFilename = "hello.asmbin"
+class Top(binaryFilename: String = "hello.asmbin") extends Module {
   val io = IO(new Bundle() {
     val hdmi_clk_n = Output(Bool())
     val hdmi_clk_p = Output(Bool())
@@ -89,5 +88,14 @@ class Top extends Module {
 }
 
 object VerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/pynq"), Seq(ChiselGeneratorAnnotation(() => new Top)))
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("hello")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/pynq")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

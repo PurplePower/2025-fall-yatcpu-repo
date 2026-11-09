@@ -1,0 +1,16 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR riscv32)
+
+set(CMAKE_C_COMPILER riscv64-unknown-elf-gcc)
+set(CMAKE_CXX_COMPILER riscv64-unknown-elf-g++)
+set(CMAKE_ASM_COMPILER riscv64-unknown-elf-gcc)
+set(CMAKE_AR riscv64-unknown-elf-ar CACHE FILEPATH "Archiver")
+set(CMAKE_OBJCOPY riscv64-unknown-elf-objcopy CACHE FILEPATH "Objcopy")
+set(CMAKE_OBJDUMP riscv64-unknown-elf-objdump CACHE FILEPATH "Objdump")
+
+set(CMAKE_C_FLAGS_INIT "-mno-relax")
+set(CMAKE_CXX_FLAGS_INIT "-mno-relax")
+set(CMAKE_ASM_FLAGS_INIT "-mno-relax")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-nostdlib -static -mno-relax")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-nostdlib -static -mno-relax")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-nostdlib -static -mno-relax")

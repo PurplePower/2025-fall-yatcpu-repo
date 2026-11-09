@@ -26,8 +26,7 @@ object BootStates extends ChiselEnum {
   val Init, Loading, BusWait, Finished = Value
 }
 
-class Top extends Module {
-  val binaryFilename = "litenes.asmbin"
+class Top(binaryFilename: String = "litenes.asmbin") extends Module {
   val io = IO(new Bundle() {
     val hdmi_clk_n = Output(Bool())
     val hdmi_clk_p = Output(Bool())
@@ -144,6 +143,14 @@ class Top extends Module {
 }
 
 object VerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/pynq"), Seq(ChiselGeneratorAnnotation(() => new
-      Top)))
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("litenes")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/pynq")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

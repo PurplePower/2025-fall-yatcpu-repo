@@ -356,3 +356,9 @@ vivado/pynq/riscv-pynq
 vivado/pynq/NA
 .vscode
 .metals
+
+# cloud_pynq generated outputs
+csrc/build*/
+verilog/cloud_pynq/
+vivado/cloud_pynq/cloud_pynq*/
+vivado/cloud_pynq/bitstreams/

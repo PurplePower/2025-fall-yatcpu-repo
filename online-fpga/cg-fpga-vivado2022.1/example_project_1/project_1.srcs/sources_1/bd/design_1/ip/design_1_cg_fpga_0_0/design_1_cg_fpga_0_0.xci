@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spirit:design xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <spirit:vendor>xilinx.com</spirit:vendor>
+  <spirit:library>xci</spirit:library>
+  <spirit:name>unknown</spirit:name>
+  <spirit:version>1.0</spirit:version>
+  <spirit:componentInstances>
+    <spirit:componentInstance>
+      <spirit:instanceName>design_1_cg_fpga_0_0</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="educg.net" spirit:library="user" spirit:name="cg_fpga" spirit:version="1.4"/>
+      <spirit:configurableElementValues>
+        <spirit:configurableElementValue spirit:referenceId="BUSIFPARAM_VALUE.DDR.CUSTOM_PARTS"/>
+        <spirit:configurableElementValue spirit:referenceId="BUSIFPARAM_VALUE.DDR.MEMORY_PART"/>
+        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.Component_Name">design_1_cg_fpga_0_0</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.ARCHITECTURE">zynq</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.BASE_BOARD_PART"/>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.BOARD_CONNECTIONS"/>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.DEVICE">xc7z020</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.PACKAGE">clg400</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.PREFHDL">VERILOG</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.SILICON_REVISION"/>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.SIMULATOR_LANGUAGE">MIXED</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.SPEEDGRADE">-1</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.STATIC_POWER"/>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.TEMPERATURE_GRADE"/>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.USE_RDI_CUSTOMIZATION">TRUE</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PROJECT_PARAM.USE_RDI_GENERATION">TRUE</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.IPCONTEXT">IP_Integrator</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.IPREVISION">5</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.MANAGED">TRUE</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.OUTPUTDIR">../../../../../../project_1.gen/sources_1/bd/design_1/ip/design_1_cg_fpga_0_0</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.SELECTEDSIMMODEL"/>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.SHAREDDIR">../../ipshared</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.SWVERSION">2022.1</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="RUNTIME_PARAM.SYNTHESISFLOW">OUT_OF_CONTEXT</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+      <spirit:vendorExtensions>
+        <xilinx:componentInstanceExtensions>
+          <xilinx:configElementInfos>
+            <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR.CUSTOM_PARTS" xilinx:valuePermission="bd_and_user"/>
+            <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR.MEMORY_PART" xilinx:valuePermission="bd_and_user"/>
+          </xilinx:configElementInfos>
+          <xilinx:boundaryDescriptionInfo>
+            <xilinx:boundaryDescription xilinx:boundaryDescriptionJSON="{
+              &quot;schema&quot;: &quot;xilinx.com:schema:json_boundary:1.0&quot;,
+              &quot;boundary&quot;: {
+                &quot;ports&quot;: {
+                  &quot;DDR_addr&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;14&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_ba&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;2&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_cas_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_ck_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_ck_p&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_cke&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_cs_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_dm&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;3&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_dq&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;31&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_dqs_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;3&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_dqs_p&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;3&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;DDR_odt&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_ras_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_reset_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;DDR_we_n&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;FIXED_IO_ddr_vrn&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;FIXED_IO_ddr_vrp&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;FIXED_IO_mio&quot;: [ { &quot;direction&quot;: &quot;inout&quot;, &quot;size_left&quot;: &quot;53&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;FIXED_IO_ps_clk&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;FIXED_IO_ps_porb&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;FIXED_IO_ps_srstb&quot;: [ { &quot;direction&quot;: &quot;inout&quot; } ],
+                  &quot;audio&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;6&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0x7f&quot; } ],
+                  &quot;btn&quot;: [ { &quot;direction&quot;: &quot;out&quot;, &quot;size_left&quot;: &quot;7&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;btn_clk&quot;: [ { &quot;direction&quot;: &quot;out&quot;, &quot;size_left&quot;: &quot;0&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;btn_rst&quot;: [ { &quot;direction&quot;: &quot;out&quot;, &quot;size_left&quot;: &quot;0&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;clk_100M&quot;: [ { &quot;direction&quot;: &quot;out&quot; } ],
+                  &quot;gpio_led&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;31&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0xffffffff&quot; } ],
+                  &quot;gpio_sw_1&quot;: [ { &quot;direction&quot;: &quot;out&quot;, &quot;size_left&quot;: &quot;31&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;gpio_sw_2&quot;: [ { &quot;direction&quot;: &quot;out&quot;, &quot;size_left&quot;: &quot;31&quot;, &quot;size_right&quot;: &quot;0&quot; } ],
+                  &quot;ledm_cs&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;5&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;ledm_data&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;15&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0xffff&quot; } ],
+                  &quot;rx_0&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;1&quot; } ],
+                  &quot;seg_cs&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;3&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0xf&quot; } ],
+                  &quot;seg_data&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;7&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0xff&quot; } ],
+                  &quot;tx_0&quot;: [ { &quot;direction&quot;: &quot;out&quot; } ],
+                  &quot;vid_active&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_data&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;size_left&quot;: &quot;23&quot;, &quot;size_right&quot;: &quot;0&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_hblank&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_hsync&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_io_in_clk&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_vblank&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ],
+                  &quot;vid_vsync&quot;: [ { &quot;direction&quot;: &quot;in&quot;, &quot;driver_value&quot;: &quot;0&quot; } ]
+                },
+                &quot;interfaces&quot;: {
+                  &quot;FIXED_IO&quot;: {
+                    &quot;vlnv&quot;: &quot;xilinx.com:display_processing_system7:fixedio:1.0&quot;,
+                    &quot;abstraction_type&quot;: &quot;xilinx.com:display_processing_system7:fixedio_rtl:1.0&quot;,
+                    &quot;mode&quot;: &quot;master&quot;,
+                    &quot;parameters&quot;: {
+                      &quot;CAN_DEBUG&quot;: [ { &quot;value&quot;: &quot;false&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ]
+                    },
+                    &quot;port_maps&quot;: {
+                      &quot;MIO&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_mio&quot;, &quot;physical_left&quot;: &quot;53&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;DDR_VRN&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_ddr_vrn&quot; } ],
+                      &quot;DDR_VRP&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_ddr_vrp&quot; } ],
+                      &quot;PS_SRSTB&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_ps_srstb&quot; } ],
+                      &quot;PS_CLK&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_ps_clk&quot; } ],
+                      &quot;PS_PORB&quot;: [ { &quot;physical_name&quot;: &quot;FIXED_IO_ps_porb&quot; } ]
+                    }
+                  },
+                  &quot;DDR&quot;: {
+                    &quot;vlnv&quot;: &quot;xilinx.com:interface:ddrx:1.0&quot;,
+                    &quot;abstraction_type&quot;: &quot;xilinx.com:interface:ddrx_rtl:1.0&quot;,
+                    &quot;mode&quot;: &quot;master&quot;,
+                    &quot;parameters&quot;: {
+                      &quot;CAN_DEBUG&quot;: [ { &quot;value&quot;: &quot;false&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;TIMEPERIOD_PS&quot;: [ { &quot;value&quot;: &quot;1250&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;MEMORY_TYPE&quot;: [ { &quot;value&quot;: &quot;COMPONENTS&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;DATA_WIDTH&quot;: [ { &quot;value&quot;: &quot;8&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;CS_ENABLED&quot;: [ { &quot;value&quot;: &quot;true&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;DATA_MASK_ENABLED&quot;: [ { &quot;value&quot;: &quot;true&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;SLOT&quot;: [ { &quot;value&quot;: &quot;Single&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;MEM_ADDR_MAP&quot;: [ { &quot;value&quot;: &quot;ROW_COLUMN_BANK&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;BURST_LENGTH&quot;: [ { &quot;value&quot;: &quot;8&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;AXI_ARBITRATION_SCHEME&quot;: [ { &quot;value&quot;: &quot;TDM&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;CAS_LATENCY&quot;: [ { &quot;value&quot;: &quot;11&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;CAS_WRITE_LATENCY&quot;: [ { &quot;value&quot;: &quot;11&quot;, &quot;value_src&quot;: &quot;constant&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;usage&quot;: &quot;all&quot; } ],
+                      &quot;MEMORY_PART&quot;: [ { &quot;value&quot;: &quot;&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;resolve_type&quot;: &quot;generated&quot;, &quot;is_ips_inferred&quot;: true, &quot;is_static_object&quot;: false } ],
+                      &quot;CUSTOM_PARTS&quot;: [ { &quot;value&quot;: &quot;&quot;, &quot;value_permission&quot;: &quot;bd_and_user&quot;, &quot;resolve_type&quot;: &quot;generated&quot;, &quot;is_ips_inferred&quot;: true, &quot;is_static_object&quot;: false } ]
+                    },
+                    &quot;port_maps&quot;: {
+                      &quot;CAS_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_cas_n&quot; } ],
+                      &quot;CKE&quot;: [ { &quot;physical_name&quot;: &quot;DDR_cke&quot; } ],
+                      &quot;CK_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_ck_n&quot; } ],
+                      &quot;CK_P&quot;: [ { &quot;physical_name&quot;: &quot;DDR_ck_p&quot; } ],
+                      &quot;CS_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_cs_n&quot; } ],
+                      &quot;RESET_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_reset_n&quot; } ],
+                      &quot;ODT&quot;: [ { &quot;physical_name&quot;: &quot;DDR_odt&quot; } ],
+                      &quot;RAS_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_ras_n&quot; } ],
+                      &quot;WE_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_we_n&quot; } ],
+                      &quot;BA&quot;: [ { &quot;physical_name&quot;: &quot;DDR_ba&quot;, &quot;physical_left&quot;: &quot;2&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;ADDR&quot;: [ { &quot;physical_name&quot;: &quot;DDR_addr&quot;, &quot;physical_left&quot;: &quot;14&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;DM&quot;: [ { &quot;physical_name&quot;: &quot;DDR_dm&quot;, &quot;physical_left&quot;: &quot;3&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;DQ&quot;: [ { &quot;physical_name&quot;: &quot;DDR_dq&quot;, &quot;physical_left&quot;: &quot;31&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;DQS_N&quot;: [ { &quot;physical_name&quot;: &quot;DDR_dqs_n&quot;, &quot;physical_left&quot;: &quot;3&quot;, &quot;physical_right&quot;: &quot;0&quot; } ],
+                      &quot;DQS_P&quot;: [ { &quot;physical_name&quot;: &quot;DDR_dqs_p&quot;, &quot;physical_left&quot;: &quot;3&quot;, &quot;physical_right&quot;: &quot;0&quot; } ]
+                    }
+                  }
+                }
+              }
+            }"/>
+          </xilinx:boundaryDescriptionInfo>
+        </xilinx:componentInstanceExtensions>
+      </spirit:vendorExtensions>
+    </spirit:componentInstance>
+  </spirit:componentInstances>
+</spirit:design>

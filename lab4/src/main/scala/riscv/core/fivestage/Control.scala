@@ -31,6 +31,7 @@ class Control extends Module {
     val stall_flag_if = Input(Bool()) // fetch inst. from mem stall flag
     val stall_flag_mem = Input(Bool()) // mem access stall flag
 
+    val redirect_stall = Output(Bool())
     val if2id_flush = Output(Bool())
     val id2ex_flush = Output(Bool())
     val pc_stall = Output(Bool())
@@ -64,6 +65,16 @@ class Control extends Module {
       2. if MEM waits for memory, stall all stages before MEM
    */
 
+  // Redirects may invalidate an outstanding fetch, but must wait for older
+  // data accesses and for operands needed by the instruction in ID.
+  val branchHazard = io.jump_instruction_id && (
+    (io.rs1_id =/= 0.U && (io.rs1_id === io.rd_ex || (io.rs1_id === io.rd_mem && io.memory_read_enable_mem))) ||
+    (io.rs2_id =/= 0.U && (io.rs2_id === io.rd_ex || (io.rs2_id === io.rd_mem && io.memory_read_enable_mem))))
+  val loadHazard = !io.jump_instruction_id && io.memory_read_enable_ex && (
+    (io.rs1_id =/= 0.U && io.rs1_id === io.rd_ex) ||
+    (io.rs2_id =/= 0.U && io.rs2_id === io.rd_ex))
+  io.redirect_stall := io.stall_flag_mem || branchHazard || loadHazard
+
   when (io.jump_instruction_id) {
     // current instruction is of jump/branch type, need to check data dependencies
     val rs1_needs_stall = io.rs1_id =/= 0.U && (
@@ -82,9 +93,9 @@ class Control extends Module {
     } .otherwise {
       // NOTE: jump_flag is VALID
       when (io.jump_flag) { // ID says it's time to jump, clears IF stage only
-        io.if2id_flush := io.jump_flag // clears IF2ID
+        io.if2id_flush := !io.redirect_stall // clears IF2ID
         io.id2ex_flush := false.B  // don't flush, let inst at ID goes on
-        io.pc_stall := false.B
+        io.pc_stall := io.redirect_stall
         io.if2id_stall := io.stall_flag_mem
       }
       .otherwise {
@@ -107,9 +118,9 @@ class Control extends Module {
       io.pc_stall := true.B
       io.if2id_stall := true.B
     } .otherwise {
-      io.if2id_flush := false.B
+      io.if2id_flush := io.jump_flag && !io.redirect_stall
       io.id2ex_flush := false.B
-      io.pc_stall := io.stall_flag_if || io.stall_flag_mem 
+      io.pc_stall := (io.stall_flag_if || io.stall_flag_mem) && !io.jump_flag
       io.if2id_stall := io.stall_flag_mem
     }
   }

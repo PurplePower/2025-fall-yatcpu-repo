@@ -1,4 +1,5 @@
 target
+__pycache__/
 .vscode
 .metals
 .bloop
@@ -14,11 +15,13 @@ target
 
 **/hello_z710-test
 **/riscv-z710-v2020
-**/cloud_pynq
 .Xil
 
-# 
-misc/lab*_ans.yaml
+# Answers
+**/lab*_ans*.yaml
 
 # github pages
 site/**/*
+
+# private AGENTS.md
+AGENTS.md

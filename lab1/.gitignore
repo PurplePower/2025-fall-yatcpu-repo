@@ -343,19 +343,15 @@ verilog/*.txt
 verilog/basys3/*
 verilog/pynq/*
 verilog/verilator/*
+verilog/cloud_pynq/Top.*
+verilog/z710/Top.*
+verilog/z710v1.3/Top.*
 !verilog/basys3/test.v
 !verilog/pynq/design_1_wrapper.v
 !verilog/pynq/test.v
 !verilog/pynq/TMDS_PLLVR.v
 !verilog/verilator/sim_main.cpp
-# Chisel 生成产物（VerilogGenerator 输出），由学生本地的 Top.scala 生成
-verilog/z710/Top.v
-verilog/z710/Top.fir
-verilog/z710/Top.anno.json
-verilog/z710v1.3/Top.v
-verilog/z710v1.3/Top.fir
-verilog/z710v1.3/Top.anno.json
-# csrc 交叉编译输出目录
+# C cross-compilation outputs, including cloud_pynq builds.
 csrc/build_*/
 *.jou
 *.log
@@ -363,9 +359,15 @@ csrc/build_*/
 vivado/basys3/riscv-basys3
 vivado/pynq/riscv-pynq
 vivado/pynq/NA
-vivado/z710/riscv-z710-v2020
-vivado/z710/hello_z710-test
-vivado/z710v1.3/rv-z710v1.3-20
-vivado/cloud_pynq
+vivado/z710/riscv-z710-v2020/
+vivado/z710/hello_z710-test/
+vivado/z710v1.3/rv-z710v1.3-20/
+# Ignore generated cloud projects while keeping platform scripts trackable.
+vivado/cloud_pynq/cloud_pynq/
+vivado/cloud_pynq/cloud_pynq_2020/
+vivado/cloud_pynq/cp2020_*/
+vivado/cloud_pynq/bitstreams/
+vivado/cloud_pynq/NA
+vivado/cloud_pynq/strategy_comparison/
 .vscode
 .metals

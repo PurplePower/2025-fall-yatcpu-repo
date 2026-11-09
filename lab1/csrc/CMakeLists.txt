@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.18)
 project(yatcpu-programs C CXX ASM)
 
 # Setting variables
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 --target=riscv32-unknown-elf -march=rv32i -mabi=ilp32")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 --target=riscv32-unknown-elf -march=rv32i -mabi=ilp32")
-set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu say_goodbye)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 -march=rv32i_zicsr -mabi=ilp32")
+set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu say_goodbye led_control_demo)
 set(ASM_PROGRAMS mmio sb)
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link.lds)
 set(LINKER_FLAGS -T ${LINKER_SCRIPT}) 
@@ -26,6 +26,13 @@ foreach(program IN LISTS C_PROGRAMS)
 	set_target_properties(${program} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 	target_link_libraries(${program} prelude ${LINKER_FLAGS})
 endforeach()
+
+# The cloud_pynq program is built with -O2 so that uart_pace() and the
+# MMIO polling loop keep their intended timing/behavior.
+target_compile_options(say_goodbye PRIVATE -O2)
+
+# Convenience target used by the top-level Makefile.
+add_custom_target(cloud_pynq DEPENDS led_control_demo)
 
 foreach(program IN LISTS ASM_PROGRAMS)
 	add_executable(${program} ${program}.S)

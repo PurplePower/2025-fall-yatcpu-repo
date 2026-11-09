@@ -15,7 +15,19 @@
 .section .text.init
 .globl _start
 _start:
-  li sp, 0x10000000 # Initialize stack pointer
+  la sp, __stack_top   # Stack top is provided by the unified linker script
+
+  # Zero .bss.  The BRAM is usually zero after configuration, but this makes
+  # the startup deterministic in simulation and on all boards.
+  la t0, __bss_start
+  la t1, __bss_end
+bss_clear:
+  bgeu t0, t1, bss_done
+  sw zero, 0(t0)
+  addi t0, t0, 4
+  j bss_clear
+bss_done:
+
   call main   # Jump to main function
 loop:
   j loop      # Loop forever
@@ -41,7 +53,7 @@ get_epc:
   csrr a0, mepc
   ret
 .weak trap_handler
-tran_handler:
+trap_handler:
   ret
 __trap_entry:
   csrw mscratch, sp
@@ -53,7 +65,7 @@ __trap_entry:
   sw t0, 20(sp)
   sw t1, 24(sp)
   sw t2, 28(sp)
-  sw tp, 32(sp)
+  sw s0, 32(sp)
   sw s1, 36(sp)
   sw a0, 40(sp)
   sw a1, 44(sp)
@@ -89,7 +101,7 @@ __trap_entry:
   lw t0, 20(sp)
   lw t1, 24(sp)
   lw t2, 28(sp)
-  lw tp, 32(sp)
+  lw s0, 32(sp)
   lw s1, 36(sp)
   lw a0, 40(sp)
   lw a1, 44(sp)

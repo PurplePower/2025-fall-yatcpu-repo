@@ -18,7 +18,7 @@ import chisel3._
 import chisel3.experimental.ChiselEnum
 import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
 import chisel3.util._
-import peripheral.{CharacterDisplay, Dummy, InstructionROM, Memory, ROMLoader, Uart, VGADisplay, Timer}
+import peripheral.{CharacterDisplay, Dummy, InstructionROM, Memory, MTime, ROMLoader, Uart, VGADisplay, Timer}
 import riscv._
 import riscv.core.{CPU, ProgramCounter}
 
@@ -26,8 +26,7 @@ object BootStates extends ChiselEnum {
   val Init, Loading, Finished = Value
 }
 
-class Top extends Module {
-  val binaryFilename = "tetris.asmbin"
+class Top(binaryFilename: String = "tetris.asmbin") extends Module {
   val io = IO(new Bundle {
     val switch = Input(UInt(16.W))
 
@@ -49,6 +48,7 @@ class Top extends Module {
   val display = Module(new CharacterDisplay)
   val timer = Module(new Timer)
   val uart = Module(new Uart(frequency = 100000000, baudRate = 115200))
+  val mtime = Module(new MTime(100000000))
   val dummy = Module(new Dummy)
 
   display.io.bundle <> dummy.io.bundle
@@ -75,12 +75,15 @@ class Top extends Module {
 
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
+    uart.io.receive_read := rom_loader.io.load_finished && CPU_tick &&
+      cpu.io.deviceSelect === 2.U && mem.io.instruction(6, 0) === "b0000011".U
     cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
     cpu.io.csr_regs_debug_read_address := 0.U
     cpu.io.regs_debug_read_address := 0.U
     cpu.io.instruction_valid := rom_loader.io.load_finished
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
+    mtime.io.address := cpu.io.memory_bundle.address
 
     when(!rom_loader.io.load_finished) {
       rom_loader.io.bundle <> mem.io.bundle
@@ -93,6 +96,8 @@ class Top extends Module {
         cpu.io.memory_bundle <> uart.io.bundle
       }.elsewhen(cpu.io.deviceSelect === 1.U) {
         cpu.io.memory_bundle <> display.io.bundle
+      }.elsewhen(cpu.io.deviceSelect === 6.U) {
+        cpu.io.memory_bundle.read_data := mtime.io.read_data
       }.otherwise {
         cpu.io.memory_bundle <> mem.io.bundle
       }
@@ -101,6 +106,7 @@ class Top extends Module {
 
   display.io.x := vga_display.io.x
   display.io.y := vga_display.io.y
+  display.io.video_on := vga_display.io.video_on
 
   io.hsync := vga_display.io.hsync
   io.vsync := vga_display.io.vsync
@@ -134,5 +140,14 @@ class Top extends Module {
 }
 
 object VerilogGenerator extends App {
-  (new ChiselStage).execute(Array("-X", "verilog", "-td", "verilog/basys3"), Seq(ChiselGeneratorAnnotation(() => new Top)))
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("tetris")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/basys3")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
 }

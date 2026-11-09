@@ -15,109 +15,88 @@
 package board.z710v1_3
 
 import chisel3._
+import chisel3.util.{Cat, MuxLookup}
 import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
-import chisel3.util.Cat
 import peripheral._
 import riscv.Parameters
-import riscv.core.{CPU, ProgramCounter}
+import riscv.core.CPU
 
 class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
-  val io = IO(new Bundle() {
+  val io = IO(new Bundle {
     val tx = Output(Bool())
     val rx = Input(Bool())
-
-    val led = Output(Bool())  // z710 has few LEDs, use one for running indicator
+    val led = Output(Bool())
   })
-
-  
-  val clock_freq = 50_000_000
-
+  val clock_freq = 50000000
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
-  // val hdmi_display = Module(new HDMIDisplay)
-  // val display = Module(new CharacterDisplay)
-  val timer = Module(new Timer)
-  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200))
-  val dummy = Module(new Dummy)
-
-  // display.io.bundle <> dummy.io.bundle
-  mem.io.bundle <> dummy.io.bundle
-  mem.io.debug_read_address := 0.U
-  timer.io.bundle <> dummy.io.bundle
-  uart.io.bundle <> dummy.io.bundle
-  io.tx := uart.io.txd
-  uart.io.rxd := io.rx
-
+  val uart = Module(new Uart(clock_freq, 115200))
   val instruction_rom = Module(new InstructionROM(binaryFilename))
   val rom_loader = Module(new ROMLoader(instruction_rom.capacity))
-
   rom_loader.io.rom_data := instruction_rom.io.data
   rom_loader.io.load_address := Parameters.EntryAddress
   instruction_rom.io.address := rom_loader.io.rom_address
-
-  val CPU_clkdiv = RegInit(UInt(2.W),0.U)
-  val CPU_tick = Wire(Bool())
-  val CPU_next = Wire(UInt(2.W))
-  CPU_next := Mux(CPU_clkdiv === 3.U, 0.U, CPU_clkdiv + 1.U)
-  CPU_tick := CPU_clkdiv === 0.U
-  CPU_clkdiv := CPU_next
-
-  withClock(CPU_tick.asClock) {
-    val cpu = Module(new CPU)
-    // cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
-
-    /* disable interrupt flag for now, some unexpected bugs in Zybo 7010 v1.3 board*/
-    cpu.io.interrupt_flag := 0.U
-
-    cpu.io.csr_regs_debug_read_address := 0.U
-    cpu.io.regs_debug_read_address := 0.U
-    // cpu.io.debug_read_address := 0.U
-    // cpu.io.memory_bundle.read_data := 0.U
-    cpu.io.instruction_valid := rom_loader.io.load_finished
-    mem.io.instruction_address := cpu.io.instruction_address
-    cpu.io.instruction := mem.io.instruction
-
-    when(!rom_loader.io.load_finished) {
-      rom_loader.io.bundle <> mem.io.bundle
-      cpu.io.memory_bundle.read_data := 0.U
-    }.otherwise {
-      rom_loader.io.bundle.read_data := 0.U
-      when(cpu.io.deviceSelect === 2.U) {
-        cpu.io.memory_bundle <> uart.io.bundle
-      }.otherwise {
-        cpu.io.memory_bundle <> mem.io.bundle
-      }
-    }
-
-    when(!rom_loader.io.load_finished) {
-      rom_loader.io.bundle <> mem.io.bundle
-      cpu.io.memory_bundle.read_data := 0.U
-    }.otherwise {
-      rom_loader.io.bundle.read_data := 0.U
-      cpu.io.memory_bundle <> mem.io.bundle
-    }
-
-    when (uart.io.bundle.write_enable) {
-      val the_char = cpu.io.memory_bundle.write_data(7, 0)
-      printf(cf"${the_char.asUInt}%c")
-    }
-  }
-
-  // LED, blinks every second
+  rom_loader.io.bundle.read_data := 0.U
+  val CPU_clkdiv = RegInit(0.U(2.W))
+  CPU_clkdiv := CPU_clkdiv + 1.U
+  val CPU_tick = CPU_clkdiv === 1.U
+  val cpu = withClock(CPU_clkdiv(1).asClock) { Module(new CPU) }
+  val timer = withClock(CPU_clkdiv(1).asClock) { Module(new Timer) }
+  val mtime = Module(new MTime(clock_freq))
+  val loading = !rom_loader.io.load_finished
+  cpu.io.instruction_valid := !loading
+  cpu.io.instruction := mem.io.instruction
+  mem.io.instruction_address := cpu.io.instruction_address
+  mem.io.debug_read_address := 0.U
+  cpu.io.regs_debug_read_address := 0.U
+  cpu.io.csr_regs_debug_read_address := 0.U
+  cpu.io.interrupt_flag := Mux(loading, 0.U, Cat(uart.io.signal_interrupt, timer.io.signal_interrupt))
+  mem.io.bundle.address := Mux(loading, rom_loader.io.bundle.address, cpu.io.memory_bundle.address)
+  mem.io.bundle.write_data := Mux(loading, rom_loader.io.bundle.write_data, cpu.io.memory_bundle.write_data)
+  mem.io.bundle.write_strobe := Mux(loading, rom_loader.io.bundle.write_strobe, cpu.io.memory_bundle.write_strobe)
+  mem.io.bundle.write_enable := Mux(loading, rom_loader.io.bundle.write_enable,
+    cpu.io.deviceSelect === 0.U && cpu.io.memory_bundle.write_enable && CPU_tick)
+  uart.io.bundle.address := Mux(cpu.io.deviceSelect === 2.U, cpu.io.memory_bundle.address, 0.U)
+  uart.io.bundle.write_data := cpu.io.memory_bundle.write_data
+  uart.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
+  uart.io.bundle.write_enable := !loading && cpu.io.deviceSelect === 2.U && cpu.io.memory_bundle.write_enable && CPU_tick
+  uart.io.receive_read := !loading && CPU_tick && cpu.io.deviceSelect === 2.U && mem.io.instruction(6,0) === "b0000011".U
+  uart.io.rxd := io.rx
+  io.tx := uart.io.txd.asBool
+  timer.io.bundle.address := cpu.io.memory_bundle.address
+  timer.io.bundle.write_data := cpu.io.memory_bundle.write_data
+  timer.io.bundle.write_strobe := cpu.io.memory_bundle.write_strobe
+  timer.io.bundle.write_enable := !loading && cpu.io.deviceSelect === 4.U && cpu.io.memory_bundle.write_enable
+  mtime.io.address := cpu.io.memory_bundle.address
+  cpu.io.memory_bundle.read_data := Mux(loading, 0.U, MuxLookup(cpu.io.deviceSelect, 0.U)(Seq(
+    0.U -> mem.io.bundle.read_data, 2.U -> uart.io.bundle.read_data, 4.U -> timer.io.bundle.read_data,
+    6.U -> mtime.io.read_data)))
   val led_count = RegInit(0.U(32.W))
-  when (led_count >= clock_freq.U) {
-    led_count := 0.U
-  }.otherwise {
-    led_count := led_count + 1.U
-  }
-  io.led := (led_count >= (clock_freq.U >> 1))
-
-
-
+  led_count := Mux(led_count === (clock_freq - 1).U, 0.U, led_count + 1.U)
+  io.led := led_count >= (clock_freq / 2).U
 }
 
 object VerilogGenerator extends App {
+  require(args.length <= 2, "Usage: VerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("say_goodbye")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/z710v1.3")
+  require(target.nonEmpty, "Output directory must not be empty")
   (new ChiselStage).execute(
-    Array("-X", "verilog", "-td", "verilog/z710v1.3"), 
-    Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
+  )
+}
+
+object PiVerilogGenerator extends App {
+  require(args.length <= 2, "Usage: PiVerilogGenerator [program[.asmbin]] [output-directory]")
+  val program = args.headOption.getOrElse("pi")
+  require(program.nonEmpty, "Program name must not be empty")
+  val binary = if (program.endsWith(".asmbin")) program else s"$program.asmbin"
+  val target = args.lift(1).getOrElse("verilog/z710v1.3")
+  require(target.nonEmpty, "Output directory must not be empty")
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", target),
+    Seq(ChiselGeneratorAnnotation(() => new Top(binary)))
   )
 }

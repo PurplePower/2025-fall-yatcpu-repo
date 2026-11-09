@@ -1,0 +1,19 @@
+# Vivado build artifacts
+*.jou
+*.log
+*.str
+*.bda
+*.backup.*
+.Xil/
+**/.Xil/
+**/.gen/
+**/.cache/
+**/.runs/
+**/.hw/
+**/.sim/
+**/.ip_user_files/
+**/NA/
+
+# OS
+.DS_Store
+Thumbs.db

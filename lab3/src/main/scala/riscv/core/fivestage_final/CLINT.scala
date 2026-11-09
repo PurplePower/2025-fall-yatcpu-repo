@@ -47,6 +47,7 @@ class CLINT extends Module {
 
     val jump_flag = Input(Bool())
     val jump_address = Input(UInt(Parameters.AddrWidth))
+    val stall_flag_ctrl = Input(Bool())
 
     val id_interrupt_handler_address = Output(UInt(Parameters.AddrWidth))
     val id_interrupt_assert = Output(Bool())
@@ -62,7 +63,9 @@ class CLINT extends Module {
   val mstatus_disable_interrupt = io.csr_bundle.mstatus(31, 4) ## 0.U(1.W) ## io.csr_bundle.mstatus(2, 0)
   val mstatus_recover_interrupt = io.csr_bundle.mstatus(31, 4) ## io.csr_bundle.mstatus(7) ## io.csr_bundle.mstatus(2, 0)
 
-  when(io.instruction_id === InstructionsEnv.ecall || io.instruction_id === InstructionsEnv.ebreak) {
+  // Commit trap state only when fetch can accept the matching redirect.
+  // IF2ID retains the instruction and interrupt flag while it is stalled.
+  when(!io.stall_flag_ctrl && (io.instruction_id === InstructionsEnv.ecall || io.instruction_id === InstructionsEnv.ebreak)) {
     io.csr_bundle.mstatus_write_data := mstatus_disable_interrupt
     io.csr_bundle.mepc_write_data := instruction_address
     io.csr_bundle.mcause_write_data := MuxLookup(
@@ -76,14 +79,14 @@ class CLINT extends Module {
     io.csr_bundle.direct_write_enable := true.B
     io.id_interrupt_assert := true.B
     io.id_interrupt_handler_address := io.csr_bundle.mtvec
-  }.elsewhen(io.interrupt_flag =/= InterruptStatus.None && interrupt_enable) {
+  }.elsewhen(!io.stall_flag_ctrl && io.interrupt_flag =/= InterruptStatus.None && interrupt_enable) {
     io.csr_bundle.mstatus_write_data := mstatus_disable_interrupt
     io.csr_bundle.mepc_write_data := instruction_address
     io.csr_bundle.mcause_write_data := Mux(io.interrupt_flag(0), 0x80000007L.U, 0x8000000BL.U)
     io.csr_bundle.direct_write_enable := true.B
     io.id_interrupt_assert := true.B
     io.id_interrupt_handler_address := io.csr_bundle.mtvec
-  }.elsewhen(io.instruction_id === InstructionsRet.mret) {
+  }.elsewhen(!io.stall_flag_ctrl && io.instruction_id === InstructionsRet.mret) {
     io.csr_bundle.mstatus_write_data := mstatus_recover_interrupt
     io.csr_bundle.mepc_write_data := io.csr_bundle.mepc
     io.csr_bundle.mcause_write_data := io.csr_bundle.mcause

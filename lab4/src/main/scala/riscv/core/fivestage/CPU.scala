@@ -121,7 +121,7 @@ class CPU extends Module {
 
 
   inst_fetch.io.in_stall_flag := ctrl.io.pc_stall
-  inst_fetch.io.jump_flag_id := id.io.if_jump_flag
+  inst_fetch.io.jump_flag_id := id.io.if_jump_flag && !ctrl.io.redirect_stall
   inst_fetch.io.jump_address_id := id.io.if_jump_address
 
   if2id.io.stall := ctrl.io.if2id_stall
@@ -223,7 +223,8 @@ class CPU extends Module {
   clint.io.instruction_id := if2id.io.output_instruction
   clint.io.jump_flag := id.io.clint_jump_flag
   clint.io.jump_address := id.io.clint_jump_address
-  clint.io.interrupt_flag := if2id.io.output_interrupt_flag
+  clint.io.interrupt_flag := io.interrupt_flag
+  clint.io.stall_flag_ctrl := ctrl.io.redirect_stall
   clint.io.csr_bundle <> csr_regs.io.clint_access_bundle
 
   csr_regs.io.reg_read_address_id := id.io.ex_csr_address
