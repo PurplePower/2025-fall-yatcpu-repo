@@ -25,7 +25,8 @@ nav:
   - better-tut/practice/hardware-debug.md
   - better-tut/practice/compile-and-link.md
   - better-tut/practice/cmake.md
-  - 如何一键烧板: board.md
+  - 如何本地烧板: board_local_z710.md
+  - 如何云平台烧板: board_cloud.md
   
 - 理论知识基础:
   - better-tut/theory/cpu-arch.md
