@@ -38,3 +38,8 @@
 修复内容：普通指令触发 trap/mret 重定向时也冲刷 IF2ID；CLINT 在 `pc_stall` 时不接受 trap/mret、不提交中断状态。`misc/lab3_ans.yaml` 的 Control 参考答案已同步。新增 `InterruptRedirectTest`，覆盖 load-use 停顿期间的一拍中断请求、残留分支冲刷、连续两次中断返回和 mret 后错误路径指令冲刷；lab3 共 25 项测试通过，正式 `say_goodbye` ROM 的播放/暂停/继续/重播 UART 仿真通过。
 
 修复前日志保留在 [UART 仿真](target/cpbits/l3bye/native.log) 和 [中断流水线跟踪](target/cpbits/l3bye/debug_irq.log)，修复后日志见新比特流交付目录。
+
+
+## 统一 FPGA 板 Top 的时钟分频
+
+时钟分频方案、接口、约束。
