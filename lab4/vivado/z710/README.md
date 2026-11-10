@@ -1,6 +1,8 @@
 
 # 如何使用脚本使 CPU 烧录至 Zybo Z7-10 开发板并读取 UART 输出至电脑
 
+> 时钟约束：K17 125 MHz 经 `clock_control` /5 得到 25 MHz；lab1-3 CPU 再 /4 为 6.25 MHz，lab4 直接使用 25 MHz。`z710.xdc` 中的 `main_clk`/`cpu_clk` generated clock 已覆盖这些时钟域。
+
 ## 0. 预先准备
 
 在执行下述步骤前，请确保完成：
