@@ -58,7 +58,7 @@ cmd /c xsct ./vitis_prj_run.tcl
 
 ### lab4 auxiliary file related
 
-CPU 输入频率为 K17 的 125 MHz，经 `clock_control` 门控后直接送入 CPU，不再 /5 分频。
+CPU 输入频率为 K17 的 125 MHz，经 `clock_control` 做 /5 分频后为 25 MHz。
 
 ### Use with Vivado 2020.1
 

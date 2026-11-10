@@ -12,12 +12,9 @@
 set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports io_clock]
 create_clock -period 8.000 -name sys_clk_pin -waveform {0.000 4.000} -add [get_ports io_clock]
 
-# lab4 z710's clock_control is a gate (clk_out = clk_in & enable_clk),
-# not the /5 divider used by lab1-3, so io_clock propagates through it.
-# If clock_control is restored to the /5 divider, add:
-# set main_clk_net [get_nets -hierarchical -regexp {.*clock_control_0_clk_out}]
-# set main_clk_pin [get_pins -of_objects $main_clk_net -filter {DIRECTION == OUT && REF_PIN_NAME == Q}]
-# create_generated_clock -name main_clk -source [get_ports io_clock] -edges {1 5 11} $main_clk_pin
+# clock_control_0 divides the 125 MHz board clock by 5 -> 25 MHz.
+set main_clk_pin [get_pins -hierarchical -regexp {.*clock_control_0/inst/clock_out_reg/Q}]
+create_generated_clock -name main_clk -source [get_ports io_clock] -edges {1 5 11} $main_clk_pin
 
 
 
