@@ -363,6 +363,7 @@ verilog/cloud_pynq/
 vivado/cloud_pynq/cloud_pynq/
 vivado/cloud_pynq/cloud_pynq_2020/
 vivado/cloud_pynq/cp2020_lab2/
+vivado/cloud_pynq/cp2022_2_*/
 vivado/cloud_pynq/bitstreams/
 
 # z710 generated RTL and timing experiments

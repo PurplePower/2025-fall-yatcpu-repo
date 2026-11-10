@@ -1,6 +1,6 @@
 # lab3 cloud_pynq
 
-lab3 的五级流水线 CPU 在 cloud_pynq 上使用寄存器 /4 分频，运行在 **10 MHz**。
+lab3 的五级流水线 CPU 在 cloud_pynq 上由 `clk_wiz` 提供 **10 MHz** 专用时钟。
 
 仓库保留学生填空框架。重新生成 RTL、运行 CPU 功能测试或构建比特流前，
 需要先完成 lab3 的实验填空；下述验证结果对应已完成填空的实现。
@@ -9,12 +9,22 @@ lab3 的五级流水线 CPU 在 cloud_pynq 上使用寄存器 /4 分频，运行
 ## 时钟与存储
 
 - 平台输入：`cg_fpga.clk_100M` = 100 MHz
-- `clk_wiz` 输出：40 MHz
-- CPU / Timer：共用 /4 分频后的 10 MHz（保留 lab2 的 10 ms / 1 s C 程序计时语义）
-- 数据存储 / UART / SegDisplay / LedMatrixDisplay / ROMLoader / MTime：40 MHz
+- `clk_wiz` 输出 1：40 MHz，用于数据存储 / UART / SegDisplay / LedMatrixDisplay / ROMLoader / MTime
+- `clk_wiz` 输出 2：10 MHz，直接作为 CPU / Timer 时钟（保留 lab2 的 10 ms / 1 s C 程序计时语义）
 - 指令：直接使用组合读的 `InstructionROM`
-- 数据：保留 `AsyncMemory`（组合读）；本次恢复分频不切换存储实现
+- 数据：保留 `AsyncMemory`（组合读）
 - MTime：1 MHz，MMIO `0xC0000000`（低 32 位）/ `0xC0000004`（高 32 位）
+
+### Vivado 2022.2 时钟修复（2026-11-10）
+
+原 CPU 时钟来自寄存器 /4 分频位。本次按方案 A 改为 `clk_wiz_0` 的第二路
+`clk_10m` 直接驱动 `Top` 的 `cpu_clock`；CPU 域翻转信号经三级同步得到单周期
+`CPU_tick`，只用于 MMIO/store 限定。`clocks.xdc` 改为对 40 MHz 与 10 MHz
+的 1:4 跨域路径加 multicycle 约束，并标记复位/CPU_tick 同步器。
+`open_project.tcl` 会自动升级缺少 CLKOUT2 的旧工程。
+本次已用 Vivado 2022.2 生成
+`bitstreams/cloud_pynq_2022.2_led_control_demo.bit`：
+WNS +1.054 ns，WHS +0.008 ns，setup/hold 违例均为 0。
 
 ## 构建 C 程序
 
@@ -54,14 +64,12 @@ vivado -mode batch -source open_project_2020.tcl
 vivado -mode batch -source generate_bitstream_2020.tcl
 ```
 
-`clocks.xdc` 在 `CPU_clkdiv_reg[1]/Q` 上声明 `cloud_cpu` 派生时钟，
-使用 `-edges {3 7 11}` 描述 /4 计数器高位的边沿关系，同时约束 CPU 和 Timer。
+`clocks.xdc` 对 clk_wiz 的 40 MHz 主时钟与 10 MHz CPU 时钟之间的 1:4 跨域
+路径声明 multicycle，并标记两个时钟域的复位释放同步器和 `CPU_tick` 同步器。
 40 MHz 主时钟由 block design 的时钟 IP 约束提供。
-文件还包含两个时钟域的复位释放同步器 `ASYNC_REG` 约束。
-`finalize_bitstream.tcl` 会检查 `cloud_cpu` 是否存在，再检查 setup / hold。
 
-CPU 的写入和 UART 读请求通过 `CPU_tick` 限定为一个 40 MHz 周期，
-避免同一次访存在快时钟域重复处理；Timer 与 CPU 同域，直接接收请求。
+CPU 的写入和 UART 读请求通过同步后的单周期 `CPU_tick` 限定，避免同一次访存
+在快时钟域重复处理；Timer 与 CPU 同域，直接接收请求。
 
 ## 演示程序
 

@@ -17,6 +17,7 @@ class SerialSimulation {
 public:
     VTop dut;
     uint64_t cycles = 0;
+    unsigned cpuDiv = 0;
     std::string output;
     std::vector<uint64_t> starts;
     static constexpr unsigned bit_cycles = 4167;
@@ -30,8 +31,9 @@ public:
     }
     void advance(uint64_t count) {
         for (uint64_t i = 0; i < count; ++i) {
-            dut.clock = 0; dut.eval(); ++simulation_time;
+            dut.clock = 0; dut.cpu_clock = (cpuDiv >> 1) & 1; dut.eval(); ++simulation_time;
             dut.clock = 1; dut.eval(); ++simulation_time;
+            ++cpuDiv;
             ++cycles;
             if (bit < 0) {
                 if (!dut.uart_tx) {

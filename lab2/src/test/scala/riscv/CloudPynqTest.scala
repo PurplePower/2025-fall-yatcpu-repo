@@ -12,7 +12,11 @@ class CloudHarness(binary: String) extends Module {
     val tx = Output(Bool())
   })
   val top = Module(new Top(binary, simulationDebug = true))
+  // The board derives cpu_clock from clk_wiz; the harness uses a /4 divider.
+  val cpuDiv = RegInit(0.U(2.W))
+  cpuDiv := cpuDiv + 1.U
   top.clock := clock
+  top.cpu_clock := cpuDiv(1).asClock
   top.reset_n := !reset.asBool
   top.btn := "hff".U
   top.sw1 := "hffffffff".U

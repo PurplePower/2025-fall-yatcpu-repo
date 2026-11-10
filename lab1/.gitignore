@@ -361,6 +361,7 @@ vivado/pynq/NA
 vivado/cloud_pynq/cloud_pynq/
 vivado/cloud_pynq/cloud_pynq_2020/
 vivado/cloud_pynq/cp2020_*/
+vivado/cloud_pynq/cp2022_2_*/
 vivado/cloud_pynq/bitstreams/
 vivado/cloud_pynq/NA
 vivado/cloud_pynq/strategy_comparison/

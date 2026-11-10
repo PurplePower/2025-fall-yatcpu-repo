@@ -16,7 +16,7 @@ package board.cloud_pynq
 
 import chisel3._
 import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
-import chisel3.util.{Cat, MuxLookup, log2Up}
+import chisel3.util.{Cat, MuxLookup}
 import peripheral._
 import riscv.Parameters
 import riscv.core.CPU
@@ -30,11 +30,12 @@ import riscv.core.CPU
   *   - seg_data：低有效（C 程序负责段码取反）
   *
   * 时钟：
-  *   - clock = cg_fpga.clk_100M 经 clk_wiz 分频 = 40 MHz
+  *   - clock     = cg_fpga.clk_100M 经 clk_wiz 分频 = 40 MHz
+  *   - cpu_clock = clk_wiz 第二路输出 = 10 MHz
   *   - Memory / UART / SegDisplay / LedMatrixDisplay / ROMLoader：40 MHz
-  *   - CPU：40 MHz / 4 = 10 MHz
+  *   - CPU / Timer：10 MHz
   *
-  * 这样 CPU 比 Memory 慢 4 倍，满足同步读 BRAM 的时序要求。
+  * CPU 时钟来自 MMCM，是真正的专用时钟，会被 Vivado 自动约束。
   */
 class CloudDebug extends Bundle {
   val pc = UInt(32.W)
@@ -49,8 +50,9 @@ class CloudDebug extends Bundle {
 class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: Boolean = false) extends RawModule {
   // Optional observation ports exist only in the simulation harness.
   val debug = if (simulationDebug) Some(IO(Output(new CloudDebug))) else None
-  val clock   = IO(Input(Clock()))
-  val reset_n = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
+  val clock     = IO(Input(Clock()))
+  val cpu_clock = IO(Input(Clock()))
+  val reset_n   = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
 
   // 平台输入：低有效
   val btn = IO(Input(UInt(8.W)))
@@ -91,11 +93,6 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
 
   val clock_freq = 40_000_000
 
-  // CPU 必须比 Memory 慢：Memory 是同步读 BRAM，读数据有一拍延迟。
-  // 这里 40 MHz / 4 = 10 MHz；最低要求是 2 分频。
-  val CPU_CLOCK_DIV = 4
-  require(CPU_CLOCK_DIV >= 2, "CPU clock must be at least 2x slower than memory clock")
-
   withClockAndReset(clock, reset) {
     // 平台低有效输入 -> 正逻辑（当前 demo 未使用，保留给后续 GPIO）
     val btn_i = ~btn
@@ -115,21 +112,10 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     rom_loader.io.load_address := Parameters.EntryAddress
     instruction_rom.io.address := rom_loader.io.rom_address
 
-    val cpuDivBits = log2Up(CPU_CLOCK_DIV)
-    val CPU_clkdiv = RegInit(0.U(cpuDivBits.W))
-    val CPU_tick   = Wire(Bool())
-    val CPU_next   = Wire(UInt(cpuDivBits.W))
-    CPU_next   := Mux(CPU_clkdiv === (CPU_CLOCK_DIV - 1).U, 0.U, CPU_clkdiv + 1.U)
-    CPU_tick   := CPU_clkdiv === 1.U
-    CPU_clkdiv := CPU_next
-
-    // 仿真期断言：两个 CPU 脉冲之间至少间隔 2 个 Memory 周期。
-    val ratioCheck = Module(new ClockRatioCheck(minRatio = 2))
-    ratioCheck.io.cpuTick := CPU_tick
-
-    // A registered divider bit avoids decoding a counter into a clock.
-    // CPU_tick marks the master edge immediately preceding the CPU rising edge.
-    val cpuClock = CPU_clkdiv(1).asClock
+    // CPU 时钟来自 MMCM，和 40 MHz 主时钟是固定的 1:4 关系。
+    // 在 CPU 域翻转一个信号，再同步回主时钟域做边沿检测，得到一个
+    // 每 CPU 周期仅一拍的 CPU_tick，用于把 CPU 的 store 限定成单次写。
+    val cpuClock = cpu_clock
     val cpuResetSync = withClockAndReset(cpuClock, reset.asAsyncReset) {
       val sync = RegInit(0.U(2.W))
       sync := Cat(sync(0), true.B)
@@ -139,6 +125,22 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     // Retiming the boot-ready flag also prevents the asynchronous synchronizer
     // from directly selecting BRAM addresses/write controls during reset.
     val cpuReady = RegNext(cpuResetSync(1), false.B)
+
+    val cpuTickToggle = withClockAndReset(cpuClock, cpuReset) {
+      val toggle = RegInit(false.B)
+      toggle := !toggle
+      toggle
+    }
+    val CPU_tick = withClockAndReset(clock, reset) {
+      val sync = RegInit(0.U(3.W))
+      sync := Cat(sync(1, 0), cpuTickToggle)
+      sync(2) ^ sync(1)
+    }
+
+    // 仿真期断言：两个 CPU 脉冲之间至少间隔 2 个 Memory 周期。
+    val ratioCheck = Module(new ClockRatioCheck(minRatio = 2))
+    ratioCheck.io.cpuTick := CPU_tick
+
     val cpu = withClockAndReset(cpuClock, cpuReset) { Module(new CPU) }
     val timer = withClockAndReset(cpuClock, cpuReset) { Module(new Timer) }
 

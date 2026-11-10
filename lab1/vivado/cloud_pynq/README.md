@@ -5,7 +5,7 @@
 
 ## 前置条件
 
-1. Vivado **2022.1**。
+1. Vivado **2022.1** 或 **2022.2**。
 2. RISC-V GCC 工具链（`riscv64-unknown-elf-gcc`、`objcopy`）在 `PATH` 中。
 3. 已安装 `online-fpga/cg-fpga-vivado2022.1/board_files/pynq-z2` board files。
 4. 已把 `online-fpga/cg-fpga-vivado2022.1/ip_repo` 加入 Vivado IP Repository。
@@ -103,14 +103,34 @@ lab1/vivado/cloud_pynq/bitstreams/cloud_pynq_2020_say_goodbye.bit
 > `Top.v` 中的 `$readmemh` 路径在 Chisel elaboration 时固定，因此每个程序
 > 都必须重新执行第 2 步生成 `Top.v`，再重新综合。
 
+## Vivado 2022.2 时钟修复（2026-11-10）
+
+原设计的 CPU 时钟由 `CPU_tick`（LUT + BUFG）组合产生，Vivado 无法约束。
+2022.2 的布局布线使该未约束时钟域变差，烧板后 `led_control_demo` 不能稳定停在
+`j .`，PC 灯持续变化。
+
+本次按方案 A 修复：
+
+- `clk_wiz_0` 增加第二路输出 `clk_12m5`（12.5 MHz），直接驱动 `Top_0/cpu_clock`；
+- `Top` 的 CPU 改用该 MMCM 时钟，不再把 `CPU_tick` 当时钟；
+- `CPU_tick` 改为 CPU 域翻转信号经三级同步后的单周期脉冲，仅用于限定 MMIO/store；
+- 新增 `clocks.xdc`，对 50 MHz 与 12.5 MHz 的 1:4 跨域路径加 multicycle 约束；
+- `open_project.tcl` 可自动把旧工程升级到双时钟输出。
+
+使用 Vivado 2022.1 或 2022.2 重新执行 `generate_bitstream.tcl` 即可。
+本次已用 Vivado 2022.2 生成
+`bitstreams/cloud_pynq_2022.2_led_control_demo.bit`：
+WNS +0.456 ns，WHS +0.021 ns，setup/hold 违例均为 0。
+
 ## 连接关系
 
-`Top.scala` 是 `RawModule`，显式声明 `clock` / `reset_n`，BD 直接例化 `Top`，
+`Top.scala` 是 `RawModule`，显式声明 `clock` / `cpu_clock` / `reset_n`，BD 直接例化 `Top`，
 不再有手写的 `cloud_pynq_top.v` / `clock_control.v`。
 
 ```text
 cg_fpga_0/clk_100M -> clk_wiz_0/clk_in1
-clk_wiz_0/clk_50m  -> Top_0/clock     -> Memory/UART/Seg/LED matrix = 50 MHz
+clk_wiz_0/clk_50m   -> Top_0/clock       -> Memory/UART/Seg/LED matrix = 50 MHz
+clk_wiz_0/clk_12m5  -> Top_0/cpu_clock   -> CPU = 12.5 MHz
 cg_fpga_0/btn_rst  -> reset logic     -> Top_0/reset_n
 cg_fpga_0/tx_0     -> Top_0/uart_rx   -> CPU UART RX
 cg_fpga_0/rx_0     <- Top_0/uart_tx   -> CPU UART TX
@@ -118,7 +138,7 @@ cg_fpga_0/btn/sw*  -> Top_0
 Top_0/gpio_led/seg/ledm/audio -> cg_fpga_0
 ```
 
-CPU 在 `Top` 内部再 4 分频：**CPU = 12.5 MHz，Memory = 50 MHz**。
+CPU 使用 `clk_wiz_0` 的 `clk_12m5` 输出：**CPU = 12.5 MHz，Memory = 50 MHz**。
 `clk_wiz_0` 的 `locked` 会和 `btn_rst` 一起参与 Top 复位释放。
 `ClockRatioCheck` 会在仿真中检查 CPU 至少比 Memory 慢 2 倍。
 

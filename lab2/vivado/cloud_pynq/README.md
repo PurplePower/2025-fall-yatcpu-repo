@@ -136,12 +136,23 @@ checkpoint 保留修复前状态，GUI 复查最终实现时应打开 `final_rou
 ## 时钟、复位与 MMIO
 
 - cg_fpga 100 MHz 经 clk_wiz 生成 40 MHz，驱动 RAM、ROMLoader、UART、显示扫描。
+- 同一 clk_wiz 的第二路输出 `clk_10m` 直接作为 CPU/Timer 的 10 MHz 时钟。
 - 相比 lab1 的 50 MHz 降频，为 lab2 CSR/中断组合路径留出裕量；实现使用 Performance_Explore 策略。
-- CPU 由寄存器分频位产生 10 MHz 时钟，Timer 使用相同时钟，避免短脉冲漏采。
-- `clocks.xdc` 为该 /4 时钟建立 generated-clock 约束。
+- CPU 和 Timer 同域，避免短脉冲漏采。
+- `clocks.xdc` 对 40 MHz 与 10 MHz 的 1:4 跨域路径加 multicycle 约束，并标记复位/CPU_tick 同步器。
 - `reset_n` 与 clk_wiz locked 相联；Top 和 CPU 域分别同步释放复位。
 - 40 MHz 外设写使能每条 store 只产生一个脉冲；同 CPU 时钟的 Timer 不重复套用该脉冲。
 - UART 连接为 `cg_fpga.tx_0 -> CPU RX`，`CPU TX -> cg_fpga.rx_0`。
+
+### Vivado 2022.2 时钟修复（2026-11-10）
+
+原 CPU 时钟来自寄存器分频位，虽用 generated clock 约束，但仍不是专用时钟资源。
+本次改为方案 A：`clk_wiz_0` 增加 `clk_10m` 输出直接驱动 `Top` 的 `cpu_clock`，
+CPU 域翻转信号经三级同步得到单周期 `CPU_tick`，只用于 MMIO/store 限定。
+`open_project.tcl` 会自动升级缺少 CLKOUT2 的旧工程。
+本次已用 Vivado 2022.2 生成
+`bitstreams/cloud_pynq_2022.2_led_control_demo.bit`：
+WNS +0.956 ns，WHS +0.032 ns，setup/hold 违例均为 0。
 
 | 基地址 | 功能 |
 |---|---|
