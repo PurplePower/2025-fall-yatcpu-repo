@@ -19,9 +19,11 @@ int main(int argc, char **argv) {
     dut.uart_rx = 1;
     dut.btn = 0xff;
     dut.sw1 = dut.sw2 = 0xffffffff;
+    unsigned cpuDiv = 0;
     auto step = [&]() {
-        dut.clock = 0; dut.eval(); ++simulation_time;
+        dut.clock = 0; dut.cpu_clock = (cpuDiv >> 1) & 1; dut.eval(); ++simulation_time;
         dut.clock = 1; dut.eval(); ++simulation_time;
+        ++cpuDiv;
     };
     dut.reset_n = 0;
     for (int i = 0; i < 8; ++i) step();

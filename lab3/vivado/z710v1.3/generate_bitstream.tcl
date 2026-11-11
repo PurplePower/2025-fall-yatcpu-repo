@@ -19,6 +19,12 @@ set project_name "rv-z710v1.3-20"
 
 open_project $project_dir/$project_name.xpr
 
+# Apply the clock constraints after the block-design module references are linked.
+set z710_xdc [get_files -quiet z710v1.3.xdc]
+if {[llength $z710_xdc] > 0} {
+    set_property PROCESSING_ORDER LATE $z710_xdc
+}
+
 update_module_reference design_1_Top_0_0
 
 while 1 {

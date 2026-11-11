@@ -12,6 +12,15 @@
 set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports io_clock]
 create_clock -period 8.000 -name sys_clk_pin -waveform {0.000 4.000} -add [get_ports io_clock]
 
+# clock_control_0 divides the 125 MHz board clock by 5 -> 25 MHz.
+set main_clk_pin [get_pins -hierarchical -regexp {.*clock_control_0/inst/clock_out_reg/Q}]
+create_generated_clock -name main_clk -source [get_ports io_clock] -edges {1 5 11} $main_clk_pin
+
+# CPU and Timer use CPU_clkdiv(1): /4 of main_clk, 50% duty.
+set cpu_div_q [get_pins -hierarchical -regexp {.*CPU_clkdiv_reg\[1\]/Q}]
+set cpu_div_c [get_pins -of_objects [get_cells -of_objects $cpu_div_q] -filter {REF_PIN_NAME == C}]
+create_generated_clock -name cpu_clk -source $cpu_div_c -edges {3 7 11} $cpu_div_q
+
 
 
 

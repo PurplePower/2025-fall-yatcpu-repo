@@ -25,11 +25,8 @@ import riscv.core.CPU
   * Cloud FPGA platform (cg_fpga) top for lab3.
   *
   * The platform input is 100 MHz; the clock wizard in the block design
-  * produces 40 MHz.  The lab3 five-stage CPU and Timer share a registered
-  * /4 divider and run at 10 MHz.  Memory, UART, SegDisplay,
-  * LedMatrixDisplay, ROMLoader and MTime run at 40 MHz.
-  * Timer keeps the lab2-compatible 10 MHz tick so the existing timer-based
-  * C demos keep their 1 s / 10 ms periods.
+  * produces 40 MHz for memory and peripherals and 10 MHz for the CPU/Timer.
+  * Both outputs are real MMCM clocks, so Vivado constrains them automatically.
   */
 class CloudDebug extends Bundle {
   val pc = UInt(32.W)
@@ -43,8 +40,9 @@ class CloudDebug extends Bundle {
 
 class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: Boolean = false) extends RawModule {
   val debug = if (simulationDebug) Some(IO(Output(new CloudDebug))) else None
-  val clock   = IO(Input(Clock()))
-  val reset_n = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
+  val clock     = IO(Input(Clock()))
+  val cpu_clock = IO(Input(Clock()))
+  val reset_n   = IO(Input(Bool()))   // cg_fpga.btn_rst, active low
 
   val btn = IO(Input(UInt(8.W)))
   val sw1 = IO(Input(UInt(32.W)))
@@ -92,13 +90,10 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     rom_loader.io.load_address := Parameters.EntryAddress
     rom_loader.io.bundle.read_data := 0.U
 
-    // Use a registered bit as the /4 clock, rather than a counter decode.
-    // CPU_tick qualifies fast-domain accesses at the master edge immediately
-    // preceding each CPU rising edge, after the CPU outputs have settled.
-    val CPU_clkdiv = RegInit(0.U(2.W))
-    CPU_clkdiv := CPU_clkdiv + 1.U
-    val CPU_tick = CPU_clkdiv === 1.U
-    val cpuClock = CPU_clkdiv(1).asClock
+    // CPU 时钟来自 clk_wiz 的 10 MHz 输出。
+    // 在 CPU 域翻转一个信号，再同步回主时钟域做边沿检测，得到一个
+    // 每 CPU 周期仅一拍的 CPU_tick，用于把 CPU 的 store 限定成单次写。
+    val cpuClock = cpu_clock
     val cpuResetSync = withClockAndReset(cpuClock, reset.asAsyncReset) {
       val sync = RegInit(0.U(2.W))
       sync := Cat(sync(0), true.B)
@@ -106,6 +101,20 @@ class Top(binaryFilename: String = "led_control_demo.asmbin", simulationDebug: B
     }
     val cpuReset = !cpuResetSync(1)
     val cpuReady = RegNext(cpuResetSync(1), false.B)
+
+    val cpuTickToggle = withClockAndReset(cpuClock, cpuReset) {
+      val toggle = RegInit(false.B)
+      toggle := !toggle
+      toggle
+    }
+    val CPU_tick = withClockAndReset(clock, reset) {
+      val sync = RegInit(0.U(3.W))
+      sync := Cat(sync(1, 0), cpuTickToggle)
+      sync(2) ^ sync(1)
+    }
+    val ratioCheck = Module(new ClockRatioCheck(minRatio = 2))
+    ratioCheck.io.cpuTick := CPU_tick
+
     val timer = withClockAndReset(cpuClock, cpuReset) { Module(new Timer) }
 
     val loading = !rom_loader.io.load_finished || !cpuReady

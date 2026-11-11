@@ -16,7 +16,7 @@ create_clock -period 20.000 -name io_clock -waveform {0.000 10.000} -add [get_po
 set cpu_clock_nets [get_nets -segments -of_objects [get_pins -hierarchical -filter {NAME =~ */regs/clock}]]
 set cpu_clock_driver [get_pins -leaf -of_objects $cpu_clock_nets -filter {DIRECTION == OUT}]
 set cpu_div_c [get_pins -of_objects [get_cells -hierarchical -regexp {.*CPU_clkdiv_reg\[1\]}] -filter {REF_PIN_NAME == C}]
-create_generated_clock -name cpu_clk -source $cpu_div_c -edges {7 9 15} $cpu_clock_driver
+create_generated_clock -name cpu_clk -source $cpu_div_c -edges {1 3 9} $cpu_clock_driver
 
 # LEDs
 set_property IOSTANDARD LVCMOS33 [get_ports io_led];

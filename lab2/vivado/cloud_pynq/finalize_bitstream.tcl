@@ -1,8 +1,8 @@
 # Run after opening impl_1, with project_dir and bit set by the caller.
 # Incremental routing can leave a small hold violation. Repair it physically;
 # keep the original clock constraints and require both setup and hold to pass.
-if {[llength [get_clocks cloud_cpu]] != 1} {
-    error "Missing CPU generated clock constraint"
+if {[llength [get_clocks -quiet clk_10m_design_1_clk_wiz_0_0]] != 1} {
+    error "Missing CPU clock constraint"
 }
 set report_dir [file normalize "$project_dir/reports"]
 file mkdir $report_dir

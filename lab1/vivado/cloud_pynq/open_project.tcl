@@ -58,13 +58,17 @@ if {[llength [get_files -quiet design_1.bd]] == 0} {
     create_bd_cell -type ip -vlnv $ip_vlnv cg_fpga_0
     create_bd_cell -type module -reference Top Top_0
 
-    # 100 MHz -> 50 MHz for Memory/UART/Seg/LED matrix/ROM. Top divides CPU by 4 again.
+    # 100 MHz -> 50 MHz for Memory/UART/Seg/LED matrix/ROM, and 12.5 MHz
+    # for the CPU.  Both are real MMCM outputs, so Vivado constrains them.
     create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0
     set_property -dict [list \
         CONFIG.PRIM_IN_FREQ {100.000} \
         CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {50.000} \
         CONFIG.CLKOUT1_USED {true} \
         CONFIG.CLK_OUT1_PORT {clk_50m} \
+        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {12.500} \
+        CONFIG.CLKOUT2_USED {true} \
+        CONFIG.CLK_OUT2_PORT {clk_12m5} \
         CONFIG.PRIM_SOURCE {Global_buffer} \
         CONFIG.USE_LOCKED {true} \
         CONFIG.USE_RESET {true} \
@@ -82,9 +86,10 @@ if {[llength [get_files -quiet design_1.bd]] == 0} {
     make_bd_intf_pins_external [get_bd_intf_pins cg_fpga_0/DDR]
     make_bd_intf_pins_external [get_bd_intf_pins cg_fpga_0/FIXED_IO]
 
-    # 100 MHz reference clock -> clk_wiz 50 MHz -> Top.
+    # 100 MHz reference clock -> clk_wiz 50 MHz (memory) / 12.5 MHz (CPU) -> Top.
     connect_bd_net [get_bd_pins cg_fpga_0/clk_100M] [get_bd_pins clk_wiz_0/clk_in1]
     connect_bd_net [get_bd_pins clk_wiz_0/clk_50m] [get_bd_pins Top_0/clock]
+    connect_bd_net [get_bd_pins clk_wiz_0/clk_12m5] [get_bd_pins Top_0/cpu_clock]
     connect_bd_net [get_bd_pins cg_fpga_0/clk_100M] [get_bd_pins cg_fpga_0/vid_io_in_clk]
 
     connect_bd_net [get_bd_pins cg_fpga_0/btn_rst] [get_bd_pins clk_reset_inv/Op1]
@@ -123,12 +128,37 @@ if {[llength [get_files -quiet design_1.bd]] == 0} {
     save_bd_design
 }
 
+# Existing projects created before the CPU-clock fix only have CLKOUT1.
+# Refresh the Top module reference, then add and connect the second output.
+if {[llength [get_ips -quiet design_1_Top_0_0]] > 0} {
+    update_module_reference design_1_Top_0_0
+}
+open_bd_design [get_files design_1.bd]
+set clk_wiz_0 [get_bd_cells clk_wiz_0]
+if {[get_property CONFIG.CLKOUT2_USED $clk_wiz_0] != "true"} {
+    puts "Adding 12.5 MHz CPU clock to the existing block design..."
+    set_property -dict [list \
+        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {12.500} \
+        CONFIG.CLKOUT2_USED {true} \
+        CONFIG.CLK_OUT2_PORT {clk_12m5} \
+    ] $clk_wiz_0
+    connect_bd_net [get_bd_pins clk_wiz_0/clk_12m5] [get_bd_pins Top_0/cpu_clock]
+    validate_bd_design
+    save_bd_design
+}
+if {[get_property CONFIG.CLKOUT2_REQUESTED_OUT_FREQ $clk_wiz_0] != 12.5} {
+    error "Stale CPU clock configuration: expected 12.5 MHz"
+}
 generate_target all [get_files design_1.bd]
 
 set wrapper [make_wrapper -files [get_files design_1.bd] -top]
 add_files -norecurse $wrapper
 set_property top design_1_wrapper [current_fileset]
 update_compile_order -fileset sources_1
+
+# CPU (12.5 MHz) and memory (50 MHz) are 1:4 MMCM outputs.
+add_files -fileset constrs_1 -norecurse [file join $script_dir clocks.xdc]
+set_property PROCESSING_ORDER LATE [get_files clocks.xdc]
 
 # Minimize build time for iterative bitstream generation.
 if {[llength [get_runs -quiet synth_1]] > 0} {

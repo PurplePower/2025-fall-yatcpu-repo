@@ -163,6 +163,7 @@ set file "$origin_dir/z710v1.3.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
+set_property -name "PROCESSING_ORDER" -value "LATE" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]

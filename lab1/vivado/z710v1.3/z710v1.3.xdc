@@ -8,6 +8,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports io_clock];
 set_property PACKAGE_PIN U18 [get_ports io_clock];
 create_clock -period 20.000 -name io_clock -waveform {0.000 10.000} -add [get_ports io_clock];
 
+# CPU uses CPU_tick = (CPU_clkdiv == 0): /4 of io_clock, 25% duty.
+set cpu_clock_net [get_nets -hierarchical -regexp {.*cpu/regs/CLK}]
+set cpu_clock_driver [get_pins -of_objects $cpu_clock_net -filter {DIRECTION == OUT && REF_PIN_NAME == O}]
+create_generated_clock -name cpu_clk -source [get_ports io_clock] -edges {1 3 9} $cpu_clock_driver
+
 # LEDs
 set_property IOSTANDARD LVCMOS33 [get_ports io_led];
 set_property PACKAGE_PIN J16 [get_ports io_led];   # PL_LED0

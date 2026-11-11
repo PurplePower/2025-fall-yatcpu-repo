@@ -29,7 +29,7 @@ class Top(binaryFilename: String ="say_goodbye.asmbin") extends Module {
   })
   val boot_state = RegInit(BootStates.Init)
 
-  val clock_freq = 125_000_000
+  val clock_freq = 25_000_000
   val uart = Module(new Uart(clock_freq, 115200))  // this freq is consistent with Zynq 7 PS UART module
   io.tx := uart.io.txd
   uart.io.rxd := io.rx
