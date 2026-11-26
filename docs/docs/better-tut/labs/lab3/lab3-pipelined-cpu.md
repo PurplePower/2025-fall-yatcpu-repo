@@ -203,12 +203,12 @@ class RegisterFile extends Module {
 
 该方法需要找到某个容易看出错误根源的部件，如寄存器、MEM 等。
 
-TODO：查看输出截图
+<!-- TODO：查看输出截图 -->
 
 
 #### 查看波形图
 
-可以用 GTKWave 查看波形图，并进行分析。TODO：GTKWave 教程。
+可以用 GTKWave 查看波形图，并进行分析。[查看波形图分析教程](../../practice/test-and-understand-vcd.md#解读波形图)
 
 
 #### 充分利用提示
